@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Model Kalkulator</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+        <link rel="shortcut icon" href="{{ url_for('static', filename='assets/favicon.png') }}" type="image/x-icon" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='vendors/tailwind.css') }}" />
+    </head>
+    <body style="font-family: 'IBM Plex Sans', sans-serif">
+        <!-- header -->
+        <header class="absolute top-0 left-0 w-full h-16 flex justify-between items-center px-8">
+            <img src="{{ url_for('static', filename='assets/pupuk-indonesia.png') }}" alt="PI" class="h-12 w-fit" />
+
+            <div class="flex items-center gap-4 text-sm">
+                <div class="bg-white h-8 w-8 rounded">
+                    <img src="{{ url_for('static', filename='assets/avatar.png') }}" alt="avatar" class="" />
+                </div>
+                <span class="text-[#585965]">Administrator</span>
+                <img src="{{ url_for('static', filename='assets/expand.png') }}" alt="expand" class="w-2 h-2 cursor-pointer" />
+            </div>
+        </header>
+
+        <div class="bg-[#EBF4F5] w-screen h-screen pt-16 flex">
+            <!-- left navigator -->
+            <div class="w-52 h-full flex flex-col p-4 justify-between text-sm text-[#585965]">
+                <div class="flex flex-col gap-2">
+                    <span class="text-xs pb-4">Admin Tools</span>
+
+                    <a href="kalkulasi" class="relative flex gap-2 items-center p-1 rounded-lg group cursor-pointer">
+                        <div class="absolute top-0 left-0 w-0 group-hover:w-full h-full bg-white rounded-lg shadow duration-300"></div>
+                        <img src="{{ url_for('static', filename='assets/result-gray.png') }}" alt="kalkulasi" class="z-10 w-8 h-8 group-hover:hidden" />
+                        <img src="{{ url_for('static', filename='assets/result-blue.png') }}" alt="kalkulasi" class="z-10 w-8 h-8 hidden group-hover:block" />
+                        <span class="group-hover:text-[#1A8FCB] duration-150 z-10">Kalkulasi</span>
+                    </a>
+
+                    <a href="model-kalkulator" class="relative flex gap-2 items-center p-1 rounded-lg group cursor-pointer">
+                        <div class="absolute top-0 left-0 w-full h-full bg-white rounded-lg shadow duration-300"></div>
+                        <img src="{{ url_for('static', filename='assets/calculator-blue.png') }}" alt="kalkulasi" class="z-10 w-8 h-8 p-1" />
+                        <span class="text-[#1A8FCB] z-10">Kalkulator</span>
+                    </a>
+                </div>
+
+                <div class="flex gap-2 items-center">
+                    <img src="{{ url_for('static', filename='assets/logout-gray.png') }}" alt="logout" class="w-8 h-8" />
+                    <span>Logout</span>
+                </div>
+            </div>
+
+            <!-- content -->
+            <div class="w-full h-full bg-white rounded-tl-[2rem] flex flex-col p-6 gap-2 overflow-y-scroll">
+                <h1 class="text-[#585965] pb-2 border-b-2">Model Kalkulator</h1>
+
+                <div class="flex gap-6 text-[#585965] text-sm pl-4 mt-2 items-center">
+                    <span class="hover:text-black">Unggah File</span>
+                    <label id="lblAmbil" for="" class="py-1 px-3 text-sm cursor-pointer rounded bg-[#47AD41] hover:bg-[#3d9e38] text-white">Ambil File</label>
+                    <input type="file" class="cursor-pointer" hidden />
+                </div>
+
+                <details class="w-full h-fit flex flex-col gap-2 text-sm text-[#585965] mt-2 mb-8">
+                    <summary class="pb-4 cursor-pointer px-2 w-fit hover:text-black">Input Manual</summary>
+                    <div class="flex w-full gap-16">
+                        <div class="flex flex-col gap-2">
+                            <div id="calcQN" onclick="manualCalc(event, 'calcQ', '1A8FCB')" class="flex gap-3 group hover:bg-[#1A8FCB] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
+                                <div class="h-6 w-6 bg-[#1A8FCB] text-white flex items-center justify-center font-semibold rounded">Q</div>
+                                <span class="whitespace-nowrap group-hover:text-white duration-150">Model Q</span>
+                            </div>
+                            <div id="calcPoissonN" onclick="manualCalc(event, 'calcPoisson', '47AD41')" class="flex gap-3 group hover:bg-[#47AD41] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
+                                <div class="h-6 w-6 bg-[#47AD41] text-white flex items-center justify-center font-semibold rounded">P</div>
+                                <span class="whitespace-nowrap group-hover:text-white duration-150">Model Poisson</span>
+                            </div>
+                            <div id="calcWilsonN" onclick="manualCalc(event, 'calcWilson', 'F9CD2B')" class="flex gap-3 group hover:bg-[#F9CD2B] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
+                                <div class="h-6 w-6 bg-[#F9CD2B] text-white flex items-center justify-center font-semibold rounded">W</div>
+                                <span class="whitespace-nowrap group-hover:text-white duration-150">Model Wilson</span>
+                            </div>
+                            <div id="calcTchebycheffN" onclick="manualCalc(event, 'calcTchebycheff', 'F68B33')" class="flex gap-3 group hover:bg-[#F68B33] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
+                                <div class="h-6 w-6 bg-[#F68B33] text-white flex items-center justify-center font-semibold rounded">T</div>
+                                <span class="whitespace-nowrap group-hover:text-white duration-150">Model Tchebycheff</span>
+                            </div>
+                            <div id="calcRegretN" onclick="manualCalc(event, 'calcRegret', '7961F2')" class="flex gap-3 group hover:bg-[#7961F2] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
+                                <div class="h-6 w-6 bg-[#7961F2] text-white flex items-center justify-center font-semibold rounded">R</div>
+                                <span class="whitespace-nowrap group-hover:text-white duration-150">Model Min Max Regret</span>
+                            </div>
+                            <div id="calcLinearN" onclick="manualCalc(event, 'calcLinear', 'F33D3D')" class="flex gap-3 group hover:bg-[#F33D3D] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
+                                <div class="h-6 w-6 bg-[#F33D3D] text-white flex items-center justify-center font-semibold rounded">L</div>
+                                <span class="whitespace-nowrap group-hover:text-white duration-150">Model Kerusakan Linear</span>
+                            </div>
+                            <div id="calcNonLinearN" onclick="manualCalc(event, 'calcNonLinear', 'E667E6')" class="flex gap-3 group hover:bg-[#E667E6] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
+                                <div class="h-6 w-6 bg-[#E667E6] text-white flex items-center justify-center font-semibold rounded">NL</div>
+                                <span class="whitespace-nowrap group-hover:text-white duration-150">Model Kerusakan Non Linear</span>
+                            </div>
+                            <div id="calcBCRN" onclick="manualCalc(event, 'calcBCR', 'FF5975')" class="flex gap-3 group hover:bg-[#FF5975] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
+                                <div class="h-6 w-6 bg-[#FF5975] text-white flex items-center justify-center font-semibold rounded">B</div>
+                                <span class="whitespace-nowrap group-hover:text-white duration-150">Model BCR</span>
+                            </div>
+                        </div>
+
+                        <div id="boxManual" class="relative w-fit h-fit hidden flex-col border p-4 pb-8 rounded shadow">
+                            <div class="absolute -top-5 left-4 whitespace-nowrap px-2 py-1 bg-white border rounded">Parameter Input</div>
+                            <button onclick="viewResult()" class="bg-[#1A8FCB] hover:bg-[#147EB5] py-2 px-8 text-white shadow rounded absolute -bottom-4 right-4 focus:scale-95 duration-150">Hitung</button>
+
+                            <!-- Model Q -->
+                            <div id="calcQ" class="hidden flex-col gap-2 calc-model">
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Rata rata permintaan barang</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Lead time</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Standar deviasi permintaan barang</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Ongkos pesan</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Harga barang</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Ongkos simpan</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Ongkos kekurangan inventori setiap unit barang</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Material code</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Material description</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>ABC indikator</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                            </div>
+                            <!-- Model Poisson -->
+                            <div id="calcPoisson" class="hidden flex-col gap-2 calc-model">
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Rata rata pemesanan barang</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Standar deviasi barang</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Lead time</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Ongkos pesan</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Harga barang</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Ongkos simpan</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Ongkos kekurangan barang</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                            </div>
+                            <!-- Model Wilson -->
+                            <div id="calcWilson" class="hidden flex-col gap-2 calc-model">
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Permintaan barang</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Harga barang</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Ongkos Pesan</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Lead time</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Ongkos simpan</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Material code</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Material description</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>ABC indikator</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                            </div>
+                            <!-- Model Tchebycheff  -->
+                            <div id="calcTchebycheff" class="hidden flex-col gap-2 calc-model">
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Harga barang</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Kerugian ketidakadaan barang</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Standar deviasi</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Rata rata permintaan barang</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Material code</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Material description</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>ABC indikator</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                            </div>
+                            <!-- Model Min Max Regret -->
+                            <div id="calcRegret" class="hidden flex-col gap-2 calc-model">
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Ongkos pemakaian Komponen</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Ongkos kerugian akibat kerusakan</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Jumlah komponen terpasang</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Harga resale komponen</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                            </div>
+                            <!-- Model Kerusakan Linear -->
+                            <div id="calcLinear" class="hidden flex-col gap-2 calc-model">
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Ongkos pemakaian Komponen</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Ongkos kerugian akibat kerusakan</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Jumlah komponen terpasang</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Harga resale komponen</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                            </div>
+                            <!-- Model Kerusakan Non Linear -->
+                            <div id="calcNonLinear" class="hidden flex-col gap-2 calc-model">
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Ongkos pemakaian Komponen</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Ongkos kerugian akibat kerusakan</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Jumlah komponen terpasang</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Harga resale komponen</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Beta</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                            </div>
+                            <!-- Model BCR -->
+                            <div id="calcBCR" class="hidden flex-col gap-2 calc-model">
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Harga komponen</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Kerugian komponen</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Suku bunga</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Waktu sisa operasi</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <span>Probabilitas</span>
+                                    <input type="text" class="py-1 px-2 border rounded" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <div id="domAggrid" class="w-full h-[50rem] duration-75 flex-col gap-2 overflow-y-scroll">
+                    <div class="w-full h-[calc(100%)]">
+                        <div id="aggrid" class="w-full h-full ag-theme-quartz"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="boxLoadingUpload" class="absolute top-0 left-0 h-screen w-screen bg-transparent z-50 hidden justify-center items-center">
+            <div class="absolute top-0 left-0 w-full h-full bg-[#585965] opacity-50"></div>
+            <div class="absolute top-0 left-0 w-full h-full bg-transparent backdrop-blur"></div>
+            <div class="relative h-fit text-sm w-fit p-8 bg-white z-10 rounded-xl shadow flex gap-6 justify-center pt-20">
+                <div class="flex flex-col gap-2">
+                    <div class="flex gap-4 items-center">
+                        <span class="w-[8rem]">Material</span>
+                        <div class="border-gray-500 border py-1 px-2 rounded">6072060</div>
+                    </div>
+                    <div class="flex gap-4 items-center">
+                        <span class="w-[8rem]">Kategori</span>
+                        <div class="border-gray-500 border py-1 px-2 rounded">Pola Deterministik</div>
+                    </div>
+                    <div class="flex gap-4 items-center">
+                        <span class="w-[8rem]">Rata_Rata</span>
+                        <div class="border-gray-500 border py-1 px-2 rounded">59000000</div>
+                    </div>
+                    <div class="flex gap-4 items-center">
+                        <span class="w-[8rem]">Standar_Deviasi</span>
+                        <div class="border-gray-500 border py-1 px-2 rounded">94000000</div>
+                    </div>
+                    <div class="flex gap-4 items-center">
+                        <span class="w-[8rem]">Material Code</span>
+                        <div class="border-gray-500 border py-1 px-2 rounded">6072060</div>
+                    </div>
+                    <div class="flex gap-4 items-center">
+                        <span class="w-[8rem]">Material description</span>
+                        <div class="border-gray-500 border py-1 px-2 rounded">BOLT,MACHINE:5/8IN UNCX50.8MM;HEX;B7</div>
+                    </div>
+                    <div class="flex gap-4 items-center">
+                        <span class="w-[8rem]">Unit Price</span>
+                        <div class="border-gray-500 border py-1 px-2 rounded">35000000</div>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <div class="flex gap-4 items-center">
+                        <span class="w-[16rem]">ABC Indicator</span>
+                        <div class="border-gray-500 border py-1 px-2 rounded">B</div>
+                    </div>
+                    <div class="flex gap-4 items-center">
+                        <span class="w-[16rem]">Estimasi Lead Time (Mon)</span>
+                        <div class="border-gray-500 border py-1 px-2 rounded">3</div>
+                    </div>
+                    <div class="flex gap-4 items-center">
+                        <span class="w-[16rem]">Estimasi Lead Time (Day)</span>
+                        <div class="border-gray-500 border py-1 px-2 rounded">90</div>
+                    </div>
+                    <div class="flex gap-4 items-center">
+                        <span class="w-[16rem]">Estimasi Lead Time (Year)</span>
+                        <div class="border-gray-500 border py-1 px-2 rounded">246575</div>
+                    </div>
+                    <div class="flex gap-4 items-center">
+                        <span class="w-[16rem]">Ongkos_Pesan_deterministik</span>
+                        <div class="border-gray-500 border py-1 px-2 rounded">1000000</div>
+                    </div>
+                    <div class="flex gap-4 items-center">
+                        <span class="w-[16rem]">Ongkos_Simpan_Barang_deterministik</span>
+                        <div class="border-gray-500 border py-1 px-2 rounded">5250000</div>
+                    </div>
+                </div>
+
+                <div class="text-white bg-[#1A8FCB] text-base px-4 pr-24 py-2 rounded absolute top-4 left-4">Model Q</div>
+                <img onclick="closeLoad()" src="{{ url_for('static', filename='assets/delete.png') }}" alt="close" class="absolute cursor-pointer top-4 right-4 w-8 h-8" />
+            </div>
+        </div>
+
+        <script src="{{ url_for('static', filename='vendors/aggrid.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/kalkulator.js') }}"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    </body>
+</html>

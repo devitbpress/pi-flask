@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Kalulasi</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+        <link rel="shortcut icon" href="{{ url_for('static', filename='assets/favicon.png') }}" type="image/x-icon" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='vendors/tailwind.css') }}" />
+    </head>
+    <body style="font-family: 'IBM Plex Sans', sans-serif">
+        <!-- header -->
+        <header class="absolute top-0 left-0 w-full h-16 flex justify-between items-center px-8">
+            <img src="{{ url_for('static', filename='assets/pupuk-indonesia.png') }}" alt="PI" class="h-12 w-fit" />
+
+            <div class="flex items-center gap-4 text-sm">
+                <div class="bg-white h-8 w-8 rounded">
+                    <img src="{{ url_for('static', filename='assets/avatar.png') }}" alt="avatar" class="" />
+                </div>
+                <span class="text-[#585965]">Administrator</span>
+                <img src="{{ url_for('static', filename='assets/expand.png') }}" alt="expand" class="w-2 h-2 cursor-pointer" />
+            </div>
+        </header>
+
+        <div class="bg-[#EBF4F5] w-screen h-screen pt-16 flex">
+            <!-- left navigator -->
+            <div class="w-52 h-full flex flex-col p-4 justify-between text-sm text-[#585965]">
+                <div class="flex flex-col gap-2">
+                    <span class="text-xs pb-4">Admin Tools</span>
+
+                    <a href="kalkulasi" class="relative flex gap-2 items-center p-1 rounded-lg group cursor-pointer">
+                        <div class="absolute top-0 left-0 w-full h-full bg-white rounded-lg shadow duration-300"></div>
+                        <img src="{{ url_for('static', filename='assets/result-blue.png') }}" alt="kalkulasi" class="z-10 w-8 h-8" />
+                        <span class="text-[#1A8FCB] z-10">Kalkulasi</span>
+                    </a>
+
+                    <a href="model-kalkulator" class="relative flex gap-2 items-center p-1 rounded-lg group cursor-pointer">
+                        <div class="absolute top-0 left-0 w-0 group-hover:w-full h-full bg-white rounded-lg shadow duration-300"></div>
+                        <img src="{{ url_for('static', filename='assets/calculator-gray.png') }}" alt="kalkulasi" class="z-10 w-8 h-8 p-1 group-hover:hidden" />
+                        <img src="{{ url_for('static', filename='assets/calculator-blue.png') }}" alt="kalkulasi" class="z-10 w-8 h-8 p-1 hidden group-hover:block" />
+                        <span class="group-hover:text-[#1A8FCB] duration-150 z-10">Kalkulator</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- content -->
+            <div class="w-full h-full bg-white rounded-tl-[2rem] flex flex-col p-6 gap-2">
+                <h1 class="text-[#585965] pb-2 border-b-2">Kalkulasi Data</h1>
+                <div id="boxTabs" class="h-fit w-full bg-[#EFF3FF] rounded-md p-2 flex gap-2 text-xs text-[#585965]">
+                    <h5 onclick="tabsResutl(event, 'unggah')" class="py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] border-b border-[#1A8FCB] text-[#1A8FCB] whitespace-nowrap">Unggah</h5>
+                    <h5 id="h5Mentah" onclick="tabsResutl(event, 'mentah')" class="py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] whitespace-nowrap hidden">Data Mentah</h5>
+                    <h5 id="h5Subset" onclick="tabsResutl(event, 'subset')" class="py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] whitespace-nowrap hidden">Subset Data</h5>
+                    <h5 id="h5Klasifikasi" onclick="tabsResutl(event, 'klasifikasi')" class="py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] whitespace-nowrap hidden">Klasifikasi</h5>
+                    <h5 id="h5Kalkulator" onclick="tabsResutl(event, 'kalkulator')" class="py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] whitespace-nowrap hidden">Model Kalkulator</h5>
+                </div>
+
+                <div id="domUnggah" class="relative w-full h-[calc(100%-5rem)] duration-75 flex">
+                    <div class="w-full h-full flex justify-between gap-4">
+                        <div id="boxDrag" class="h-full w-[45rem] px-4 py-20 border-r">
+                            <div id="dropZone" class="w-full h-full flex-col gap-4 border-dashed border-2 border-[#585965] rounded-lg flex justify-center items-center">
+                                <img src="{{ url_for('static', filename='assets/upload-gray.png') }}" alt="excel" class="w-12 h-12" />
+                                <span class="text-[#585965] text-sm">Tarik dan lepaskan file excel di sini</span>
+                                <label id="lblFile" for="" class="py-2 duration-150 px-4 text-sm cursor-pointer rounded bg-[#47AD41] hover:bg-[#3d9e38] text-white">Ambil File</label>
+                                <input type="file" id="inpFile" hidden multiple accept=".xls, .xlsx" />
+                            </div>
+                        </div>
+
+                        <div class="w-full h-full pt-8 flex flex-col gap-4">
+                            <h4 class="text-[#585965] border-b pb-1 text-sm">File Terunggah</h4>
+
+                            <div class="relative w-full h-[calc(100%-4rem)] flex flex-col items-end justify-between text-[#585965] text-sm">
+                                <div id="boxListUploaded" class="w-full h-[calc(100%-3rem)] overflow-y-scroll"></div>
+
+                                <div class="absolute bottom-0 right-0 flex gap-4 items-center cursor-pointer py-2 px-6 bg-[#47AD41] rounded">
+                                    <button id="btnUnggah" class="text-white">Unggah File</button>
+                                    <img src="{{ url_for('static', filename='assets/arrow-right.png') }}" alt="arrow" class="w-4 h-4" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="domAggrid" class="relative w-full h-[calc(100%-5rem)] scale-0 duration-75 hidden flex-col gap-2">
+                    <div class="w-full h-8 flex justify-between px-4">
+                        <div class="flex gap-2 items-center">
+                            <img onclick="onBtnExport()" src="{{ url_for('static', filename='assets/csv.png') }}" alt="csv" class="w-4 h-4 cursor-pointer mr-2" />
+                            <img src="{{ url_for('static', filename='assets/filter.png') }}" alt="filter" class="w-4 h-4" />
+                            <input oninput="filterAgGrid(event)" type="text" class="border rounded p-1 text-sm text-[#585965]" placeholder="filter" />
+                        </div>
+                        <div id="listFile" class="hidden gap-2 items-center">
+                            <div class="text-[#585965] text-sm ml-4">File :</div>
+                            <select id="slcDataMentah" class="px-2 bg-transparent text-sm cursor-pointer text-[#585965]">
+                                <option value="df2016">Histori GI SAP 2016.xlsx</option>
+                                <option value="df2017">Histori GI SAP 2017.xlsx</option>
+                                <option value="df2018">Histori GI SAP 2018 Bulan 1-12.xlsx</option>
+                                <option value="df2019">Histori GI SAP 2019 Bulan 1-12.xlsx</option>
+                                <option value="df2020">Histori GI SAP 2020 Bulan 1-12.xlsx</option>
+                                <option value="df2021">Histori GI SAP 2021 Bulan 1-12.xlsx</option>
+                                <option value="df2022">Histori GI SAP 2022 Bulan 1-12.xlsx</option>
+                            </select>
+                        </div>
+                        <div id="boxBtnKlasifikasi" class="gap-2 items-center hidden">
+                            <img id="btnKlasifikasi" onclick="runLoading('klasifikasi')" src="{{ url_for('static', filename='assets/play.png') }}" alt="play" class="w-4 h-4 cursor-pointer" />
+                            <span id="textKlasifikasi" class="text-sm text-[#585965]">Lanjut Proses Klasifikasi</span>
+                        </div>
+                        <div id="boxBtnModel" class="gap-2 items-center hidden">
+                            <img id="btnModel" onclick="runLoading('kalkulator')" src="{{ url_for('static', filename='assets/play.png') }}" alt="play" class="w-4 h-4 cursor-pointer" />
+                            <span id="textModel" class="text-sm text-[#585965]">Lanjut Proses Semua Model</span>
+                        </div>
+                        <div id="listModel" class="text-[#585965] text-sm hidden gap-2 items-center">
+                            <div>Model :</div>
+                            <select id="slcKalkulator" class="bg-transparent cursor-pointer">
+                                <option value="q">Model Q</option>
+                                <option value="poisson">Model Poisson</option>
+                                <option value="wilson">Model Wilson</option>
+                                <option value="tchebycheff">Model Tchebycheff</option>
+                                <option value="minmaxregret">Model Min Max Regret</option>
+                                <option value="kerusakanlinear">Model Kerusakan Linear</option>
+                                <option value="kerusakannonlinear">Model Kerusakan Non Linear</option>
+                                <option value="bcr">Model BCR</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="w-full h-[calc(100%-2rem)]">
+                        <div id="aggrid" class="w-full h-full ag-theme-quartz"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="boxLoadingUpload" class="absolute top-0 left-0 h-screen w-screen bg-transparent z-50 hidden justify-center items-center">
+            <div class="absolute top-0 left-0 w-full h-full bg-[#585965] opacity-50"></div>
+            <div class="absolute top-0 left-0 w-full h-full bg-transparent backdrop-blur"></div>
+            <div class="h-[25rem] w-[50rem] bg-white z-10 rounded-xl shadow flex flex-col gap-4 justify-center items-center">
+                <h3 class="font-semibold text-2xl text-[#1A8FCB]">Kami sedang memproses dokumen Anda</h3>
+                <span class="w-1/2 text-center text-[#585965]">Silakan tunggu sebentar sementara sistem kami menyelesaikan proses untuk Anda.</span>
+                <div id="statusUp" class="py-2 text-[#585965]"></div>
+                <div class="w-4/5 h-4 flex items-center justify-center relative">
+                    <div class="w-full bg-[#F68B33] h-4 rounded"></div>
+                    <div id="barPersen" class="w-1 bg-[#47AD41] h-4 absolute left-0 top-0 rounded"></div>
+                </div>
+                <div class="flex flex-col items-center justify-center">
+                    <span id="textPersen" class="text-[#585965] text-2xl font-semibold">0%</span>
+                    <span id="statusDown" class="text-[#585965] text-lg font-medium"></span>
+                </div>
+            </div>
+        </div>
+
+        <script src="{{ url_for('static', filename='vendors/aggrid.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/kalkulasi.js') }}"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    </body>
+</html>
