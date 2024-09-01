@@ -1,0 +1,288 @@
+[
+    {
+        "regret": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 18000000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 3600000.0,
+            "Minimum Regret (Rp )": 43200000.0,
+            "Strategi Penyediaan Optimal (Unit)": 3
+        },
+        "linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 18000000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 3600000.0,
+            "Ongkos Model Probabilistik Kerusakan (Linier)": 62400000.0,
+            "Strategi Penyediaan Optimal (Unit)": 4
+        },
+        "non_linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 18000000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 3600000.0,
+            "Ongkos Model Probabilistik Kerusakan (Non-Linier)": 76500000.0,
+            "Strategi Penyediaan Optimal (Unit)": 5
+        }
+    },
+    {
+        "regret": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 2300000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 460000.0,
+            "Minimum Regret (Rp )": 5520000.0,
+            "Strategi Penyediaan Optimal (Unit)": 3
+        },
+        "linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 2300000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 460000.0,
+            "Ongkos Model Probabilistik Kerusakan (Linier)": 7973333.333333332,
+            "Strategi Penyediaan Optimal (Unit)": 4
+        },
+        "non_linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 2300000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 460000.0,
+            "Ongkos Model Probabilistik Kerusakan (Non-Linier)": 9775000.0,
+            "Strategi Penyediaan Optimal (Unit)": 5
+        }
+    },
+    {
+        "regret": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 85550000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 17110000.0,
+            "Minimum Regret (Rp )": 205320000.0,
+            "Strategi Penyediaan Optimal (Unit)": 3
+        },
+        "linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 85550000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 17110000.0,
+            "Ongkos Model Probabilistik Kerusakan (Linier)": 296573333.3333333,
+            "Strategi Penyediaan Optimal (Unit)": 4
+        },
+        "non_linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 85550000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 17110000.0,
+            "Ongkos Model Probabilistik Kerusakan (Non-Linier)": 363587500.00000006,
+            "Strategi Penyediaan Optimal (Unit)": 5
+        }
+    },
+    {
+        "regret": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 3017498.5,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 603499.7000000001,
+            "Minimum Regret (Rp )": 7241996.4,
+            "Strategi Penyediaan Optimal (Unit)": 3
+        },
+        "linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 3017498.5,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 603499.7000000001,
+            "Ongkos Model Probabilistik Kerusakan (Linier)": 10460661.466666665,
+            "Strategi Penyediaan Optimal (Unit)": 4
+        },
+        "non_linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 3017498.5,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 603499.7000000001,
+            "Ongkos Model Probabilistik Kerusakan (Non-Linier)": 12824368.625,
+            "Strategi Penyediaan Optimal (Unit)": 5
+        }
+    },
+    {
+        "regret": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 15020720.5,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 3004144.1,
+            "Minimum Regret (Rp )": 36049729.2,
+            "Strategi Penyediaan Optimal (Unit)": 3
+        },
+        "linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 15020720.5,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 3004144.1,
+            "Ongkos Model Probabilistik Kerusakan (Linier)": 52071831.06666666,
+            "Strategi Penyediaan Optimal (Unit)": 4
+        },
+        "non_linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 15020720.5,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 3004144.1,
+            "Ongkos Model Probabilistik Kerusakan (Non-Linier)": 63838062.125,
+            "Strategi Penyediaan Optimal (Unit)": 5
+        }
+    },
+    {
+        "regret": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 155500000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 31100000.0,
+            "Minimum Regret (Rp )": 373200000.0,
+            "Strategi Penyediaan Optimal (Unit)": 3
+        },
+        "linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 155500000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 31100000.0,
+            "Ongkos Model Probabilistik Kerusakan (Linier)": 539066666.6666666,
+            "Strategi Penyediaan Optimal (Unit)": 4
+        },
+        "non_linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 155500000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 31100000.0,
+            "Ongkos Model Probabilistik Kerusakan (Non-Linier)": 660875000.0,
+            "Strategi Penyediaan Optimal (Unit)": 5
+        }
+    },
+    {
+        "regret": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 13296125.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 2659225.0,
+            "Minimum Regret (Rp )": 31910700.0,
+            "Strategi Penyediaan Optimal (Unit)": 3
+        },
+        "linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 13296125.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 2659225.0,
+            "Ongkos Model Probabilistik Kerusakan (Linier)": 46093233.333333336,
+            "Strategi Penyediaan Optimal (Unit)": 4
+        },
+        "non_linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 13296125.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 2659225.0,
+            "Ongkos Model Probabilistik Kerusakan (Non-Linier)": 56508531.25,
+            "Strategi Penyediaan Optimal (Unit)": 5
+        }
+    },
+    {
+        "regret": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 1250000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 250000.0,
+            "Minimum Regret (Rp )": 3000000.0,
+            "Strategi Penyediaan Optimal (Unit)": 3
+        },
+        "linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 1250000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 250000.0,
+            "Ongkos Model Probabilistik Kerusakan (Linier)": 4333333.333333333,
+            "Strategi Penyediaan Optimal (Unit)": 4
+        },
+        "non_linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 1250000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 250000.0,
+            "Ongkos Model Probabilistik Kerusakan (Non-Linier)": 5312500.0,
+            "Strategi Penyediaan Optimal (Unit)": 5
+        }
+    },
+    {
+        "regret": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 11899000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 2379800.0,
+            "Minimum Regret (Rp )": 28557600.0,
+            "Strategi Penyediaan Optimal (Unit)": 3
+        },
+        "linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 11899000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 2379800.0,
+            "Ongkos Model Probabilistik Kerusakan (Linier)": 41249866.666666664,
+            "Strategi Penyediaan Optimal (Unit)": 4
+        },
+        "non_linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 11899000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 2379800.0,
+            "Ongkos Model Probabilistik Kerusakan (Non-Linier)": 50570750.00000001,
+            "Strategi Penyediaan Optimal (Unit)": 5
+        }
+    },
+    {
+        "regret": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 6790000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 1358000.0,
+            "Minimum Regret (Rp )": 16296000.0,
+            "Strategi Penyediaan Optimal (Unit)": 3
+        },
+        "linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 6790000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 1358000.0,
+            "Ongkos Model Probabilistik Kerusakan (Linier)": 23538666.666666668,
+            "Strategi Penyediaan Optimal (Unit)": 4
+        },
+        "non_linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 6790000.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 1358000.0,
+            "Ongkos Model Probabilistik Kerusakan (Non-Linier)": 28857500.0,
+            "Strategi Penyediaan Optimal (Unit)": 5
+        }
+    },
+    {
+        "regret": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 27215055.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 5443011.0,
+            "Minimum Regret (Rp )": 65316132.0,
+            "Strategi Penyediaan Optimal (Unit)": 3
+        },
+        "linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 27215055.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 5443011.0,
+            "Ongkos Model Probabilistik Kerusakan (Linier)": 94345524.00000001,
+            "Strategi Penyediaan Optimal (Unit)": 4
+        },
+        "non_linear": {
+            "Jumlah Komponen Terpasang (m)": 5,
+            "Ongkos Pemakaian Komponen (H)": 27215055.0,
+            "Ongkos Kerugian Akibat Kerusakan (L)": 3700000000,
+            "Harga Resale Komponen (O)": 5443011.0,
+            "Ongkos Model Probabilistik Kerusakan (Non-Linier)": 115663983.75,
+            "Strategi Penyediaan Optimal (Unit)": 5
+        }
+    }
+]
