@@ -21,7 +21,16 @@ import pandas as pd
 import numpy as np
 import pandas as pd
 
-def model_kerusakan_non_linear(Ongkos_pemakaian_komponen_H, Ongkos_Kerugian_akibat_kerusakan_L, Jumlah_komponen_terpasang_m=5, Harga_resale_komponen_O=None, beta=4):
+def model_kerusakan_non_linear(
+        Ongkos_pemakaian_komponen_H, 
+        Ongkos_Kerugian_akibat_kerusakan_L, 
+        Jumlah_komponen_terpasang_m=5, 
+        MaterialCode=None, 
+        Material_Description=None, 
+        ABC_Indikator=None,
+        Harga_resale_komponen_O=None, 
+        beta=4
+    ):
     # Set default value for Harga_resale_komponen_O if not provided
     if Harga_resale_komponen_O is None:
         Harga_resale_komponen_O = Ongkos_pemakaian_komponen_H * 0.2
@@ -107,11 +116,14 @@ def model_kerusakan_non_linear(Ongkos_pemakaian_komponen_H, Ongkos_Kerugian_akib
 
     # Simpan hasil dalam dictionary
     hasil_model_kerusakan_non_linear = {
-        "Jumlah Komponen Terpasang (m)": Jumlah_komponen_terpasang_m,
+        "Material Code": MaterialCode,
+        "Material Description": Material_Description,
+        "ABC Indicator": ABC_Indikator,
         "Ongkos Pemakaian Komponen (H)": Ongkos_pemakaian_komponen_H,
         "Ongkos Kerugian Akibat Kerusakan (L)": Ongkos_Kerugian_akibat_kerusakan_L,
+        "Jumlah Komponen Terpasang (m)": Jumlah_komponen_terpasang_m,
         "Harga Resale Komponen (O)": Harga_resale_komponen_O,
-        "Ongkos Model Probabilistik Kerusakan (Non-Linier)": min(matriks_hasil_payoff_kerusakan_non_linear_df['E(Qi)']),
+        "Ongkos Model Probabilistik Kerusakan": min(matriks_hasil_payoff_kerusakan_non_linear_df['E(Qi)']),
         "Strategi Penyediaan Optimal (Unit)": matriks_hasil_payoff_kerusakan_non_linear_df['E(Qi)'].idxmin()
     }
 

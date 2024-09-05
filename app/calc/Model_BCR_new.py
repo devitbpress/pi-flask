@@ -1,7 +1,16 @@
 import pandas as pd
 import numpy as np
 
-def Model_Inventori_BCR(Harga_Komponen_Ho, Kerugian_Komponen_Co, Suku_bunga_i, Waktu_sisa_operasi=5, probabilitas="uniform"):
+def Model_Inventori_BCR(
+    Harga_Komponen_Ho,
+    Kerugian_Komponen_Co, 
+    Suku_bunga_i, 
+    Waktu_sisa_operasi=5, 
+    MaterialCode=None, 
+    Material_Description=None, 
+    ABC_Indikator=None,
+    probabilitas="uniform"
+    ):
     # Jika input bukan list, ubah menjadi list
     if isinstance(Waktu_sisa_operasi, (int, float)):
         Waktu_sisa_operasi = [Waktu_sisa_operasi]
@@ -90,29 +99,35 @@ def Model_Inventori_BCR(Harga_Komponen_Ho, Kerugian_Komponen_Co, Suku_bunga_i, W
     # Simpan hasil dalam dictionary serupa dengan model non-linear yang Anda inginkan
     if pembelian_ditemukan:
         hasil_model_bcr = {
-            "Waktu Sisa Operasi (tahun)": waktu,
+            "Material Code": MaterialCode,
+            "Material Description": Material_Description,
+            "ABC Indicator": ABC_Indikator,
             "Harga Komponen (Ho)": Harga_Komponen_Ho,
             "Kerugian Komponen (Co)": Kerugian_Komponen_Co,
             "Suku Bunga (i)": Suku_bunga_i,
+            "Waktu Sisa Operasi (tahun)": waktu,
             "Benefit-Cost Ratio (BCR)": row["BCR"],
             "Strategi Penyediaan Optimal (Tahun)": tahun_optimal,
             "Jenis Probabilitas": probabilitas
         }
     else:
         hasil_model_bcr = {
-            "Waktu Sisa Operasi (tahun)": waktu,
+            "Material Code": MaterialCode,
+            "Material Description": Material_Description,
+            "ABC Indicator": ABC_Indikator,
             "Harga Komponen (Ho)": Harga_Komponen_Ho,
             "Kerugian Komponen (Co)": Kerugian_Komponen_Co,
             "Suku Bunga (i)": Suku_bunga_i,
+            "Waktu Sisa Operasi (tahun)": waktu,
             "Pesan": "Tidak ada pembelian sparepart yang direkomendasikan"
         }
 
     return hasil_model_bcr
 
 # Contoh penggunaan fungsi
-Harga_Komponen_Ho = 2_501_501_612
-Kerugian_Komponen_Co = 3_720_000_000
-Suku_bunga_i = 0.1  # 10%
+# Harga_Komponen_Ho = 2_501_501_612
+# Kerugian_Komponen_Co = 3_720_000_000
+# Suku_bunga_i = 0.1  # 10%
 
 # Panggil fungsi Model_Inventori_BCR dengan probabilitas kuadratis
 # hasil_model_bcr = Model_Inventori_BCR(Harga_Komponen_Ho, Kerugian_Komponen_Co, Suku_bunga_i, probabilitas="uniform", Waktu_sisa_operasi=20)

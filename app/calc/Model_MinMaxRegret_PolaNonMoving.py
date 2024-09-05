@@ -18,7 +18,15 @@ import pandas as pd
 # 1. Tentukan jumlah komponen m dan jumlah kerusakannya (Dj), dimulai tidak terjadi kerusakan yaitu 0 sampai dengan rusak semua yaitu m
 # 2. Tentukan strategi pasokan atau penyediaan (qi) yang dipertimbangkan sesuai dengan informasi kerusakannya (Dj), dimulai tidak penyediaan komponen yaitu 0 sampai dengan semua kerusakan dipenuhi yaitu m
 
-def Model_MinMaxRegret(Ongkos_pemakaian_komponen_H, Ongkos_Kerugian_akibat_kerusakan_L, Jumlah_komponen_terpasang_m=5, Harga_resale_komponen_O=None):
+def Model_MinMaxRegret(
+        Ongkos_pemakaian_komponen_H, 
+        Ongkos_Kerugian_akibat_kerusakan_L, 
+        Jumlah_komponen_terpasang_m=5, 
+        MaterialCode=None, 
+        Material_Description=None, 
+        ABC_Indikator=None,
+        Harga_resale_komponen_O=None,
+    ):
     # Set default value for Harga_resale_komponen_O if not provided
     if Harga_resale_komponen_O is None:
         Harga_resale_komponen_O = Ongkos_pemakaian_komponen_H * 0.2
@@ -85,9 +93,12 @@ def Model_MinMaxRegret(Ongkos_pemakaian_komponen_H, Ongkos_Kerugian_akibat_kerus
 
     # Simpan hasil dalam dictionary
     hasil_Model_MinMaxRegret = {
-        "Jumlah Komponen Terpasang (m)": Jumlah_komponen_terpasang_m,
+        "Material Code": MaterialCode,
+        "Material Description": Material_Description,
+        "ABC Indicator": ABC_Indikator,
         "Ongkos Pemakaian Komponen (H)": Ongkos_pemakaian_komponen_H,
         "Ongkos Kerugian Akibat Kerusakan (L)": Ongkos_Kerugian_akibat_kerusakan_L,
+        "Jumlah Komponen Terpasang (m)": Jumlah_komponen_terpasang_m,
         "Harga Resale Komponen (O)": Harga_resale_komponen_O,
         "Minimum Regret (Rp )": min_regret,
         "Strategi Penyediaan Optimal (Unit)": strategi_optimal

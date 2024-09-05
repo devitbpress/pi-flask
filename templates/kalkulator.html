@@ -12,7 +12,7 @@
     </head>
     <body style="font-family: 'IBM Plex Sans', sans-serif">
         <!-- header -->
-        <header class="absolute top-0 left-0 w-full h-16 flex justify-between items-center px-8">
+        <header class="absolute top-0 left-0 w-full h-16 flex justify-between items-center px-8 z-10">
             <img src="{{ url_for('static', filename='assets/pupuk-indonesia.png') }}" alt="PI" class="h-12 w-fit" />
 
             <div class="flex items-center gap-4 text-sm">
@@ -24,7 +24,7 @@
             </div>
         </header>
 
-        <div class="bg-[#EBF4F5] w-screen h-screen pt-16 flex">
+        <div class="bg-[#EBF4F5] w-screen h-screen pt-16 flex relative">
             <!-- left navigator -->
             <div class="w-52 h-full flex flex-col p-4 justify-between text-sm text-[#585965]">
                 <div class="flex flex-col gap-2">
@@ -53,14 +53,37 @@
             <!-- content -->
             <div class="w-full h-full bg-white rounded-tl-[2rem] flex flex-col p-6 gap-2 overflow-y-scroll">
                 <h1 class="text-[#585965] pb-2 border-b-2">Model Kalkulator</h1>
-
-                <div class="flex gap-6 text-[#585965] text-sm pl-4 mt-2 items-center">
-                    <span class="hover:text-black">Unggah File</span>
-                    <label id="lblAmbil" for="" class="py-1 px-3 text-sm cursor-pointer rounded bg-[#47AD41] hover:bg-[#3d9e38] text-white">Ambil File</label>
-                    <input type="file" class="cursor-pointer" hidden />
+                <div id="boxTabs" class="h-fit w-full bg-[#EFF3FF] rounded-md p-2 flex gap-2 text-xs text-[#585965]">
+                    <h5 class="py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] border-b border-[#1A8FCB] text-[#1A8FCB] whitespace-nowrap">Unggah File</h5>
+                    <h5 class="py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] whitespace-nowrap">Input File</h5>
                 </div>
 
-                <details class="w-full h-fit flex flex-col gap-2 text-sm text-[#585965] mt-2 mb-8">
+                <div class="flex gap-6 text-xs pl-2 items-center">
+                    <div class="flex gap-2 items-center">
+                        <span>Pilih Model Kalkulator</span>
+                        <select id="slcModel" class="bg-transparent cursor-pointer border p-1 rounded">
+                            <option value="wilson">Model Wilson</option>
+                            <option value="tchebycheff">Model Tchebycheff</option>
+                            <option value="q">Model Q</option>
+                            <option value="poisson">Model Poisson</option>
+                            <option value="nonmoving">Model Non-Moving</option>
+                            <option value="bcr">Model BCR</option>
+                        </select>
+                    </div>
+                    <img src="{{ url_for('static', filename='assets/right-arrow.png') }}" alt="arrow" />
+                    <div class="flex gap-2 items-center">
+                        <span>Unduh Template Excel</span>
+                        <button id="btnTemplate" class="py-1 px-3 text-xs cursor-pointer rounded bg-[#1A8FCB] hover:bg-[#1a75cb] text-white focus:scale-95 duration-150">Unduh</button>
+                    </div>
+                    <img src="{{ url_for('static', filename='assets/right-arrow.png') }}" alt="arrow" />
+                    <div class="flex gap-2 items-center">
+                        <span>Unggah & Proses File</span>
+                        <label for="inpAmbil" class="py-1 px-3 text-xs cursor-pointer rounded bg-[#47AD41] hover:bg-[#3d9e38] text-white">Ambil File</label>
+                        <input id="inpAmbil" type="file" class="cursor-pointer" hidden />
+                    </div>
+                </div>
+
+                <details class="w-full h-fit hidden flex-col gap-2 text-sm text-[#585965] mb-8">
                     <summary class="pb-4 cursor-pointer px-2 w-fit hover:text-black">Input Manual</summary>
                     <div class="flex w-full gap-16">
                         <div class="flex flex-col gap-2">
@@ -330,12 +353,15 @@
                     </div>
                 </details>
 
-                <div id="domAggrid" class="w-full h-[50rem] duration-75 flex-col gap-2 overflow-y-scroll">
+                <div id="domAggrid" class="w-full h-[50rem] duration-75 flex-col gap-2 overflow-y-scroll pt-6">
                     <div class="w-full h-[calc(100%)]">
                         <div id="aggrid" class="w-full h-full ag-theme-quartz"></div>
                     </div>
                 </div>
             </div>
+
+            <!-- notif -->
+            <div id="boxNotif" class="absolute w-fit h-fit top-4 left-4 flex flex-col gap-2 z-50"></div>
         </div>
 
         <div id="boxLoadingUpload" class="absolute top-0 left-0 h-screen w-screen bg-transparent z-50 hidden justify-center items-center">
@@ -404,6 +430,7 @@
             </div>
         </div>
 
+        <script src="{{ url_for('static', filename='vendors/sheet.js') }}"></script>
         <script src="{{ url_for('static', filename='vendors/aggrid.js') }}"></script>
         <script src="{{ url_for('static', filename='js/kalkulator.js') }}"></script>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />

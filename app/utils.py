@@ -39,19 +39,19 @@ def calc_model(data, model):
             ))
     
     if model == "tchebycheff":
-        required_keys = ["Unit Price","Stock Out Effect","Standar_Deviasi","Rata_Rata/Bulan","Material Code","Material description","ABC Indicator"]
+        required_keys = ["Harga Barang (p) /Unit","Kerugian Ketidakadaan Barang (Cu) /Unit","Standar Deviasi Permintaan Barang (s)","Rata - Rata Permintaan Barang (alpha)","Material Code","Material description","ABC Indicator"]
 
         for item in data:
             missing_keys = [key for key in required_keys if key not in item]
             if missing_keys:
                 return {"error": f"Missing keys: {', '.join(missing_keys)}"}
             
-            harga_barang = item["Unit Price"]
-            kerugian_ketidakadaan_barang = item["Stock Out Effect"]
-            standar_deviasi = item["Standar_Deviasi"]
-            rata_rata_permintaan_barang = item["Rata_Rata/Bulan"]
+            harga_barang = item["Harga Barang (p) /Unit"]
+            kerugian_ketidakadaan_barang = item["Kerugian Ketidakadaan Barang (Cu) /Unit"]
+            standar_deviasi = item["Standar Deviasi Permintaan Barang (s)"]
+            rata_rata_permintaan_barang = item["Rata - Rata Permintaan Barang (alpha)"]
             material_code = item["Material Code"]
-            material_description = item["Material description"]
+            material_description = item["Material Description"]
             abc_indikator = item["ABC Indicator"]
             
             data_calc.append(Model_Tchebycheff_PolaTakTentu.Model_Tchebycheff_TakTentu(
@@ -126,52 +126,70 @@ def calc_model(data, model):
             ))
 
     if model == "nonmoving":
-        required_keys = ["Unit Price", "Stock Out Effect", "Jumlah Komponen Terpasang"]
+        required_keys = ["Ongkos Pemakaian Komponen (H)", "Ongkos Kerugian Akibat Kerusakan (L)", "Jumlah Komponen Terpasang (m)"]
         for item in data:
             missing_keys = [key for key in required_keys if key not in item]
             if missing_keys:
                 return {"error": f"Missing keys: {', '.join(missing_keys)}"}
             
-            ongkos_pemakaian_komponen = item["Unit Price"]
-            ongkos_kerugian_akibat_kerusakan = item["Stock Out Effect"]
-            jumlah_komponen_terpasang = item["Jumlah Komponen Terpasang"]
+            material_code = item["Material Code"]
+            material_description = item["Material Description"]
+            abc_indikator = item["ABC Indicator"]
+            ongkos_pemakaian_komponen = item["Ongkos Pemakaian Komponen (H)"]
+            ongkos_kerugian_akibat_kerusakan = item["Ongkos Kerugian Akibat Kerusakan (L)"]
+            jumlah_komponen_terpasang = item["Jumlah Komponen Terpasang (m)"]
             
             data_calc.append({
                 "regret": Model_MinMaxRegret_PolaNonMoving.Model_MinMaxRegret(
                     ongkos_pemakaian_komponen,
                     ongkos_kerugian_akibat_kerusakan,
                     jumlah_komponen_terpasang,
+                    material_code,
+                    material_description,
+                    abc_indikator
                 ),
                 "linear": Model_KerusakanLinear_PolaNonMoving.model_kerusakan_linear(
                     ongkos_pemakaian_komponen,
                     ongkos_kerugian_akibat_kerusakan,
                     jumlah_komponen_terpasang,
+                    material_code,
+                    material_description,
+                    abc_indikator
                 ),
                 "non_linear": Model_KerusakanNonLinear_PolaNonMoving.model_kerusakan_non_linear(
                     ongkos_pemakaian_komponen,
                     ongkos_kerugian_akibat_kerusakan,
                     jumlah_komponen_terpasang,
+                    material_code,
+                    material_description,
+                    abc_indikator,
                 )
             })
 
     if model == "bcr":
-        required_keys = ["Unit Price", "Stock Out Effect", "Suku Bunga", "Sisa Tahun Pemakaian"]
+        required_keys = ["Harga Komponen (Ho)", "Kerugian Komponen (Co)", "Suku Bunga (I)", "Waktu Sisa Operasi (tahun)"]
         
         for item in data:
             missing_keys = [key for key in required_keys if key not in item]
             if missing_keys:
                 return {"error": f"Missing keys: {', '.join(missing_keys)}"}
             
-            harga_komponen = item["Unit Price"]
-            kerugian_komponen = item["Stock Out Effect"]
-            suku_bunga = item["Suku Bunga"]
-            waktu_sisa_operasi = item["Sisa Tahun Pemakaian"]
+            material_code = item["Material Code"]
+            material_description = item["Material Description"]
+            abc_indikator = item["ABC Indicator"]
+            harga_komponen = item["Harga Komponen (Ho)"]
+            kerugian_komponen = item["Kerugian Komponen (Co)"]
+            suku_bunga = item["Suku Bunga (I)"]
+            waktu_sisa_operasi = item["Waktu Sisa Operasi (tahun)"]
             
             data_calc.append(Model_BCR_new.Model_Inventori_BCR(
-                harga_komponen, 
+                harga_komponen,
                 kerugian_komponen, 
                 suku_bunga, 
-                waktu_sisa_operasi
+                waktu_sisa_operasi,
+                material_code,
+                material_description,
+                abc_indikator,
             ))
 
     return data_calc
