@@ -3,8 +3,9 @@ const slcModel = document.getElementById("slcModel");
 const notifStatus = document.getElementById("notifStatus");
 const notifMessage = document.getElementById("notifMessage");
 const btnTemplate = document.getElementById("btnTemplate");
+const textAmbil = document.getElementById("textAmbil");
+const btnProses = document.getElementById("btnProses");
 
-const url = "http://127.0.0.1:8080";
 let gridApi;
 let boxNotif = document.getElementById("boxNotif");
 const formatString = (str) => str.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
@@ -186,8 +187,8 @@ const downloadTemplate = () => {
     XLSX.writeFile(workbook, `template ${slcModel.value}.xlsx`);
 };
 
-inpAmbil.addEventListener("change", async () => {
-    const response = await postFile(`${url}/calc`, inpAmbil.files[0], slcModel.value);
+btnProses.addEventListener("click", async () => {
+    const response = await postFile(`/calc`, inpAmbil.files[0], slcModel.value);
     if (response[0] === "success") {
         const result = response[1];
         if (result.error) {
@@ -237,6 +238,10 @@ inpAmbil.addEventListener("change", async () => {
     } else {
         console.error("failed");
     }
+});
+
+inpAmbil.addEventListener("change", () => {
+    textAmbil.textContent = `${inpAmbil.files[0].name.substring(0, 10)}...${inpAmbil.files[0].name.split(".").pop()}`;
 });
 
 btnTemplate.addEventListener("click", () => {

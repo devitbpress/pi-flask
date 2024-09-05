@@ -39,7 +39,7 @@ def calc_model(data, model):
             ))
     
     if model == "tchebycheff":
-        required_keys = ["Harga Barang (p) /Unit","Kerugian Ketidakadaan Barang (Cu) /Unit","Standar Deviasi Permintaan Barang (s)","Rata - Rata Permintaan Barang (alpha)","Material Code","Material description","ABC Indicator"]
+        required_keys = ["Harga Barang (p) /Unit","Kerugian Ketidakadaan Barang (Cu) /Unit","Standar Deviasi Permintaan Barang (s)","Rata - Rata Permintaan Barang (alpha)"]
 
         for item in data:
             missing_keys = [key for key in required_keys if key not in item]

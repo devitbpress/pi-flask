@@ -77,10 +77,12 @@
                     </div>
                     <img src="{{ url_for('static', filename='assets/right-arrow.png') }}" alt="arrow" />
                     <div class="flex gap-2 items-center">
-                        <span>Unggah & Proses File</span>
+                        <span id="textAmbil">Unggah & Proses File</span>
                         <label for="inpAmbil" class="py-1 px-3 text-xs cursor-pointer rounded bg-[#47AD41] hover:bg-[#3d9e38] text-white">Ambil File</label>
                         <input id="inpAmbil" type="file" class="cursor-pointer" hidden />
                     </div>
+                    <img src="{{ url_for('static', filename='assets/right-arrow.png') }}" alt="arrow" />
+                    <button id="btnProses" class="py-1 px-3 text-xs cursor-pointer rounded bg-[#F68B33] hover:bg-[#eb832f] text-white focus:scale-95 duration-150">Proses</button>
                 </div>
 
                 <details class="w-full h-fit hidden flex-col gap-2 text-sm text-[#585965] mb-8">
