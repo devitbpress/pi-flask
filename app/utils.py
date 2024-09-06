@@ -193,3 +193,64 @@ def calc_model(data, model):
             ))
 
     return data_calc
+
+def calc_model_manual(data):
+    model = data.get("model")
+    
+    if model == "Q":
+        rata_rata_permintaan_barang = float(data.get('rata_rata_permintaan_barang'))
+        lead_time = float(data.get('lead_time'))
+        standar_deviasi = float(data.get('standar_deviasi'))
+        ongkos_pesan = float(data.get('ongkos_pesan'))
+        harga_barang = float(data.get('harga_barang'))
+        ongkos_simpan = float(data.get('ongkos_simpan'))
+        ongkos_kekurangan_inventori_setiap_unit_barang = float(data.get('ongkos_kekurangan_inventory'))
+        material_code = data.get('material_code')
+        material_description = data.get('material_description')
+        abc_indikator = data.get('abc_indikator')
+
+        print(rata_rata_permintaan_barang)
+        print(lead_time)
+        print(standar_deviasi)
+        print(ongkos_pesan)
+        print(harga_barang)
+        print(ongkos_simpan)
+        print(ongkos_kekurangan_inventori_setiap_unit_barang)
+        print(material_code)
+        print(material_description)
+        print(abc_indikator)
+
+        result = Model_Q_PolaDistribusiNormal.Model_Q(rata_rata_permintaan_barang , 
+                lead_time, 
+                standar_deviasi, 
+                ongkos_pesan ,
+                harga_barang,
+                ongkos_simpan, 
+                ongkos_kekurangan_inventori_setiap_unit_barang,
+                material_code, 
+                material_description, 
+                abc_indikator)
+        
+        print(result)
+        return result
+    
+    if model == "Poisson":
+        return model
+    
+    if model == "Wilson":
+        return model
+    
+    if model == "Tchebycheff":
+        return model
+    
+    if model == "Regret":
+        return model
+    
+    if model == "Linear":
+        return model
+    
+    if model == "NonLinear":
+        return model
+    
+    if model == "BCR":
+        return model

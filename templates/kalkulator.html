@@ -54,11 +54,11 @@
             <div class="w-full h-full bg-white rounded-tl-[2rem] flex flex-col p-6 gap-2 overflow-y-scroll">
                 <h1 class="text-[#585965] pb-2 border-b-2">Model Kalkulator</h1>
                 <div id="boxTabs" class="h-fit w-full bg-[#EFF3FF] rounded-md p-2 flex gap-2 text-xs text-[#585965]">
-                    <h5 class="py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] border-b border-[#1A8FCB] text-[#1A8FCB] whitespace-nowrap">Unggah File</h5>
-                    <h5 class="py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] whitespace-nowrap">Input File</h5>
+                    <h5 id="headerTabsInput" data-tabs="input" class="header-tabs py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] border-b border-[#1A8FCB] text-[#1A8FCB] whitespace-nowrap">Unggah File</h5>
+                    <h5 id="headerTabsManual" data-tabs="manual" class="header-tabs py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] whitespace-nowrap">Input Manual</h5>
                 </div>
 
-                <div class="flex gap-6 text-xs pl-2 items-center">
+                <div class="tab-contents tab-input hidden gap-6 text-xs pl-2 items-center">
                     <div class="flex gap-2 items-center">
                         <span>Pilih Model Kalkulator</span>
                         <select id="slcModel" class="bg-transparent cursor-pointer border p-1 rounded">
@@ -85,277 +85,313 @@
                     <button id="btnProses" class="py-1 px-3 text-xs cursor-pointer rounded bg-[#F68B33] hover:bg-[#eb832f] text-white focus:scale-95 duration-150">Proses</button>
                 </div>
 
-                <details class="w-full h-fit hidden flex-col gap-2 text-sm text-[#585965] mb-8">
-                    <summary class="pb-4 cursor-pointer px-2 w-fit hover:text-black">Input Manual</summary>
+                <div class="tab-contents tab-manual w-full h-fit hidden flex-col gap-2 text-sm text-[#585965] mb-8">
+                    <h1 class="pb-4 cursor-pointer px-2 w-fit hover:text-black">Input Manual</h1>
                     <div class="flex w-full gap-16">
                         <div class="flex flex-col gap-2">
-                            <div id="calcQN" onclick="manualCalc(event, 'calcQ', '1A8FCB')" class="flex gap-3 group hover:bg-[#1A8FCB] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
+                            <div id="slcQ" data-color="1A8FCB" data="manualCalc(event, 'calcQ', '1A8FCB')" class="bg-white slc-manual flex gap-3 group hover:bg-[#1A8FCB] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
                                 <div class="h-6 w-6 bg-[#1A8FCB] text-white flex items-center justify-center font-semibold rounded">Q</div>
                                 <span class="whitespace-nowrap group-hover:text-white duration-150">Model Q</span>
                             </div>
-                            <div id="calcPoissonN" onclick="manualCalc(event, 'calcPoisson', '47AD41')" class="flex gap-3 group hover:bg-[#47AD41] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
+                            <div id="slcPoisson" data-color="47AD41" data="manualCalc(event, 'calcPoisson', '47AD41')" class="bg-white slc-manual flex gap-3 group hover:bg-[#47AD41] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
                                 <div class="h-6 w-6 bg-[#47AD41] text-white flex items-center justify-center font-semibold rounded">P</div>
                                 <span class="whitespace-nowrap group-hover:text-white duration-150">Model Poisson</span>
                             </div>
-                            <div id="calcWilsonN" onclick="manualCalc(event, 'calcWilson', 'F9CD2B')" class="flex gap-3 group hover:bg-[#F9CD2B] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
+                            <div id="slcWilson" data-color="F9CD2B" data="manualCalc(event, 'calcWilson', 'F9CD2B')" class="bg-white slc-manual flex gap-3 group hover:bg-[#F9CD2B] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
                                 <div class="h-6 w-6 bg-[#F9CD2B] text-white flex items-center justify-center font-semibold rounded">W</div>
                                 <span class="whitespace-nowrap group-hover:text-white duration-150">Model Wilson</span>
                             </div>
-                            <div id="calcTchebycheffN" onclick="manualCalc(event, 'calcTchebycheff', 'F68B33')" class="flex gap-3 group hover:bg-[#F68B33] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
+                            <div id="slcTchebycheff" data-color="F68B33" data="manualCalc(event, 'calcTchebycheff', 'F68B33')" class="bg-white slc-manual flex gap-3 group hover:bg-[#F68B33] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
                                 <div class="h-6 w-6 bg-[#F68B33] text-white flex items-center justify-center font-semibold rounded">T</div>
                                 <span class="whitespace-nowrap group-hover:text-white duration-150">Model Tchebycheff</span>
                             </div>
-                            <div id="calcRegretN" onclick="manualCalc(event, 'calcRegret', '7961F2')" class="flex gap-3 group hover:bg-[#7961F2] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
+                            <div id="slcRegret" data-color="7961F2" data="manualCalc(event, 'calcRegret', '7961F2')" class="bg-white slc-manual flex gap-3 group hover:bg-[#7961F2] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
                                 <div class="h-6 w-6 bg-[#7961F2] text-white flex items-center justify-center font-semibold rounded">R</div>
                                 <span class="whitespace-nowrap group-hover:text-white duration-150">Model Min Max Regret</span>
                             </div>
-                            <div id="calcLinearN" onclick="manualCalc(event, 'calcLinear', 'F33D3D')" class="flex gap-3 group hover:bg-[#F33D3D] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
+                            <div id="slcLinear" data-color="F33D3D" data="manualCalc(event, 'calcLinear', 'F33D3D')" class="bg-white slc-manual flex gap-3 group hover:bg-[#F33D3D] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
                                 <div class="h-6 w-6 bg-[#F33D3D] text-white flex items-center justify-center font-semibold rounded">L</div>
                                 <span class="whitespace-nowrap group-hover:text-white duration-150">Model Kerusakan Linear</span>
                             </div>
-                            <div id="calcNonLinearN" onclick="manualCalc(event, 'calcNonLinear', 'E667E6')" class="flex gap-3 group hover:bg-[#E667E6] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
+                            <div id="slcNonLinear" data-color="E667E6" data="manualCalc(event, 'calcNonLinear', 'E667E6')" class="bg-white slc-manual flex gap-3 group hover:bg-[#E667E6] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
                                 <div class="h-6 w-6 bg-[#E667E6] text-white flex items-center justify-center font-semibold rounded">NL</div>
                                 <span class="whitespace-nowrap group-hover:text-white duration-150">Model Kerusakan Non Linear</span>
                             </div>
-                            <div id="calcBCRN" onclick="manualCalc(event, 'calcBCR', 'FF5975')" class="flex gap-3 group hover:bg-[#FF5975] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
+                            <div id="slcBCR" data-color="FF5975" data="manualCalc(event, 'calcBCR', 'FF5975')" class="bg-white slc-manual flex gap-3 group hover:bg-[#FF5975] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
                                 <div class="h-6 w-6 bg-[#FF5975] text-white flex items-center justify-center font-semibold rounded">B</div>
                                 <span class="whitespace-nowrap group-hover:text-white duration-150">Model BCR</span>
                             </div>
                         </div>
 
-                        <div id="boxManual" class="relative w-fit h-fit hidden flex-col border p-4 pb-8 rounded shadow">
-                            <div class="absolute -top-5 left-4 whitespace-nowrap px-2 py-1 bg-white border rounded">Parameter Input</div>
-                            <button onclick="viewResult()" class="bg-[#1A8FCB] hover:bg-[#147EB5] py-2 px-8 text-white shadow rounded absolute -bottom-4 right-4 focus:scale-95 duration-150">Hitung</button>
+                        <div class="relative w-fit h-fit flex flex-col border p-4 pb-8 rounded shadow">
+                            <div id="headerParameter" class="absolute -top-5 left-4 whitespace-nowrap px-2 py-1 bg-white border rounded"></div>
+                            <button id="btnHitung" class="bg-[#1A8FCB] hover:bg-[#147EB5] py-2 px-8 text-white shadow rounded absolute -bottom-4 right-4 focus:scale-95 duration-150">Hitung</button>
 
                             <!-- Model Q -->
-                            <div id="calcQ" class="hidden flex-col gap-2 calc-model">
+                            <form id="calcQ" class="hidden flex-col gap-2 calc-model">
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Rata rata permintaan barang</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>Material Code</span>
+                                    <input name="material_code" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Lead time</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>Material Description</span>
+                                    <input name="material_description" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Standar deviasi permintaan barang</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>ABC Indicator</span>
+                                    <input name="abc_indikator" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Ongkos pesan</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Rata - Rata Permintaan Barang (D) Unit/Tahun <span class="text-xs text-red-500">*</span></div>
+                                    <input name="rata_rata_permintaan_barang" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit/tahun" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Harga barang</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Lead Time (L) Tahun <span class="text-xs text-red-500">*</span></div>
+                                    <input name="lead_time" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="tahun" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Ongkos simpan</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Standar Deviasi Permintaan Barang (s) Unit/Tahun <span class="text-xs text-red-500">*</span></div>
+                                    <input name="standar_deviasi" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit/tahun" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Ongkos kekurangan inventori setiap unit barang</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Harga Barang (p) Unit <span class="text-xs text-red-500">*</span></div>
+                                    <input name="harga_barang" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Material code</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Ongkos Simpan (h) Unit/Tahun <span class="text-xs text-red-500">*</span></div>
+                                    <input name="ongkos_simpan" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit/tahun" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Material description</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Ongkos Kekurangan Inventori (Cu) Unit/Tahun <span class="text-xs text-red-500">*</span></div>
+                                    <input name="ongkos_kekurangan_inventory" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit/tahun" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>ABC indikator</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Ongkos Pesan (A) Pesan <span class="text-xs text-red-500">*</span></div>
+                                    <input name="ongkos_pesan" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="pesan" />
                                 </div>
-                            </div>
+                            </form>
                             <!-- Model Poisson -->
-                            <div id="calcPoisson" class="hidden flex-col gap-2 calc-model">
+                            <form id="calcPoisson" class="hidden flex-col gap-2 calc-model">
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Rata rata pemesanan barang</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>Material Code</span>
+                                    <input name="material_code" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Standar deviasi barang</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>Material Description</span>
+                                    <input name="material_description" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Lead time</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>ABC Indicator</span>
+                                    <input name="abc_indikator" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Ongkos pesan</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Rata - Rata Permintaan Barang (D) Unit/Tahun <span class="text-xs text-red-500">*</span></div>
+                                    <input name="rata_rata_permintaan_barang" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit/tahun" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Harga barang</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Lead Time (L) Tahun <span class="text-xs text-red-500">*</span></div>
+                                    <input name="lead_time" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="tahun" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Ongkos simpan</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Standar Deviasi Permintaan Barang (s) Unit/Tahun <span class="text-xs text-red-500">*</span></div>
+                                    <input name="standar_deviasi" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit/tahun" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Ongkos kekurangan barang</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Harga Barang (p) Unit <span class="text-xs text-red-500">*</span></div>
+                                    <input name="harga_barang" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit" />
                                 </div>
-                            </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <div>Ongkos Simpan (h) Unit/Tahun <span class="text-xs text-red-500">*</span></div>
+                                    <input name="ongkos_simpan" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit/tahun" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <div>Ongkos Kekurangan Inventori (Cu) Unit/Tahun <span class="text-xs text-red-500">*</span></div>
+                                    <input name="ongkos_kekurangan_inventory" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit/tahun" />
+                                </div>
+                            </form>
                             <!-- Model Wilson -->
-                            <div id="calcWilson" class="hidden flex-col gap-2 calc-model">
+                            <form id="calcWilson" class="hidden flex-col gap-2 calc-model">
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Permintaan barang</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>Material Code</span>
+                                    <input name="material_code" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Harga barang</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>Material Description</span>
+                                    <input name="material_description" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Ongkos Pesan</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>ABC Indicator</span>
+                                    <input name="abc_indikator" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Lead time</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Lead Time (L) Tahun <span class="text-xs text-red-500">*</span></div>
+                                    <input name="lead_time" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="tahun" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Ongkos simpan</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Harga Barang (p) Unit <span class="text-xs text-red-500">*</span></div>
+                                    <input name="harga_barang" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Material code</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Ongkos Simpan (h) Unit/Tahun <span class="text-xs text-red-500">*</span></div>
+                                    <input name="ongkos_simpan" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit/tahun" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Material description</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Permintaan Barang (D) Unit/Tahun <span class="text-xs text-red-500">*</span></div>
+                                    <input name="permintaan_barang" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit/tahun" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>ABC indikator</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Ongkos Pesan (A) Pesan <span class="text-xs text-red-500">*</span></div>
+                                    <input name="ongkos_pesan" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="pesan" />
                                 </div>
-                            </div>
+                            </form>
                             <!-- Model Tchebycheff  -->
-                            <div id="calcTchebycheff" class="hidden flex-col gap-2 calc-model">
+                            <form id="calcTchebycheff" class="hidden flex-col gap-2 calc-model">
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Harga barang</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>Material Code</span>
+                                    <input name="material_code" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Kerugian ketidakadaan barang</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>Material Description</span>
+                                    <input name="material_description" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Standar deviasi</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>ABC Indicator</span>
+                                    <input name="abc_indikator" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Rata rata permintaan barang</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Standar Deviasi Permintaan Barang (s) <span class="text-xs text-red-500">*</span></div>
+                                    <input name="standar_deviasi" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="standar deviasi" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Material code</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Harga Barang (p) Unit <span class="text-xs text-red-500">*</span></div>
+                                    <input name="harga_barang" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Material description</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Kerugian Ketidakadaan Barang (Cu) Unit <span class="text-xs text-red-500">*</span></div>
+                                    <input name="kerugian_ketidakadaan_barang" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>ABC indikator</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Rata - Rata Permintaan Barang (alpha) <span class="text-xs text-red-500">*</span></div>
+                                    <input name="rata_rata_permintaan_barang" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="alpha" />
                                 </div>
-                            </div>
+                            </form>
                             <!-- Model Min Max Regret -->
-                            <div id="calcRegret" class="hidden flex-col gap-2 calc-model">
+                            <form id="calcRegret" class="hidden flex-col gap-2 calc-model">
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Ongkos pemakaian Komponen</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>Material Code</span>
+                                    <input name="material_code" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Ongkos kerugian akibat kerusakan</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>Material Description</span>
+                                    <input name="material_description" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Jumlah komponen terpasang</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>ABC Indicator</span>
+                                    <input name="abc_indikator" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Harga resale komponen</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Ongkos Pemakaian Komponen (H) <span class="text-xs text-red-500">*</span></div>
+                                    <input name="ongkos_pemakaian_komponen" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit" />
                                 </div>
-                            </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <div>Ongkos Kerugian Akibat Kerusakan (L) <span class="text-xs text-red-500">*</span></div>
+                                    <input name="ongkos_kerugian_kerusakan" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <div>Jumlah Komponen Terpasang (m) <span class="text-xs text-red-500">*</span></div>
+                                    <input name="jumlah_komponen_terpasang" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="jumlah" />
+                                </div>
+                            </form>
                             <!-- Model Kerusakan Linear -->
-                            <div id="calcLinear" class="hidden flex-col gap-2 calc-model">
+                            <form id="calcLinear" class="hidden flex-col gap-2 calc-model">
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Ongkos pemakaian Komponen</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>Material Code</span>
+                                    <input name="material_code" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Ongkos kerugian akibat kerusakan</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>Material Description</span>
+                                    <input name="material_description" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Jumlah komponen terpasang</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>ABC Indicator</span>
+                                    <input name="abc_indikator" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Harga resale komponen</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Ongkos Pemakaian Komponen (H) <span class="text-xs text-red-500">*</span></div>
+                                    <input name="ongkos_pemakaian_komponen" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit" />
                                 </div>
-                            </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <div>Ongkos Kerugian Akibat Kerusakan (L) <span class="text-xs text-red-500">*</span></div>
+                                    <input name="ongkos_kerugian_kerusakan" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <div>Jumlah Komponen Terpasang (m) <span class="text-xs text-red-500">*</span></div>
+                                    <input name="jumlah_komponen_terpasang" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="jumlah" />
+                                </div>
+                            </form>
                             <!-- Model Kerusakan Non Linear -->
-                            <div id="calcNonLinear" class="hidden flex-col gap-2 calc-model">
+                            <form id="calcNonLinear" class="hidden flex-col gap-2 calc-model">
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Ongkos pemakaian Komponen</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>Material Code</span>
+                                    <input name="material_code" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Ongkos kerugian akibat kerusakan</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>Material Description</span>
+                                    <input name="material_description" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Jumlah komponen terpasang</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>ABC Indicator</span>
+                                    <input name="abc_indikator" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Harga resale komponen</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Ongkos Pemakaian Komponen (H) <span class="text-xs text-red-500">*</span></div>
+                                    <input name="ongkos_pemakaian_komponen" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Beta</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Ongkos Kerugian Akibat Kerusakan (L) <span class="text-xs text-red-500">*</span></div>
+                                    <input name="ongkos_kerugian_kerusakan" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="unit" />
                                 </div>
-                            </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <div>Jumlah Komponen Terpasang (m) <span class="text-xs text-red-500">*</span></div>
+                                    <input name="jumlah_komponen_terpasang" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="jumlah" />
+                                </div>
+                            </form>
                             <!-- Model BCR -->
-                            <div id="calcBCR" class="hidden flex-col gap-2 calc-model">
+                            <form id="calcBCR" class="hidden flex-col gap-2 calc-model">
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Harga komponen</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>Material Code</span>
+                                    <input name="material_code" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Kerugian komponen</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>Material Description</span>
+                                    <input name="material_description" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Suku bunga</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <span>ABC Indicator</span>
+                                    <input name="abc_indikator" type="text" class="py-1 px-2 border rounded" placeholder="optional" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Waktu sisa operasi</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Harga Komponen (Ho) <span class="text-xs text-red-500">*</span></div>
+                                    <input name="harga_komponen" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="harga" />
                                 </div>
                                 <div class="flex gap-4 items-center justify-between">
-                                    <span>Probabilitas</span>
-                                    <input type="text" class="py-1 px-2 border rounded" />
+                                    <div>Kerugian Komponen (Co) <span class="text-xs text-red-500">*</span></div>
+                                    <input name="kerugian_komponen" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="kerugian" />
                                 </div>
-                            </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <div>Suku Bunga (I) <span class="text-xs text-red-500">*</span></div>
+                                    <input name="suku_bunga" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="suku bunga" />
+                                </div>
+                                <div class="flex gap-4 items-center justify-between">
+                                    <div>Waktu Sisa Operasi (tahun) <span class="text-xs text-red-500">*</span></div>
+                                    <input name="waktu_sisa_operasi" oninput="numericInput(event)" type="text" class="py-1 px-2 border rounded" inputmode="numeric" pattern="[0-9]*" placeholder="tahun" />
+                                </div>
+                            </form>
                         </div>
                     </div>
-                </details>
+                </div>
 
-                <div id="domAggrid" class="w-full h-[50rem] duration-75 flex-col gap-2 overflow-y-scroll pt-6">
+                <div id="domAggrid" class="tab-contents tab-input hidden w-full h-[50rem] duration-75 flex-col gap-2 overflow-y-scroll pt-6">
                     <div class="w-full h-[calc(100%)]">
                         <div id="aggrid" class="w-full h-full ag-theme-quartz"></div>
                     </div>

@@ -130,9 +130,9 @@ def model_kerusakan_non_linear(
     return hasil_model_kerusakan_non_linear
 
 # Contoh penggunaan fungsi
-Ongkos_pemakaian_komponen_H = 18_000_000.00
-Ongkos_Kerugian_akibat_kerusakan_L = 3_720_000_000.00
-Jumlah_komponen_terpasang_m = 5  # Nilai default untuk jumlah komponen terpasang
+# Ongkos_pemakaian_komponen_H = 18_000_000.00
+# Ongkos_Kerugian_akibat_kerusakan_L = 3_720_000_000.00
+# Jumlah_komponen_terpasang_m = 5  # Nilai default untuk jumlah komponen terpasang
 
 # Panggil fungsi model_kerusakan_non_linear
 # hasil_model_kerusakan_non_linear = model_kerusakan_non_linear(Ongkos_pemakaian_komponen_H, Ongkos_Kerugian_akibat_kerusakan_L, Jumlah_komponen_terpasang_m=5, beta=5)

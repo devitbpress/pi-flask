@@ -104,8 +104,8 @@ def model_kerusakan_linear(
     return hasil_model_kerusakan_linear
 
 # Contoh penggunaan fungsi
-Ongkos_pemakaian_komponen_H = 820000000
-Ongkos_Kerugian_akibat_kerusakan_L = 1784145909
+# Ongkos_pemakaian_komponen_H = 820000000
+# Ongkos_Kerugian_akibat_kerusakan_L = 1784145909
 
 # Panggil fungsi model_kerusakan_linear
 # hasil_model_kerusakan_linear = model_kerusakan_linear(Ongkos_pemakaian_komponen_H, Ongkos_Kerugian_akibat_kerusakan_L, Jumlah_komponen_terpasang_m=5)

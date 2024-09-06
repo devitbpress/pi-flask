@@ -106,9 +106,9 @@ def Model_MinMaxRegret(
     return hasil_Model_MinMaxRegret
 
 # Contoh penggunaan fungsi
-Ongkos_pemakaian_komponen_H = 18_000_000.00
-Ongkos_Kerugian_akibat_kerusakan_L = 3_720_000_000.00
-Jumlah_komponen_terpasang_m = 5  # Nilai default untuk jumlah komponen terpasang
+# Ongkos_pemakaian_komponen_H = 18_000_000.00
+# Ongkos_Kerugian_akibat_kerusakan_L = 3_720_000_000.00
+# Jumlah_komponen_terpasang_m = 5  # Nilai default untuk jumlah komponen terpasang
 
 # hasil_Model_MinMaxRegret = Model_MinMaxRegret(Ongkos_pemakaian_komponen_H, Ongkos_Kerugian_akibat_kerusakan_L, Jumlah_komponen_terpasang_m)
 # print(hasil_Model_MinMaxRegret)

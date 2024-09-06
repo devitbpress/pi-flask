@@ -40,14 +40,18 @@ from scipy.stats import norm
 
 # Perhitungan Model Q
 # Membuat fungsi Perhitungan Model Q
-def Model_Q(Rata_Rata_Permintaan_Barang_ModelQ_D , 
-            Lead_Time_ModelQ_L, 
-            Standar_Deviasi_Permintaan_Barang_ModelQ_S, 
-            Ongkos_Pesan_ModelQ_A ,
-            Harga_barang_ModelQ_p,
-            Ongkos_Simpan_ModelQ_h, 
-            Ongkos_kekurangan_inventori_setiap_unit_barang_ModelQ_Cu,
-            MaterialCode=None, Material_Description=None, ABC_Indikator=None):
+def Model_Q(
+        Rata_Rata_Permintaan_Barang_ModelQ_D , 
+        Lead_Time_ModelQ_L, 
+        Standar_Deviasi_Permintaan_Barang_ModelQ_S, 
+        Ongkos_Pesan_ModelQ_A ,
+        Harga_barang_ModelQ_p,
+        Ongkos_Simpan_ModelQ_h, 
+        Ongkos_kekurangan_inventori_setiap_unit_barang_ModelQ_Cu,
+        MaterialCode=None, 
+        Material_Description=None, 
+        ABC_Indikator=None
+    ):
     
     if MaterialCode is np.nan:
         if pd.isna(MaterialCode):

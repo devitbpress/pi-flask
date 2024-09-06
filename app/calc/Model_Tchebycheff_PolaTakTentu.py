@@ -26,11 +26,15 @@ import numpy as np
 # Standar_Deviasi_model_Tchebycheff_s = 0.516398
 # Rata_Rata_Permintaan_barang_model_Tchebycheff_alpha = 0.333333
 
-def Model_Tchebycheff_TakTentu(Harga_Barang_model_Tchebycheff_p, 
-                               Kerugian_Ketidakadaan_barang_model_Tchebycheff_Cu, 
-                               Standar_Deviasi_model_Tchebycheff_s, 
-                               Rata_Rata_Permintaan_barang_model_Tchebycheff_alpha, 
-                               MaterialCode=None, Material_Description=None, ABC_Indikator=None):
+def Model_Tchebycheff_TakTentu(
+        Harga_Barang_model_Tchebycheff_p, 
+        Kerugian_Ketidakadaan_barang_model_Tchebycheff_Cu, 
+        Standar_Deviasi_model_Tchebycheff_s, 
+        Rata_Rata_Permintaan_barang_model_Tchebycheff_alpha, 
+        MaterialCode=None, 
+        Material_Description=None, 
+        ABC_Indikator=None
+    ):
     
     if MaterialCode is np.nan:
         if pd.isna(MaterialCode):

@@ -45,7 +45,16 @@ from scipy.stats import poisson
 
 # Perhitungan Model Wilson
 # Membuat fungsi Perhitungan Model Wilson
-def Model_Wilson(Permintaan_Barang_ModelWilson_D, Harga_barang_ModelWilson_p, Ongkos_Pesan_ModelWilson_A, Lead_Time_ModelWilson_L, Ongkos_Simpan_ModelWilson_h, MaterialCode=None, Material_Description=None, ABC_Indikator=None):
+def Model_Wilson(
+        Permintaan_Barang_ModelWilson_D, 
+        Harga_barang_ModelWilson_p, 
+        Ongkos_Pesan_ModelWilson_A, 
+        Lead_Time_ModelWilson_L, 
+        Ongkos_Simpan_ModelWilson_h, 
+        MaterialCode=None, 
+        Material_Description=None, 
+        ABC_Indikator=None
+    ):
     
     if MaterialCode is np.nan:
         if pd.isna(MaterialCode):

@@ -26,14 +26,18 @@ from scipy.stats import poisson
 # Ongkos_Simpan_Poisson_h = 0.2*Harga_Barang_Poisson_p
 # Ongkos_Kekurangan_Barang_Cu = 100000
 
-def Model_Poisson(Rata_Rata_Pemesanan_Barang_ModelPoisson_D, 
-                  Standar_Deviasi_Barang_ModelPoisson_S, 
-                  Lead_Time_ModelPoisson_L, 
-                  Ongkos_Pesan_ModelPoisson_A, 
-                  Harga_Barang_ModelPoisson_p, 
-                  Ongkos_Simpan_ModelPoisson_h, 
-                  Ongkos_Kekurangan_Barang_ModelPoisson_Cu,
-                  MaterialCode=None, Material_Description=None, ABC_Indikator=None):
+def Model_Poisson(
+        Rata_Rata_Pemesanan_Barang_ModelPoisson_D, 
+        Standar_Deviasi_Barang_ModelPoisson_S, 
+        Lead_Time_ModelPoisson_L, 
+        Ongkos_Pesan_ModelPoisson_A, 
+        Harga_Barang_ModelPoisson_p, 
+        Ongkos_Simpan_ModelPoisson_h, 
+        Ongkos_Kekurangan_Barang_ModelPoisson_Cu,
+        MaterialCode=None, 
+        Material_Description=None, 
+        ABC_Indikator=None
+    ):
 
     if MaterialCode is np.nan:
         if pd.isna(MaterialCode):

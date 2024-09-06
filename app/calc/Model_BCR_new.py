@@ -2,14 +2,14 @@ import pandas as pd
 import numpy as np
 
 def Model_Inventori_BCR(
-    Harga_Komponen_Ho,
-    Kerugian_Komponen_Co, 
-    Suku_bunga_i, 
-    Waktu_sisa_operasi=5, 
-    MaterialCode=None, 
-    Material_Description=None, 
-    ABC_Indikator=None,
-    probabilitas="uniform"
+        Harga_Komponen_Ho,
+        Kerugian_Komponen_Co, 
+        Suku_bunga_i, 
+        Waktu_sisa_operasi=5, 
+        MaterialCode=None, 
+        Material_Description=None, 
+        ABC_Indikator=None,
+        probabilitas="uniform"
     ):
     # Jika input bukan list, ubah menjadi list
     if isinstance(Waktu_sisa_operasi, (int, float)):

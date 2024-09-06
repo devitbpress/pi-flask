@@ -1,3 +1,6 @@
+const url = new URL(window.location);
+const urlParams = new URLSearchParams(window.location.search);
+const paramsContent = urlParams.get("c");
 const inpAmbil = document.getElementById("inpAmbil");
 const slcModel = document.getElementById("slcModel");
 const notifStatus = document.getElementById("notifStatus");
@@ -5,16 +8,55 @@ const notifMessage = document.getElementById("notifMessage");
 const btnTemplate = document.getElementById("btnTemplate");
 const textAmbil = document.getElementById("textAmbil");
 const btnProses = document.getElementById("btnProses");
+const headerTabsInput = document.getElementById("headerTabsInput");
+const headerTabsManual = document.getElementById("headerTabsManual");
+const slcQ = document.getElementById("slcQ");
+const slcPoisson = document.getElementById("slcPoisson");
+const slcWilson = document.getElementById("slcWilson");
+const slcTchebycheff = document.getElementById("slcTchebycheff");
+const slcRegret = document.getElementById("slcRegret");
+const slcLinear = document.getElementById("slcLinear");
+const slcNonLinear = document.getElementById("slcNonLinear");
+const slcBCR = document.getElementById("slcBCR");
+const headerParameter = document.getElementById("headerParameter");
+const btnHitung = document.getElementById("btnHitung");
 
 let gridApi;
 let boxNotif = document.getElementById("boxNotif");
 const formatString = (str) => str.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 let idNotif = 1;
+let paramsPast = "";
 
 const postFile = async (argUrl, argFile, argModel) => {
     const formData = new FormData();
     formData.append("file", argFile);
     formData.append("model", argModel);
+
+    try {
+        const response = await fetch(argUrl, {
+            method: "POST",
+            body: formData,
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            return ["failed", errorData.error];
+        }
+
+        const result = await response.json();
+        return ["success", result];
+    } catch (error) {
+        return ["failed", error];
+    }
+};
+
+const postManual = async (argUrl, argModel, argForm) => {
+    const formData = new FormData();
+    formData.append("model", argModel);
+
+    Object.entries(argForm).map((item) => {
+        formData.append(item[0], item[1]);
+    });
 
     try {
         const response = await fetch(argUrl, {
@@ -187,7 +229,68 @@ const downloadTemplate = () => {
     XLSX.writeFile(workbook, `template ${slcModel.value}.xlsx`);
 };
 
-btnProses.addEventListener("click", async () => {
+const manualCalc = (argElement, argIdManual) => {
+    const color = argElement.getAttribute("data-color");
+    let styleIden = ["bg-[#1A8FCB]", "bg-[#47AD41]", "bg-[#F9CD2B]", "bg-[#F68B33]", "bg-[#7961F2]", "bg-[#F33D3D]", "bg-[#E667E6]", "bg-[#FF5975]"];
+
+    url.searchParams.set("m", argIdManual.replace("calc", ""));
+    window.history.pushState({}, "", url);
+    paramsPast = argIdManual.replace("calc", "");
+
+    document.querySelectorAll(".slc-manual").forEach((element) => {
+        const elementColor = element.getAttribute("data-color");
+        element.classList.remove(`bg-[#${elementColor}]`);
+        element.classList.add("bg-white");
+        element.classList.remove("text-white");
+    });
+
+    document.querySelectorAll(".calc-model").forEach((element) => {
+        element.classList.remove("flex");
+        element.classList.add("hidden");
+    });
+
+    headerParameter.textContent = `Parameter Input ${argElement.querySelector("span").textContent}`;
+
+    document.getElementById(`${argIdManual}`).classList.remove("hidden");
+    document.getElementById(`${argIdManual}`).classList.add("flex");
+
+    argElement.classList.remove("bg-white");
+    argElement.classList.add(`bg-[#${color}]`);
+    argElement.classList.add("text-white");
+};
+
+const tabsContent = (argElement) => {
+    const dataTabs = argElement.getAttribute("data-tabs");
+
+    url.search = "";
+    url.searchParams.set("c", dataTabs);
+    window.history.pushState({}, "", url);
+
+    document.querySelectorAll(".header-tabs").forEach((element) => {
+        element.classList.remove("border-b", "border-[#1A8FCB]", "text-[#1A8FCB]");
+    });
+
+    document.querySelectorAll(".tab-contents").forEach((element) => {
+        element.classList.remove("flex");
+        element.classList.add("hidden");
+    });
+
+    document.querySelectorAll(`.tab-${dataTabs}`).forEach((element) => {
+        element.classList.remove("hidden");
+        element.classList.add("flex");
+    });
+
+    argElement.classList.add("border-b", "border-[#1A8FCB]", "text-[#1A8FCB]");
+    if (dataTabs === "manual") {
+        if (paramsPast !== "") {
+            manualCalc(document.getElementById(`slc${paramsPast}`), `calc${paramsPast}`);
+        } else {
+            manualCalc(slcQ, "calcQ");
+        }
+    }
+};
+
+const prosesFile = async () => {
     const response = await postFile(`/calc`, inpAmbil.files[0], slcModel.value);
     if (response[0] === "success") {
         const result = response[1];
@@ -238,15 +341,50 @@ btnProses.addEventListener("click", async () => {
     } else {
         console.error("failed");
     }
-});
+};
 
-inpAmbil.addEventListener("change", () => {
-    textAmbil.textContent = `${inpAmbil.files[0].name.substring(0, 10)}...${inpAmbil.files[0].name.split(".").pop()}`;
-});
+const numericInput = (event) => {
+    event.target.value = event.target.value.replace(/[^0-9.]/g, "");
+};
 
-btnTemplate.addEventListener("click", () => {
-    downloadTemplate();
-});
+const calcManual = async (argModel) => {
+    let dataForm = {};
+    let status = "success";
+
+    document.querySelectorAll(`#calc${argModel} input`).forEach((element) => {
+        if (element.value === "") {
+            if (element.name !== "material_code" && element.name !== "material_description" && element.name !== "abc_indikator") {
+                element.classList.add("placeholder-red-500");
+                status = "failed";
+            }
+        }
+
+        dataForm[element.name] = element.value ? element.value : "";
+    });
+
+    if (status === "success") {
+        const response = await postManual("/manual-calc", argModel, dataForm);
+        console.log(response);
+    }
+};
+
+paramsContent === "manual" ? tabsContent(headerTabsManual) : tabsContent(headerTabsInput);
+urlParams.get("m") ? manualCalc(document.getElementById(`slc${urlParams.get("m")}`), `calc${urlParams.get("m")}`) : "";
+
+btnProses.addEventListener("click", () => prosesFile());
+inpAmbil.addEventListener("change", () => (textAmbil.textContent = `${inpAmbil.files[0].name.substring(0, 10)}...${inpAmbil.files[0].name.split(".").pop()}`));
+btnTemplate.addEventListener("click", () => downloadTemplate());
+headerTabsInput.addEventListener("click", (event) => tabsContent(event.target));
+headerTabsManual.addEventListener("click", (event) => tabsContent(event.target));
+slcQ.addEventListener("click", () => manualCalc(slcQ, "calcQ"));
+slcPoisson.addEventListener("click", () => manualCalc(slcPoisson, "calcPoisson"));
+slcWilson.addEventListener("click", () => manualCalc(slcWilson, "calcWilson"));
+slcTchebycheff.addEventListener("click", () => manualCalc(slcTchebycheff, "calcTchebycheff"));
+slcRegret.addEventListener("click", () => manualCalc(slcRegret, "calcRegret"));
+slcLinear.addEventListener("click", () => manualCalc(slcLinear, "calcLinear"));
+slcNonLinear.addEventListener("click", () => manualCalc(slcNonLinear, "calcNonLinear"));
+slcBCR.addEventListener("click", () => manualCalc(slcBCR, "calcBCR"));
+btnHitung.addEventListener("click", () => calcManual(paramsPast));
 
 setupAgGrid();
 
