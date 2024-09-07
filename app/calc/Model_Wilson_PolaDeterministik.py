@@ -3,48 +3,6 @@ import numpy as np
 import math
 from scipy.stats import poisson
 
-# Model Wilson
-# Karakteristik Model Wilson
-    # 1.	Besarnya ukuran lot pemesanan (q0) selalu tetap untuk setiap kali pemesanan dilakukan.
-    # 2.	Pemesanan dilakukan apabila jumlah inventori yang dimiliki telah mencapai suatu tingkat tertentu (r) yang disebut titik pemesanan ulang (reorder point).
-
-
-# Kriteria Kinerja
-    # Ongkos Inventori Total per tahun       : OT 
-
-# Variabel Keputusan 
-    # Ukuran lot pemesanan ekonomis (EOQ) 	 : qo
-    # Saat pemesanan kembali (ROP)	    	 : r
-
-    # Parameter                                         
-    # Ongkos pesan tiap kali pemesanan       : A
-    # Ongkos simpan per unit pertahun	   	 : h
-    # Harga barang per unit	                 : p
-    # Permintaan barang per tahun	         : D
-
-# Contoh Numerik dari Laporan Interim
-# Kebutuhan barang XYZ PT untuk tahun depan (D) sebanyak 10.000 unit/tahun. 
-# Untuk mendapatkan barang tersebut dibeli dari pemasok lokal dengan harga barang (p) sebesar Rp. 8.000,-/unit 
-# dan ongkos pesan (A) sebesar Rp. 1.000.000,-/pesan dengan lead time 3 bulan. 
-# Jika ongkos simpan barang (h) sebesar Rp. 2.000,-/unit/tahun, 
-# bagaimana kebijakan inventori optimalnya agar pengadaan barang XYZ yang paling ekonomis?
-
-# # Inisasi Input parameter
-# Permintaan_Barang_ModelWilson_D = 10000 # unit/tahun
-# Harga_barang_ModelWilson_p = 8000       # Rp ,-/Unit
-# Ongkos_Pesan_ModelWilson_A = 1000000    # Rp ,-/Pesan
-# Lead_Time_ModelWilson_L = 3/12          # 3 Bulan -> 1/4 tahun
-# Ongkos_Simpan_ModelWilson_h = 2000      # Rp ,-/Unit/Tahun
-
-# # Inisasi Input parameter
-# Permintaan_Barang_ModelWilson_D = 10000 # unit/tahun
-# Harga_barang_ModelWilson_p = 8000       # Rp ,-/Unit
-# Ongkos_Pesan_ModelWilson_A = 1000000    # Rp ,-/Pesan
-# Lead_Time_ModelWilson_L = 3/12          # 3 Bulan -> 1/4 tahun
-# Ongkos_Simpan_ModelWilson_h = 2000      # Rp ,-/Unit/Tahun
-
-# Perhitungan Model Wilson
-# Membuat fungsi Perhitungan Model Wilson
 def Model_Wilson(
         Permintaan_Barang_ModelWilson_D, 
         Harga_barang_ModelWilson_p, 

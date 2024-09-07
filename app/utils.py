@@ -7,6 +7,12 @@ from app.calc import Model_KerusakanNonLinear_PolaNonMoving
 from app.calc import Model_KerusakanLinear_PolaNonMoving
 from app.calc import Model_BCR_new
 
+def convert_string_to_number(s):
+    if '.' in s:
+        return convert_string_to_number(s)
+    else:
+        return int(s)
+
 def calc_model(data, model):
     data_calc = []
     
@@ -196,61 +202,165 @@ def calc_model(data, model):
 
 def calc_model_manual(data):
     model = data.get("model")
+    data_calc = {}
     
     if model == "Q":
-        rata_rata_permintaan_barang = float(data.get('rata_rata_permintaan_barang'))
-        lead_time = float(data.get('lead_time'))
-        standar_deviasi = float(data.get('standar_deviasi'))
-        ongkos_pesan = float(data.get('ongkos_pesan'))
-        harga_barang = float(data.get('harga_barang'))
-        ongkos_simpan = float(data.get('ongkos_simpan'))
-        ongkos_kekurangan_inventori_setiap_unit_barang = float(data.get('ongkos_kekurangan_inventory'))
-        material_code = data.get('material_code')
-        material_description = data.get('material_description')
-        abc_indikator = data.get('abc_indikator')
+        rata_rata_permintaan_barang = convert_string_to_number(data.get('rata_rata_permintaan_barang'))
+        lead_time = convert_string_to_number(data.get('lead_time'))
+        standar_deviasi = convert_string_to_number(data.get('standar_deviasi'))
+        ongkos_pesan = convert_string_to_number(data.get('ongkos_pesan'))
+        harga_barang = convert_string_to_number(data.get('harga_barang'))
+        ongkos_simpan = convert_string_to_number(data.get('ongkos_simpan'))
+        ongkos_kekurangan_inventori_setiap_unit_barang = convert_string_to_number(data.get('ongkos_kekurangan_inventory'))
+        material_code = data.get("material_code")
+        material_description = data.get("material_description")
+        abc_indikator = data.get("abc_indikator")
 
-        print(rata_rata_permintaan_barang)
-        print(lead_time)
-        print(standar_deviasi)
-        print(ongkos_pesan)
-        print(harga_barang)
-        print(ongkos_simpan)
-        print(ongkos_kekurangan_inventori_setiap_unit_barang)
-        print(material_code)
-        print(material_description)
-        print(abc_indikator)
-
-        result = Model_Q_PolaDistribusiNormal.Model_Q(rata_rata_permintaan_barang , 
+        data_calc = Model_Q_PolaDistribusiNormal.Model_Q(
+                rata_rata_permintaan_barang , 
                 lead_time, 
                 standar_deviasi, 
                 ongkos_pesan ,
                 harga_barang,
                 ongkos_simpan, 
                 ongkos_kekurangan_inventori_setiap_unit_barang,
-                material_code, 
-                material_description, 
-                abc_indikator)
-        
-        print(result)
-        return result
+                material_code,
+                material_description,
+                abc_indikator
+            )
     
     if model == "Poisson":
-        return model
+        rata_rata_pemesanan_barang = convert_string_to_number(data.get("rata_rata_permintaan_barang"))
+        standar_deviasi_barang = convert_string_to_number(data.get("standar_deviasi"))
+        lead_time = convert_string_to_number(data.get("lead_time"))
+        ongkos_pesan = convert_string_to_number(data.get("ongkos_pesan"))
+        harga_barang = convert_string_to_number(data.get("harga_barang"))
+        ongkos_simpan = convert_string_to_number(data.get("ongkos_simpan"))
+        ongkos_kekurangan_barang = convert_string_to_number(data.get("ongkos_kekurangan_inventory"))
+        material_code = data.get("material_code")
+        material_description = data.get("material_description")
+        abc_indikator = data.get("abc_indikator")
+
+        data_calc = Model_Poisson_PolaPoisson.Model_Poisson(
+                rata_rata_pemesanan_barang, 
+                standar_deviasi_barang, 
+                lead_time,
+                ongkos_pesan, 
+                harga_barang, 
+                ongkos_simpan, 
+                ongkos_kekurangan_barang,
+                material_code,
+                material_description,
+                abc_indikator
+            )
     
     if model == "Wilson":
-        return model
+        permintaan_barang = convert_string_to_number(data.get("permintaan_barang"))
+        harga_barang = convert_string_to_number(data.get("harga_barang"))
+        ongkos_pesan = convert_string_to_number(data.get("ongkos_pesan"))
+        lead_time = convert_string_to_number(data.get("lead_time"))
+        ongkos_simpan = convert_string_to_number(data.get("ongkos_simpan"))
+        material_code = data.get("material_code")
+        material_description = data.get("material_description")
+        abc_indikator = data.get("abc_indikator")
+        
+        data_calc = Model_Wilson_PolaDeterministik.Model_Wilson(
+                permintaan_barang,
+                harga_barang, 
+                ongkos_pesan, 
+                lead_time, 
+                ongkos_simpan, 
+                material_code,
+                material_description,
+                abc_indikator
+            )
     
     if model == "Tchebycheff":
-        return model
+        harga_barang = convert_string_to_number(data.get("harga_barang"))
+        kerugian_ketidakadaan_barang = convert_string_to_number(data.get("kerugian_ketidakadaan_barang"))
+        standar_deviasi = convert_string_to_number(data.get("standar_deviasi"))
+        rata_rata_permintaan_barang = convert_string_to_number(data.get("rata_rata_permintaan_barang"))
+        material_code = data.get("material_code")
+        material_description = data.get("material_description")
+        abc_indikator = data.get("abc_indikator")
+        
+        data_calc = Model_Tchebycheff_PolaTakTentu.Model_Tchebycheff_TakTentu(
+            harga_barang, 
+            kerugian_ketidakadaan_barang, 
+            standar_deviasi, 
+            rata_rata_permintaan_barang, 
+            material_code,
+            material_description,
+            abc_indikator)
     
     if model == "Regret":
-        return model
+        material_code = data.get("material_code")
+        material_description = data.get("material_description")
+        abc_indikator = data.get("abc_indikator")
+        ongkos_pemakaian_komponen = convert_string_to_number(data.get("ongkos_pemakaian_komponen"))
+        ongkos_kerugian_akibat_kerusakan = convert_string_to_number(data.get("ongkos_kerugian_kerusakan"))
+        jumlah_komponen_terpasang = convert_string_to_number(data.get("jumlah_komponen_terpasang"))
+        
+        data_calc = Model_MinMaxRegret_PolaNonMoving.Model_MinMaxRegret(
+                        ongkos_pemakaian_komponen,
+                        ongkos_kerugian_akibat_kerusakan,
+                        jumlah_komponen_terpasang,
+                        material_code,
+                        material_description,
+                        abc_indikator
+                    )
     
     if model == "Linear":
-        return model
+        material_code = data.get("material_code")
+        material_description = data.get("material_description")
+        abc_indikator = data.get("abc_indikator")
+        ongkos_pemakaian_komponen = convert_string_to_number(data.get("ongkos_pemakaian_komponen"))
+        ongkos_kerugian_akibat_kerusakan = convert_string_to_number(data.get("ongkos_kerugian_kerusakan"))
+        jumlah_komponen_terpasang = convert_string_to_number(data.get("jumlah_komponen_terpasang"))
+
+        data_calc = Model_KerusakanLinear_PolaNonMoving.model_kerusakan_linear(
+                        ongkos_pemakaian_komponen,
+                        ongkos_kerugian_akibat_kerusakan,
+                        jumlah_komponen_terpasang,
+                        material_code,
+                        material_description,
+                        abc_indikator
+                    )
     
     if model == "NonLinear":
-        return model
+        material_code = data.get("material_code")
+        material_description = data.get("material_description")
+        abc_indikator = data.get("abc_indikator")
+        ongkos_pemakaian_komponen = convert_string_to_number(data.get("ongkos_pemakaian_komponen"))
+        ongkos_kerugian_akibat_kerusakan = convert_string_to_number(data.get("ongkos_kerugian_kerusakan"))
+        jumlah_komponen_terpasang = convert_string_to_number(data.get("jumlah_komponen_terpasang"))
+
+        data_calc = Model_KerusakanNonLinear_PolaNonMoving.model_kerusakan_non_linear(
+                        ongkos_pemakaian_komponen,
+                        ongkos_kerugian_akibat_kerusakan,
+                        jumlah_komponen_terpasang,
+                        material_code,
+                        material_description,
+                        abc_indikator
+                    )
     
     if model == "BCR":
-        return model
+        material_code = data.get("material_code")
+        material_description = data.get("material_description")
+        abc_indikator = data.get("abc_indikator")
+        harga_komponen = convert_string_to_number(data.get("harga_komponen"))
+        kerugian_komponen = convert_string_to_number(data.get("kerugian_komponen"))
+        suku_bunga = convert_string_to_number(data.get("suku_bunga"))
+        waktu_sisa_operasi = convert_string_to_number(data.get("waktu_sisa_operasi"))
+        
+        data_calc = Model_BCR_new.Model_Inventori_BCR(
+                harga_komponen,
+                kerugian_komponen, 
+                suku_bunga, 
+                waktu_sisa_operasi,
+                material_code,
+                material_description,
+                abc_indikator,
+            )
+    
+    return data_calc

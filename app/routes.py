@@ -52,9 +52,8 @@ def calc():
 @routes_bp.route("/manual-calc", methods=['POST'])
 def manual_calc():
     try:
-        print(request.form)
         processed_data = utils.calc_model_manual(request.form)
-        print(processed_data)
+
         return jsonify(processed_data)
     except Exception as e:
         return jsonify({'error': str(e)}), 500

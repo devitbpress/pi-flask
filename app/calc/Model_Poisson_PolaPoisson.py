@@ -3,29 +3,6 @@ import numpy as np
 import math
 from scipy.stats import poisson
 
-
-# Model Poisson
-
-# Rata - Rata Pemesanan Barang (D)	    : 4	Unit/tahun
-# Standar Deviasi (S)	                : 2	Unit/tahun
-# Waktu Ancang -Ancang (L)	            : 0.25	Tahun
-# Std.Deviasi Waktu Ancang - Ancang (SL): 1	Unit/tahun
-# Ongkos Pesan (A)	                    : 2500	Rupiah - /pesanan
-# Harga Barang (p)	                    : 25000	/Unit
-# "Ongkos Simpan (h) 
-# -> 20% dari harga barang 
-# per - unit per-tahun"	                : 5000	Unit/tahun
-# Ongkos kekurangan barang (Cu)	        : 100000	/Unit
-
-# Rata_Rata_Pemesanan_Barang_ModelPoisson_D = 4
-# Standar_Deviasi_Barang_ModelPoisson_S = 2
-# Lead_Time_ModelPoisson_L = 0.25
-
-# Ongkos_Pesan_Poisson_A = 2500
-# Harga_Barang_Poisson_p = 25000
-# Ongkos_Simpan_Poisson_h = 0.2*Harga_Barang_Poisson_p
-# Ongkos_Kekurangan_Barang_Cu = 100000
-
 def Model_Poisson(
         Rata_Rata_Pemesanan_Barang_ModelPoisson_D, 
         Standar_Deviasi_Barang_ModelPoisson_S, 
@@ -154,59 +131,3 @@ def Model_Poisson(
     }
 
     return hasil_Model_Poisson
-
-
-#    # Print Hasil Model Poisson
-
-#     print(f"----------------------------------------------------------------------------------------------")
-#     print(f"Model Pola Distribusi Poisson : Model Poisson")
-#     print(f"material code                 : {MaterialCode}") 
-#     print(f"material Description          : {Material_Description}")
-#     print(f"ABC Indicator                 : {ABC_Indikator}")
-#     print(f"----------------------------------------------------------------------------------------------\n")
-
-#     if MaterialCode is not None:
-#         print(f"Parameter input:")
-#         print(f" Rata - Rata Permintaan Barang                  (D)  : {Rata_Rata_Pemesanan_Barang_ModelPoisson_D:,.0f} Unit/Tahun")
-#         print(f" Standar Deviasi Permintaan Barang              (s)  : {Standar_Deviasi_Barang_ModelPoisson_S:,.2f} Unit/Tahun")
-#         print(f" Lead Time                                      (L)  : {Lead_Time_ModelPoisson_L:.02f} Tahun")
-#         print(f" Ongkos Pesan                                   (A)  : Rp {Ongkos_Pesan_ModelPoisson_A:,.0f} /Pesan")
-#         print(f" Harga Barang                                   (p)  : Rp {Harga_Barang_ModelPoisson_p:,.0f} /Unit")
-#         print(f" Ongkos Simpan                                  (h)  : Rp {Ongkos_Simpan_ModelPoisson_h:,.0f} /Unit/Tahun")
-#         print(f" Ongkos Kekurangan Inventori (unit barang)      (Cu) : Rp {Ongkos_Kekurangan_Barang_ModelPoisson_Cu:,.0f} /Unit/Tahun")
-#     else:
-#         print(f"Parameter input:")
-#         print(f" Rata - Rata Permintaan Barang      (D)  : {Rata_Rata_Pemesanan_Barang_ModelPoisson_D:,.0f} Unit/Tahun")
-#         print(f" Standar Deviasi Permintaan Barang  (s)  : {Standar_Deviasi_Barang_ModelPoisson_S:,.2f} Unit/Tahun")
-#         print(f" Lead Time                          (L)  : {Lead_Time_ModelPoisson_L:.02f} Tahun")
-#         print(f" Ongkos Pesan                       (A)  : Rp {Ongkos_Pesan_ModelPoisson_A:,.0f} /Pesan")
-#         print(f" Harga Barang                       (p)  : Rp {Harga_Barang_ModelPoisson_p:,.0f} /Unit")
-#         print(f" Ongkos Simpan                      (h)  : Rp {Ongkos_Simpan_ModelPoisson_h:,.0f} /Unit/Tahun")
-#         print(f" Ongkos Kekurangan Inventori        (Cu) : Rp {Ongkos_Kekurangan_Barang_ModelPoisson_Cu:,.0f} /Unit/Tahun")
-    
-
-#     # print(f"----------------------------------------------------------------------------------------------")
-#     # print(f"Hasil Hitung Model Poisson")
-#     # print(f"----------------------------------------------------------------------------------------------")
-    
-#     print(f"Nilai Alpha final adalah {alpha_poisson:.4f}")
-#     print(f"Standar Deviasi waktu ancang - ancang adalah {Standar_Deviasi_Waktu_Ancang_Ancang_SL:.2f} Unit/Tahun")
-#     print(f"Ecocomic Order Quantity (EOQ) sebesar qo1 lot optimum metode Poisson adalah {qo_1_Poisson:.4f}")
-#     print(f"Nilai Reoder Point (ROP) sebesar r2* adalah {reorder_point_Poisson:.0f}")
-#     print(f"Nilai Safety stock (ss) adalah {SS_Poisson:.0f}")
-#     print(f"Nilai Service Level adalah {Service_Level_Poisson:.0f}%")
-#     print(f"Ongkos Inventori final adalah Rp {Ongkos_Inventori_Poisson:,.0f}.- /Tahun")
-#     print(f"----------------------------------------------------------------------------------------------") 
-
-# # Inisiasi Paramter
-# Rata_Rata_Pemesanan_Barang_ModelPoisson_D = 4
-# Standar_Deviasi_Barang_ModelPoisson_S = 2
-# Lead_Time_ModelPoisson_L = 0.25
-
-# Ongkos_Pesan_ModelPoisson_A = 2500
-# Harga_Barang_ModelPoisson_p = 25000
-# Ongkos_Simpan_ModelPoisson_h = 0.2*Harga_Barang_ModelPoisson_p
-# Ongkos_Kekurangan_Barang_ModelPoisson_Cu = 100000
-
-# # Print Hasil
-# Model_Poisson(Rata_Rata_Pemesanan_Barang_ModelPoisson_D, Standar_Deviasi_Barang_ModelPoisson_S, Lead_Time_ModelPoisson_L, Ongkos_Pesan_ModelPoisson_A, Harga_Barang_ModelPoisson_p, Ongkos_Simpan_ModelPoisson_h, Ongkos_Kekurangan_Barang_ModelPoisson_Cu)
