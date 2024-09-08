@@ -87,7 +87,7 @@
 
                 <div class="tab-contents tab-manual w-full h-fit hidden flex-col gap-2 text-sm text-[#585965] mb-8">
                     <h1 class="py-2 cursor-pointer px-2 w-fit hover:text-black">List Model</h1>
-                    <div class="flex w-full h-[calc(100vh-20rem)] gap-16">
+                    <div class="flex w-full h-[calc(100vh-18rem)] gap-16">
                         <div class="flex flex-col gap-2">
                             <div id="slcQ" data-color="1A8FCB" data="manualCalc(event, 'calcQ', '1A8FCB')" class="bg-white slc-manual flex gap-3 group hover:bg-[#1A8FCB] cursor-pointer duration-150 py-1 pl-2 px-6 rounded items-center">
                                 <div class="h-6 w-6 bg-[#1A8FCB] text-white flex items-center justify-center font-semibold rounded">Q</div>
@@ -123,11 +123,11 @@
                             </div>
                         </div>
 
-                        <div class="relative w-fit h-full bg-slate-50">
+                        <div class="relative w-fit h-full bg-slate-50 py-4 pb-6 border shadow">
                             <div id="headerParameter" class="absolute z-10 -top-5 left-4 whitespace-nowrap px-2 py-1 bg-white border rounded"></div>
                             <button id="btnHitung" class="bg-[#1A8FCB] z-10 hover:bg-[#147EB5] py-2 px-8 text-white shadow rounded absolute -bottom-4 right-4 focus:scale-95 duration-150">Hitung</button>
 
-                            <div id="scrollableDiv" class="relative w-fit h-full border p-4 pb-8 rounded shadow overflow-y-scroll">
+                            <div id="scrollableDiv" class="relative w-fit h-full p-4 rounded overflow-y-scroll">
                                 <div class="flex flex-col w-full h-fit">
                                     <!-- Model Q -->
                                     <form id="calcQ" class="hidden flex-col gap-2 calc-model">

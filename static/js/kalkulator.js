@@ -313,6 +313,29 @@ const tabsContent = (argElement) => {
 };
 
 const prosesFile = async () => {
+    barPersen.style.width = "0%";
+    boxLoadingUpload.classList.remove("hidden");
+    boxLoadingUpload.classList.add("flex");
+
+    statusUp.textContent = `Perhitungan Model ${slcModel.value}`;
+    barPersen.style.transitionDuration = "2500ms";
+    statusDown.textContent = "Proses kalkulasi";
+
+    let number = 0;
+
+    setTimeout(() => {
+        barPersen.style.width = "90%";
+    }, 100);
+
+    const interval = setInterval(() => {
+        textPersen.textContent = `${number + 1}% Done`;
+        number += 1;
+
+        if (number >= 90) {
+            clearInterval(interval);
+        }
+    }, 2500 / 100);
+
     const response = await postFile(`/calc`, inpAmbil.files[0], slcModel.value);
     if (response[0] === "success") {
         const result = response[1];
@@ -360,6 +383,12 @@ const prosesFile = async () => {
 
             aggridNonMoving(dataResponse);
         }
+
+        barPersen.style.transitionDuration = "0ms";
+        barPersen.style.width = "100%";
+
+        boxLoadingUpload.classList.add("hidden");
+        boxLoadingUpload.classList.remove("flex");
     } else {
         console.error("failed");
     }

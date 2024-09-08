@@ -57,3 +57,73 @@ def manual_calc():
         return jsonify(processed_data)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@routes_bp.route("/check-file", methods=['POST'])
+def check_file():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+
+    file = request.files['file']
+    
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    if not file.filename.endswith(('.xls', '.xlsx')):
+        return jsonify({'error': 'Invalid file format. Only .xls and .xlsx files are allowed.'}), 400
+
+    if file.content_type not in ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']:
+        return jsonify({'error': 'Invalid file format. Only Excel files are allowed.'}), 400
+    
+    try:
+        return jsonify("verify"), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@routes_bp.route("/save-dataframe", methods=['POST'])
+def save_dataframe():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+
+    file = request.files['file']
+    
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    if not file.filename.endswith(('.xls', '.xlsx')):
+        return jsonify({'error': 'Invalid file format. Only .xls and .xlsx files are allowed.'}), 400
+
+    if file.content_type not in ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']:
+        return jsonify({'error': 'Invalid file format. Only Excel files are allowed.'}), 400
+    
+    try:
+        df = pd.read_excel(file, engine='openpyxl')
+
+        result = utils.processing_save_dataframe(df, request.form.get("numid"), request.form.get("session"))
+        result = result.fillna('')
+        data = result.to_dict(orient='records')
+        
+        return jsonify(data), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+@routes_bp.route("/subset", methods=['POST'])
+def subset():
+    try:
+        result = utils.processing_subset(request.form.get("session"))
+        result = result.fillna('')
+        data = result.to_dict(orient='records')
+
+        return jsonify(data), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@routes_bp.route("/classification", methods=['POST'])
+def classification():
+    try:
+        result = utils.processing_classification(request.form.get("session"))
+        result = result.fillna('')
+        data = result.to_dict(orient='records')
+
+        return jsonify(data), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

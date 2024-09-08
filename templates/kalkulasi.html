@@ -49,21 +49,21 @@
             <div class="w-full h-full bg-white rounded-tl-[2rem] flex flex-col p-6 gap-2">
                 <h1 class="text-[#585965] pb-2 border-b-2">Kalkulasi Data</h1>
                 <div id="boxTabs" class="h-fit w-full bg-[#EFF3FF] rounded-md p-2 flex gap-2 text-xs text-[#585965]">
-                    <h5 onclick="tabsResutl(event, 'unggah')" class="py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] border-b border-[#1A8FCB] text-[#1A8FCB] whitespace-nowrap">Unggah</h5>
-                    <h5 id="h5Mentah" onclick="tabsResutl(event, 'mentah')" class="py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] whitespace-nowrap hidden">Data Mentah</h5>
-                    <h5 id="h5Subset" onclick="tabsResutl(event, 'subset')" class="py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] whitespace-nowrap hidden">Subset Data</h5>
-                    <h5 id="h5Klasifikasi" onclick="tabsResutl(event, 'klasifikasi')" class="py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] whitespace-nowrap hidden">Klasifikasi</h5>
-                    <h5 id="h5Kalkulator" onclick="tabsResutl(event, 'kalkulator')" class="py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] whitespace-nowrap hidden">Model Kalkulator</h5>
+                    <h5 id="hUnggah" class="header-tabs py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] border-b border-[#1A8FCB] text-[#1A8FCB] whitespace-nowrap">Unggah</h5>
+                    <h5 id="hMentah" class="header-tabs py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] whitespace-nowrap hidden">Data Mentah</h5>
+                    <h5 id="hSubset" class="header-tabs py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] whitespace-nowrap hidden">Subset Data</h5>
+                    <h5 id="hKlasifikasi" class="header-tabs py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] whitespace-nowrap hidden">Klasifikasi</h5>
+                    <h5 id="hKalkulator" onclick="tabsResutl(event, 'kalkulator')" class="header-tabs py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] whitespace-nowrap hidden">Model Kalkulator</h5>
                 </div>
 
-                <div id="domUnggah" class="relative w-full h-[calc(100%-5rem)] duration-75 flex">
+                <div id="containerUnggah" class="relative w-full h-[calc(100%-5rem)] duration-75 flex">
                     <div class="w-full h-full flex justify-between gap-4">
                         <div id="boxDrag" class="h-full w-[45rem] px-4 py-20 border-r">
                             <div id="dropZone" class="w-full h-full flex-col gap-4 border-dashed border-2 border-[#585965] rounded-lg flex justify-center items-center">
                                 <img src="{{ url_for('static', filename='assets/upload-gray.png') }}" alt="excel" class="w-12 h-12" />
                                 <span class="text-[#585965] text-sm">Tarik dan lepaskan file excel di sini</span>
-                                <label id="lblFile" for="" class="py-2 duration-150 px-4 text-sm cursor-pointer rounded bg-[#47AD41] hover:bg-[#3d9e38] text-white">Ambil File</label>
-                                <input type="file" id="inpFile" hidden multiple accept=".xls, .xlsx" />
+                                <label for="inpFile" class="py-2 duration-150 px-4 text-sm cursor-pointer rounded bg-[#47AD41] hover:bg-[#3d9e38] text-white">Ambil File</label>
+                                <input type="file" name="inpFile" id="inpFile" hidden multiple accept=".xls, .xlsx" />
                             </div>
                         </div>
 
@@ -73,45 +73,37 @@
                             <div class="relative w-full h-[calc(100%-4rem)] flex flex-col items-end justify-between text-[#585965] text-sm">
                                 <div id="boxListUploaded" class="w-full h-[calc(100%-3rem)] overflow-y-scroll"></div>
 
-                                <div class="absolute bottom-0 right-0 flex gap-4 items-center cursor-pointer py-2 px-6 bg-[#47AD41] rounded">
-                                    <button id="btnUnggah" class="text-white">Unggah File</button>
+                                <button id="btnUnggah" class="absolute bottom-0 right-0 flex gap-4 items-center cursor-pointer py-2 px-6 bg-[#47AD41] rounded focus:scale-95 duration-300">
+                                    <span class="text-white">Proses File</span>
                                     <img src="{{ url_for('static', filename='assets/arrow-right.png') }}" alt="arrow" class="w-4 h-4" />
-                                </div>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div id="domAggrid" class="relative w-full h-[calc(100%-5rem)] scale-0 duration-75 hidden flex-col gap-2">
+                <div id="containerAggrid" class="relative w-full h-[calc(100%-5rem)] scale-0 duration-75 hidden flex-col gap-2">
                     <div class="w-full h-8 flex justify-between px-4">
                         <div class="flex gap-2 items-center">
                             <img onclick="onBtnExport()" src="{{ url_for('static', filename='assets/csv.png') }}" alt="csv" class="w-4 h-4 cursor-pointer mr-2" />
                             <img src="{{ url_for('static', filename='assets/filter.png') }}" alt="filter" class="w-4 h-4" />
-                            <input oninput="filterAgGrid(event)" type="text" class="border rounded p-1 text-sm text-[#585965]" placeholder="filter" />
+                            <input oninput="filterAgGrid(event)" name="test" type="text" class="border rounded p-1 text-sm text-[#585965]" placeholder="filter" />
                         </div>
-                        <div id="listFile" class="hidden gap-2 items-center">
+                        <div id="boxListMentah" class="hidden gap-2 items-center">
                             <div class="text-[#585965] text-sm ml-4">File :</div>
-                            <select id="slcDataMentah" class="px-2 bg-transparent text-sm cursor-pointer text-[#585965]">
-                                <option value="df2016">Histori GI SAP 2016.xlsx</option>
-                                <option value="df2017">Histori GI SAP 2017.xlsx</option>
-                                <option value="df2018">Histori GI SAP 2018 Bulan 1-12.xlsx</option>
-                                <option value="df2019">Histori GI SAP 2019 Bulan 1-12.xlsx</option>
-                                <option value="df2020">Histori GI SAP 2020 Bulan 1-12.xlsx</option>
-                                <option value="df2021">Histori GI SAP 2021 Bulan 1-12.xlsx</option>
-                                <option value="df2022">Histori GI SAP 2022 Bulan 1-12.xlsx</option>
-                            </select>
+                            <select id="slcListMentah" class="px-2 bg-transparent text-sm cursor-pointer text-[#585965]"></select>
                         </div>
                         <div id="boxBtnKlasifikasi" class="gap-2 items-center hidden">
-                            <img id="btnKlasifikasi" onclick="runLoading('klasifikasi')" src="{{ url_for('static', filename='assets/play.png') }}" alt="play" class="w-4 h-4 cursor-pointer" />
+                            <img id="btnKlasifikasi" src="{{ url_for('static', filename='assets/play.png') }}" alt="play" class="w-4 h-4 cursor-pointer" />
                             <span id="textKlasifikasi" class="text-sm text-[#585965]">Lanjut Proses Klasifikasi</span>
                         </div>
                         <div id="boxBtnModel" class="gap-2 items-center hidden">
                             <img id="btnModel" onclick="runLoading('kalkulator')" src="{{ url_for('static', filename='assets/play.png') }}" alt="play" class="w-4 h-4 cursor-pointer" />
                             <span id="textModel" class="text-sm text-[#585965]">Lanjut Proses Semua Model</span>
                         </div>
-                        <div id="listModel" class="text-[#585965] text-sm hidden gap-2 items-center">
+                        <div id="boxListModel" class="text-[#585965] text-sm hidden gap-2 items-center">
                             <div>Model :</div>
-                            <select id="slcKalkulator" class="bg-transparent cursor-pointer">
+                            <select id="slcListModel" class="bg-transparent cursor-pointer">
                                 <option value="q">Model Q</option>
                                 <option value="poisson">Model Poisson</option>
                                 <option value="wilson">Model Wilson</option>
@@ -149,6 +141,7 @@
             </div>
         </div>
 
+        <script src="{{ url_for('static', filename='js/session.js') }}"></script>
         <script src="{{ url_for('static', filename='vendors/aggrid.js') }}"></script>
         <script src="{{ url_for('static', filename='js/kalkulasi.js') }}"></script>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
