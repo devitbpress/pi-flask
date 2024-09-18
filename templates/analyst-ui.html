@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PI | Kalkulasi Model</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+        <link rel="shortcut icon" href="{{ url_for('static', filename='assets/favicon.png') }}" type="image/x-icon" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='vendors/tailwind.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='vendors/aggrid.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='vendors/aggrid-quartz.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/analyst-ui.css') }}" />
+    </head>
+    <body>
+        <div id="container" class="w-full flex">
+            <!-- navigator -->
+            <div id="box-nav" class="relative w-52 h-full bg-gradient-to-t from-cyan-500 to-blue-700 duration-300">
+                <div id="btn-chevron" class="absolute -right-3 w-7 h-8 bg-cyan-500 hover:bg-cyan-600 bottom-1/2 translate-y-1/2 p-1 rounded-md cursor-pointer duration-300">
+                    <img src="{{ url_for('static', filename='assets/chevron-left.png') }}" alt="chevron" class="w-fit h-full duration-300" />
+                </div>
+            </div>
+
+            <!-- tools -->
+            <div class="w-52 h-full bg-white shadow border duration-300"></div>
+            <!-- https://app.smartlook.com/org/7xg1xxd820dlysv8lniqhj2t/project/ad5btq5pb8vwj77o4m04ls5h/dashboards/zyiv0AYcWb -->
+            <!-- https://www.smartlook.com/blog/wp-content/uploads/sites/2/2022/03/completed-session-recordings.png -->
+            <!-- https://www.smartlook.com/blog/wp-content/uploads/sites/2/2022/01/events05x.png -->
+            <!-- content -->
+            <div id="box-content" class="relative bg-[#FAFDFF] w-[calc(100vw-13rem-13rem)] h-full flex flex-col duration-300">
+                <!-- header -->
+                <div class="w-full h-16 bg-white shadow-md shadow-blue-100"></div>
+                <div class="w-full h-[calc(100%-4rem)]"></div>
+            </div>
+        </div>
+        <script src="{{ url_for('static', filename='js/analyst-ui.js') }}"></script>
+    </body>
+</html>

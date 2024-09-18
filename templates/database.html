@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Database</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+        <link rel="shortcut icon" href="{{ url_for('static', filename='assets/favicon.png') }}" type="image/x-icon" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='vendors/tailwind.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='vendors/aggrid.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='vendors/aggrid-quartz.css') }}" />
+    </head>
+    <body>
+        <header class="absolute top-0 left-0 w-full h-16 flex justify-between items-center px-8 z-50">
+            <img src="{{ url_for('static', filename='assets/pupuk-indonesia.png') }}" alt="PI" class="h-12 w-fit" />
+
+            <div class="flex items-center gap-4 text-sm">
+                <div class="bg-white h-8 w-8 rounded">
+                    <img src="{{ url_for('static', filename='assets/avatar.png') }}" alt="avatar" class="" />
+                </div>
+                <span class="text-[#585965]">Administrator</span>
+                <img src="{{ url_for('static', filename='assets/expand.png') }}" alt="expand" class="w-2 h-2 cursor-pointer" />
+            </div>
+        </header>
+
+        <div class="relative bg-transparent w-screen h-screen pt-16 flex bg-img">
+            <!-- background -->
+            <img src="{{ url_for('static', filename='assets/background-3.jpg') }}" alt="bg" class="absolute w-full h-full top-0 left-0 -z-10" />
+
+            <!-- left navigator -->
+            <div class="w-52 h-full flex flex-col p-4 justify-between text-sm text-[#585965]">
+                <div class="flex flex-col gap-2">
+                    <span class="text-xs pb-4">Admin Tools</span>
+
+                    <a href="kalkulasi" class="relative flex gap-2 items-center p-1 rounded-lg group cursor-pointer">
+                        <div class="absolute top-0 left-0 w-0 group-hover:w-full h-full bg-white rounded-lg shadow duration-300"></div>
+                        <img src="{{ url_for('static', filename='assets/result-gray.png') }}" alt="kalkulasi" class="z-10 w-8 h-8 group-hover:hidden" />
+                        <img src="{{ url_for('static', filename='assets/result-blue.png') }}" alt="kalkulasi" class="z-10 w-8 h-8 hidden group-hover:block" />
+                        <span class="group-hover:text-[#1A8FCB] duration-150 z-10">Kalkulasi</span>
+                    </a>
+
+                    <a href="model-kalkulator" class="relative flex gap-2 items-center p-1 rounded-lg group cursor-pointer">
+                        <div class="absolute top-0 left-0 w-0 group-hover:w-full h-full bg-white rounded-lg shadow duration-300"></div>
+                        <img src="{{ url_for('static', filename='assets/calculator-gray.png') }}" alt="kalkulasi" class="z-10 w-8 h-8 p-1 group-hover:hidden" />
+                        <img src="{{ url_for('static', filename='assets/calculator-blue.png') }}" alt="kalkulasi" class="z-10 w-8 h-8 p-1 hidden group-hover:block" />
+                        <span class="group-hover:text-[#1A8FCB] duration-150 z-10">Kalkulator</span>
+                    </a>
+
+                    <a href="database" class="relative flex gap-2 items-center p-1 rounded-lg group cursor-pointer">
+                        <div class="absolute top-0 left-0 w-full h-full bg-white rounded-lg shadow duration-300"></div>
+                        <img src="{{ url_for('static', filename='assets/db-blue.png') }}" alt="kalkulasi" class="z-10 w-8 h-8 p-1" />
+                        <span class="text-[#1A8FCB] z-10">Database</span>
+                    </a>
+                </div>
+
+                <div class="flex gap-2 items-center">
+                    <img src="{{ url_for('static', filename='assets/logout-gray.png') }}" alt="logout" class="w-8 h-8" />
+                    <span>Logout</span>
+                </div>
+            </div>
+
+            <!-- content -->
+            <div class="w-full h-full bg-[#FAFDFF] rounded-tl-[1.5rem] flex flex-col p-4 gap-2">
+                <div id="boxTabs" class="h-fit w-full bg-[#EFF3FF] rounded-md p-2 flex gap-2 text-xs text-[#585965]">
+                    <h5 id="" class="header-tabs py-1 px-1 hover:cursor-pointer duration-300 hover:border-b hover:border-[#1A8FCB] hover:text-[#1A8FCB] border-b border-[#1A8FCB] text-[#1A8FCB] whitespace-nowrap">Database</h5>
+                </div>
+
+                <!-- aggrid -->
+                <div class="w-full h-[calc(100%-2rem)]">
+                    <div id="aggrid" class="w-full h-full ag-theme-quartz"></div>
+                </div>
+            </div>
+        </div>
+
+        <script src="{{ url_for('static', filename='vendors/aggrid.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/database.js') }}"></script>
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    </body>
+</html>

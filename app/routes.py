@@ -1,6 +1,7 @@
 from flask import Blueprint, url_for, render_template, request, jsonify
 from app import utils
 import pandas as pd
+import traceback
 
 routes_bp = Blueprint('routes', __name__)
 
@@ -15,6 +16,10 @@ def kalkulasi_view():
 @routes_bp.route("/model-kalkulator")
 def model_view():
     return render_template('kalkulator.html')
+
+@routes_bp.route("/database")
+def database_view():
+    return render_template('database.html')
 
 @routes_bp.route("/testing")
 def testing_view():
@@ -127,3 +132,8 @@ def classification():
         return jsonify(data), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+
+@routes_bp.route("/kalkulasi-model")
+def analyst_view():
+    return render_template('analyst-ui.html')
