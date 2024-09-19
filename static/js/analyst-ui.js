@@ -13,6 +13,43 @@ let idNotif = 1;
 let idProgress = 1;
 let dataList = [];
 let dataMentah = {};
+let columnDefs = {
+    list: [
+        { headerName: "NAMA", field: "name" },
+        { headerName: "UKURAN", field: "size", minWidth: 150, maxWidth: 200 },
+        {
+            headerName: "AKSI",
+            field: "action",
+            cellRenderer: (params) => {
+                const span = document.createElement("span");
+                span.innerHTML = params.value;
+                span.addEventListener("click", () => {
+                    const rowIndex = params.node.rowIndex;
+                    const index = dataList.findIndex((item) => item.name === params.data.name);
+                    if (index !== -1) {
+                        dataList.splice(index, 1);
+                    }
+                    delete dataMentah[params.data.name];
+                    gridApi.applyTransaction({ remove: [params.data] });
+                });
+                return span;
+            },
+            minWidth: 150,
+            maxWidth: 200,
+        },
+        {
+            headerName: "STATUS",
+            field: "status",
+            futoHeight: true,
+            cellRenderer: (params) => {
+                return params.value;
+            },
+            minWidth: 150,
+            maxWidth: 200,
+        },
+    ],
+    mentah: [],
+};
 
 const uploadFiles = async (agUrl, agData) => {
     const formData = new FormData();
@@ -78,63 +115,15 @@ const showOption = () => {
     }
 };
 
-const setupAggrid = async (agData, agView) => {
+const setupAggrid = async (agData, agCol, agView) => {
     const eGrid = document.getElementById("aggrid-website");
     const cGrid = document.querySelectorAll(".ag-header-cell-label");
-
-    let rowData = [];
-
-    try {
-        agData.map((item) => {
-            rowData.push(item);
-        });
-    } catch (error) {
-        rowData = [];
-    }
-
-    const columnDefs = [
-        {
-            headerName: "NAMA",
-            field: "name",
-        },
-        {
-            headerName: "UKURAN",
-            field: "size",
-            minWidth: 150,
-            maxWidth: 200,
-        },
-        {
-            headerName: "AKSI",
-            field: "action",
-            cellRenderer: (params) => {
-                const span = document.createElement("span");
-                span.innerHTML = params.value;
-                span.addEventListener("click", () => {
-                    const rowIndex = params.node.rowIndex;
-                    gridApi.applyTransaction({ remove: [params.data] });
-                });
-                return span;
-            },
-            minWidth: 150,
-            maxWidth: 200,
-        },
-        {
-            headerName: "STATUS",
-            field: "status",
-            futoHeight: true,
-            cellRenderer: (params) => {
-                return params.value;
-            },
-            minWidth: 150,
-            maxWidth: 200,
-        },
-    ];
 
     defaultColDef = { flex: 1 };
 
     const gridOptions = {
-        columnDefs: columnDefs,
-        rowData: rowData,
+        columnDefs: agCol,
+        rowData: agData,
         defaultColDef: defaultColDef,
     };
 
@@ -146,6 +135,8 @@ const setupAggrid = async (agData, agView) => {
 };
 
 const tools = (agT) => {
+    const header = document.getElementById("header");
+
     childTools.querySelectorAll(`.tools`).forEach((element) => {
         element.classList.remove("bg-sky-500");
         element.classList.add("hover:bg-sky-500");
@@ -162,12 +153,43 @@ const tools = (agT) => {
     childContent.innerHTML = "";
 
     if (agT === "list") {
+        header.textContent = "List File";
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
             <h1 class="font-medium text-lg text-blue-900">File Terunggah</h1>
             <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
         </div>`;
 
-        setupAggrid("", false);
+        setupAggrid(dataList, columnDefs.list, false);
+    }
+
+    if (agT === "mentah") {
+        header.textContent = "Data Mentah";
+        let option = Object.keys(dataMentah).map((key) => {
+            return `<option value='${key}'>${key}</option>`;
+        });
+
+        childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
+            <div class="w-full flex justify-between text-sm">
+                <div class="flex gap-2">
+                    <span>Nama File: </span>
+                    <select id="slc-mentah" class="cursor-pointer">${option}</select>
+                </div>
+            </div>
+            <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
+        </div>`;
+
+        try {
+            columnDefs.mentah = Object.keys(dataMentah[document.getElementById("slc-mentah").value][0]).map((key) => {
+                return { headerName: key, field: key };
+            });
+        } catch (error) {
+            columnDefs.mentah = [
+                { headerName: "Material Code", field: "code" },
+                { headerName: "Material Description", field: "desc" },
+            ];
+        }
+
+        setupAggrid(dataMentah[document.getElementById("slc-mentah").value], columnDefs.mentah, false);
     }
 
     url.searchParams.set("t", agT);
@@ -201,7 +223,7 @@ const progress = (agH, agS) => {
     const elementProgress = document.getElementById("progress");
     const idProgressNow = idProgress;
 
-    elementProgress.innerHTML += `<div class="w-full flex flex-col bg-white shadow border px-2 py-1 rounded gap-1">
+    elementProgress.innerHTML += `<div id="box-${idProgressNow}" class="w-full flex flex-col bg-white shadow border px-2 py-1 rounded gap-1 origin-right duration-300">
             <h1 class="py-1 text-sm font-medium">${agH}</h1>
             <span>${agS}</span>
             <div class="w-[15rem] flex gap-2 items-center">
@@ -215,65 +237,87 @@ const progress = (agH, agS) => {
 
     idProgress += 1;
 
-    return { width: `width-${idProgressNow}`, bar: `bar-${idProgressNow}` };
+    return { width: `width-${idProgressNow}`, bar: `bar-${idProgressNow}`, box: `box-${idProgressNow}` };
 };
 
-const uploadFile = () => {
-    [...inpFile.files].map(async (file) => {
-        const resProg = progress("Reading File", `${file.name}`);
-        const times = file.size / 500;
+const uploadFile = async (agN) => {
+    numUpload = agN;
+    const file = inpFile.files[numUpload];
 
-        let number = 0;
-        let sInverval = "start";
+    const resProg = progress("Reading File", `${file.name}`);
+    const times = file.size / 100;
 
-        const interval = setInterval(() => {
-            document.getElementById(`${resProg.width}`).style.width = `${number}%`;
-            document.getElementById(`${resProg.bar}`).textContent = `${number}%`;
+    let number = 0;
+    let sInverval = "start";
 
-            number += 1;
+    const interval = setInterval(() => {
+        document.getElementById(`${resProg.width}`).style.width = `${number}%`;
+        document.getElementById(`${resProg.bar}`).textContent = `${number}%`;
 
-            if (sInverval === "done") {
-                clearInterval(interval);
-                document.getElementById(`${resProg.width}`).style.width = `100%`;
-                document.getElementById(`${resProg.bar}`).textContent = `100%`;
-            }
+        number += 1;
 
-            if (number >= 95) {
-                sInverval = "done";
-            }
-        }, times / 100);
-
-        const [status, response] = await uploadFiles("upload-file", file);
-
-        let statusAggrid = status === "success" ? `<div class="flex gap-1 items-center cursor-pointer"><img src="./static/assets/done-green.png" alt="delete" class="w-4 h-4" /><span class="text-green-500">Terunggah</span></div>` : `<div class="flex gap-1 items-center cursor-pointer"><img src="./static/assets/error-yellow.png" alt="delete" class="w-4 h-4" /><span class="text-yellow-500">Gagal</span></div>`;
-
-        console.log(status);
-
-        if (response) {
-            dataList.push({
-                name: file.name,
-                size: file.size,
-                action: `<div class="flex gap-1 items-center cursor-pointer"><img src="./static/assets/delete-red.png" alt="delete" class="w-4 h-4" /><span class="text-red-500">Hapus</span></div>`,
-                status: statusAggrid,
-            });
-
-            setupAggrid(dataList, false);
-
-            if ((sInverval = "done")) {
-                document.getElementById(`${resProg.width}`).style.width = `100%`;
-                document.getElementById(`${resProg.bar}`).textContent = `100%`;
-            } else {
-                sInverval = "done";
-            }
+        if (sInverval === "done") {
+            clearInterval(interval);
+            document.getElementById(`${resProg.width}`).style.width = `100%`;
+            document.getElementById(`${resProg.bar}`).textContent = `100%`;
+            document.getElementById(`${resProg.box}`).classList.add("scale-0");
+            setTimeout(() => {
+                try {
+                    document.getElementById(`${resProg.box}`).remove();
+                } catch (error) {
+                    ("");
+                }
+            }, 200);
         }
-    });
+
+        if (number >= 95) {
+            clearInterval(interval);
+            sInverval = "done";
+        }
+    }, times / 100);
+
+    const [status, response] = await uploadFiles("upload-file", file);
+
+    let statusAggrid = status === "success" ? `<div class="flex gap-1 items-center cursor-pointer"><img src="./static/assets/done-green.png" alt="delete" class="w-4 h-4" /><span class="text-green-500">Terunggah</span></div>` : `<div class="flex gap-1 items-center cursor-pointer"><img src="./static/assets/error-yellow.png" alt="delete" class="w-4 h-4" /><span class="text-yellow-500">Gagal</span></div>`;
+
+    if (response) {
+        dataList.push({
+            name: file.name,
+            size: file.size,
+            action: `<div class="flex gap-1 items-center cursor-pointer"><img src="./static/assets/delete-red.png" alt="delete" class="w-4 h-4" /><span class="text-red-500">Hapus</span></div>`,
+            status: statusAggrid,
+        });
+
+        tools("list");
+
+        dataMentah[file.name] = response;
+
+        if ((sInverval = "done")) {
+            document.getElementById(`${resProg.width}`).style.width = `100%`;
+            document.getElementById(`${resProg.bar}`).textContent = `100%`;
+            document.getElementById(`${resProg.box}`).classList.add("scale-0");
+            setTimeout(() => {
+                try {
+                    document.getElementById(`${resProg.box}`).remove();
+                } catch (error) {
+                    ("");
+                }
+            }, 200);
+        } else {
+            sInverval = "done";
+        }
+
+        if (numUpload < [...inpFile.files].length - 1) {
+            uploadFile(numUpload + 1);
+        }
+    }
 };
 
 const setHeight = () => document.getElementById("container").style.setProperty("--vh", `${window.innerHeight * 0.01}px`);
 const setLoading = (value) => gridApi.setGridOption("loading", value);
 
 childTools.querySelectorAll(".tools").forEach((element) => element.addEventListener("click", () => tools(element.getAttribute("data-tools"))));
-inpFile.addEventListener("change", () => uploadFile());
+inpFile.addEventListener("change", () => uploadFile(0));
 boxAccount.addEventListener("click", () => showOption());
 btnChevron.addEventListener("click", () => miniNav());
 window.addEventListener("resize", setHeight);
