@@ -1,9 +1,7 @@
 const url = new URL(window.location.href);
 const urlParams = new URLSearchParams(window.location.search);
 const btnChevron = document.getElementById("btn-chevron");
-const boxAccount = document.getElementById("box-account");
 const childTools = document.getElementById("child-tools");
-const childContent = document.getElementById("child-content");
 const inpFile = document.getElementById("inp-file");
 
 let miniNavIndikacator = { status: false, nav: "13rem", tools: "13rem" };
@@ -13,6 +11,9 @@ let idNotif = 1;
 let idProgress = 1;
 let dataList = [];
 let dataMentah = {};
+let dataSubset = [];
+let dataFiltered = [];
+let idProduct = 1;
 let columnDefs = {
     list: [
         { headerName: "NAMA", field: "name" },
@@ -23,12 +24,20 @@ let columnDefs = {
             cellRenderer: (params) => {
                 const span = document.createElement("span");
                 span.innerHTML = params.value;
-                span.addEventListener("click", () => {
+                span.addEventListener("click", async () => {
                     const rowIndex = params.node.rowIndex;
                     const index = dataList.findIndex((item) => item.name === params.data.name);
                     if (index !== -1) {
                         dataList.splice(index, 1);
                     }
+                    const [fStatus, fResponse] = await processingFiles("delete-file", params.data.id);
+
+                    if (fStatus === "success") {
+                        notification("show", "File berhasil terhapus");
+                    } else {
+                        notification("show", "Gagal menghapus file");
+                    }
+
                     delete dataMentah[params.data.name];
                     gridApi.applyTransaction({ remove: [params.data] });
                 });
@@ -51,25 +60,47 @@ let columnDefs = {
     mentah: [],
 };
 
-const uploadFiles = async (agUrl, agData) => {
+const uploadFiles = async (agUrl, agData, agId) => {
     const formData = new FormData();
     formData.append("file", agData);
+    formData.append("numid", agId);
+    formData.append("session", sessionStorage.getItem("id"));
 
     try {
-        const response = await fetch(agUrl, {
-            method: "POST",
-            body: formData,
-        });
+        const response = await fetch(agUrl, { method: "POST", body: formData });
 
         const data = await response.json();
+        const { ok, statusText } = response;
 
-        if (response.ok) {
+        if (ok) {
             return ["success", data];
         } else {
-            return ["error", data];
+            return ["error", statusText || data];
         }
     } catch (error) {
-        return ["error", error];
+        return ["error", error.message || error];
+    }
+};
+
+const processingFiles = async (agUrl, agId) => {
+    const formData = new FormData();
+    formData.append("numid", agId);
+    formData.append("session", sessionStorage.getItem("id"));
+
+    try {
+        const response = await fetch(agUrl, { method: "POST", body: formData });
+
+        const { ok, statusText } = response;
+
+        if (!ok) {
+            const errorData = await response.json();
+            return ["failed", errorData.error || statusText];
+        }
+
+        const result = await response.json();
+        return ["success", result];
+    } catch (error) {
+        return ["failed", error.message || error];
     }
 };
 
@@ -78,6 +109,7 @@ const miniNav = () => {
     const boxContent = document.getElementById("box-content");
     const imgTitle = document.getElementById("img-title");
     const childNav = document.getElementById("child-nav");
+    const boxAccount = document.getElementById("box-account");
 
     if (miniNavIndikacator.status) {
         boxNav.style.width = "11rem";
@@ -104,28 +136,34 @@ const miniNav = () => {
     boxContent.style.width = `calc(100vw - ${miniNavIndikacator.nav} - ${miniNavIndikacator.tools})`;
 };
 
-const showOption = () => {
-    const accountOption = document.getElementById("account-option");
-    if (accountOptionIndikator) {
-        accountOption.style.display = "none";
-        accountOptionIndikator = false;
-    } else {
-        accountOption.style.display = "flex";
-        accountOptionIndikator = true;
-    }
-};
-
 const setupAggrid = async (agData, agCol, agView) => {
     const eGrid = document.getElementById("aggrid-website");
     const cGrid = document.querySelectorAll(".ag-header-cell-label");
 
+    let rowData = [];
+
+    try {
+        rowData = agData.map((item) => {
+            return Object.entries(item).reduce((acc, entry) => {
+                if (entry[0].toLowerCase().includes("date")) {
+                    const dateObj = new Date(entry[1]);
+                    const year = dateObj.getFullYear();
+                    const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+                    const day = String(dateObj.getDate()).padStart(2, "0");
+                    acc[entry[0]] = `${year}-${month}-${day}`;
+                } else {
+                    acc[entry[0]] = entry[1];
+                }
+                return acc;
+            }, {});
+        });
+    } catch (error) {
+        rowData = agData;
+    }
+
     defaultColDef = { flex: 1 };
 
-    const gridOptions = {
-        columnDefs: agCol,
-        rowData: agData,
-        defaultColDef: defaultColDef,
-    };
+    const gridOptions = { columnDefs: agCol, rowData: rowData, defaultColDef: defaultColDef };
 
     eGrid.innerHTML = "";
     gridApi = agGrid.createGrid(eGrid, gridOptions);
@@ -136,6 +174,8 @@ const setupAggrid = async (agData, agCol, agView) => {
 
 const tools = (agT) => {
     const header = document.getElementById("header");
+    const headerAction = document.getElementById("header-action");
+    const childContent = document.getElementById("child-content");
 
     childTools.querySelectorAll(`.tools`).forEach((element) => {
         element.classList.remove("bg-sky-500");
@@ -154,6 +194,8 @@ const tools = (agT) => {
 
     if (agT === "list") {
         header.textContent = "List File";
+        headerAction.innerHTML = "";
+
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
             <h1 class="font-medium text-lg text-blue-900">File Terunggah</h1>
             <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
@@ -164,6 +206,8 @@ const tools = (agT) => {
 
     if (agT === "mentah") {
         header.textContent = "Data Mentah";
+        headerAction.innerHTML = "";
+
         let option = Object.keys(dataMentah).map((key) => {
             return `<option value='${key}'>${key}</option>`;
         });
@@ -172,24 +216,132 @@ const tools = (agT) => {
             <div class="w-full flex justify-between text-sm">
                 <div class="flex gap-2">
                     <span>Nama File: </span>
-                    <select id="slc-mentah" class="cursor-pointer">${option}</select>
+                    <select id="slc-mentah" class="cursor-pointer bg-transparent">${option}</select>
                 </div>
             </div>
             <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
         </div>`;
 
         try {
+            headerAction.innerHTML = `<button id="btn-process-mentah" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded text-xs">Proses Dataframe</button>`;
+
             columnDefs.mentah = Object.keys(dataMentah[document.getElementById("slc-mentah").value][0]).map((key) => {
-                return { headerName: key, field: key };
+                const lenght = key.length >= 20 ? key.length * 8 : key.length >= 15 ? key.length * 9 : key.length >= 10 ? key.length * 10 : key.length * 12;
+                return {
+                    headerName: key,
+                    field: key,
+                    minWidth: lenght,
+                    cellRenderer: (params) => {
+                        return params.value;
+                    },
+                };
             });
+
+            document.getElementById("slc-mentah").addEventListener("change", () => {
+                columnDefs.mentah = Object.keys(dataMentah[document.getElementById("slc-mentah").value][0]).map((key) => {
+                    const lenght = key.length >= 20 ? key.length * 8 : key.length >= 15 ? key.length * 9 : key.length >= 10 ? key.length * 10 : key.length * 12;
+                    return {
+                        headerName: key,
+                        field: key,
+                        minWidth: lenght,
+                        cellRenderer: (params) => {
+                            return params.value;
+                        },
+                    };
+                });
+
+                setupAggrid(dataMentah[document.getElementById("slc-mentah").value], columnDefs.mentah, false);
+            });
+
+            document.getElementById("btn-process-mentah").addEventListener("click", () => subset());
         } catch (error) {
             columnDefs.mentah = [
-                { headerName: "Material Code", field: "code" },
-                { headerName: "Material Description", field: "desc" },
+                { headerName: "Base Unit of Measure", field: "code" },
+                { headerName: "Material", field: "code" },
+                { headerName: "Material.1", field: "code" },
+                { headerName: "Movement Type", field: "code" },
+                { headerName: "Posting Date", field: "code" },
+                { headerName: "Purchase Order", field: "code" },
             ];
         }
 
         setupAggrid(dataMentah[document.getElementById("slc-mentah").value], columnDefs.mentah, false);
+    }
+
+    if (agT === "subset") {
+        header.textContent = "Subset Data";
+        headerAction.innerHTML = "";
+
+        childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
+            <div class="w-full flex justify-between text-sm">
+                <div>Testing</div>
+            </div>
+            <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
+        </div>`;
+
+        try {
+            columnDefs.subset = Object.keys(dataSubset[0]).map((key) => {
+                const lenght = key.length >= 20 ? key.length * 8 : key.length >= 15 ? key.length * 9 : key.length >= 10 ? key.length * 10 : key.length * 12;
+                return {
+                    headerName: key,
+                    field: key,
+                    minWidth: lenght,
+                    cellRenderer: (params) => {
+                        return params.value;
+                    },
+                };
+            });
+
+            setupAggrid(dataSubset, columnDefs.subset, false);
+        } catch (error) {
+            columnDefs.subset = [
+                { headerName: "Material_Code", field: "Material_Code" },
+                { headerName: "Material Description", field: "Material Description" },
+                { headerName: "Movement Type", field: "Movement Type" },
+                { headerName: "Posting Date", field: "Posting Date" },
+                { headerName: "Quantity(EA)", field: "Quantity(EA)" },
+            ];
+
+            setupAggrid("", columnDefs.subset, false);
+        }
+    }
+
+    if (agT === "filtered") {
+        header.textContent = "Data Klasifikasi";
+        headerAction.innerHTML = "";
+
+        childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
+            <div class="w-full flex justify-between text-sm">
+                <div>Testing</div>
+            </div>
+            <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
+        </div>`;
+
+        try {
+            columnDefs.filtered = Object.keys(dataFiltered[0]).map((key) => {
+                const lenght = key.length >= 20 ? key.length * 8 : key.length >= 15 ? key.length * 9 : key.length >= 10 ? key.length * 10 : key.length * 12;
+                return {
+                    headerName: key,
+                    field: key,
+                    minWidth: lenght,
+                    cellRenderer: (params) => {
+                        return params.value;
+                    },
+                };
+            });
+
+            setupAggrid(dataFiltered, columnDefs.filtered, false);
+        } catch (error) {
+            columnDefs.filtered = [
+                { headerName: "Material_Code", field: "Material_Code" },
+                { headerName: "Material Description", field: "Material Description" },
+                { headerName: "Movement Type", field: "Movement Type" },
+                { headerName: "Posting Date", field: "Posting Date" },
+                { headerName: "Quantity(EA)", field: "Quantity(EA)" },
+            ];
+
+            setupAggrid("", columnDefs.filtered, false);
+        }
     }
 
     url.searchParams.set("t", agT);
@@ -202,7 +354,7 @@ const notification = (agS, agE) => {
 
     if (agS === "show") {
         notif.innerHTML += `
-            <div id="notif-${notifNow}" class="px-2 py-1 flex items-top gap-2 bg-white border rounded scale-0 origin-right duration-300">
+            <div id="notif-${notifNow}" class="px-2 py-1 flex items-center gap-2 bg-white border rounded scale-0 origin-right duration-300">
                 <img onclick="notification('hide', 'notif-${notifNow}')" src="./static/assets/delete.png" alt="delete" class="h-5 w-fit cursor-pointer" />
                 ${agE}
             </div>
@@ -217,6 +369,14 @@ const notification = (agS, agE) => {
         elementDelete.classList.add("scale-0");
         setTimeout(() => elementDelete.remove(), 150);
     }
+
+    setTimeout(() => {
+        try {
+            notification("hide", `notif-${notifNow}`);
+        } catch (error) {
+            void 0;
+        }
+    }, 5000);
 };
 
 const progress = (agH, agS) => {
@@ -225,26 +385,26 @@ const progress = (agH, agS) => {
 
     elementProgress.innerHTML += `<div id="box-${idProgressNow}" class="w-full flex flex-col bg-white shadow border px-2 py-1 rounded gap-1 origin-right duration-300">
             <h1 class="py-1 text-sm font-medium">${agH}</h1>
-            <span>${agS}</span>
+            <span id="span-subtitle-${idProgressNow}">${agS}</span>
             <div class="w-[15rem] flex gap-2 items-center">
                 <div class="w-full h-3 relative">
                     <div class="w-full h-full rounded bg-blue-700"></div>
                     <div id="width-${idProgressNow}" class="w-1 h-full rounded bg-green-600 absolute top-0 left-0"></div>
                 </div>
-                <div id="bar-${idProgressNow}" class="whitespace-nowrap">1%</div>
+                <div id="bar-${idProgressNow}" class="whitespace-nowrap">0%</div>
             </div>
         </div>`;
 
     idProgress += 1;
 
-    return { width: `width-${idProgressNow}`, bar: `bar-${idProgressNow}`, box: `box-${idProgressNow}` };
+    return { width: `width-${idProgressNow}`, bar: `bar-${idProgressNow}`, box: `box-${idProgressNow}`, span: `span-subtitle-${idProgressNow}` };
 };
 
 const uploadFile = async (agN) => {
     numUpload = agN;
     const file = inpFile.files[numUpload];
 
-    const resProg = progress("Reading File", `${file.name}`);
+    const resProg = progress("Baca data histori Good Issue (GI)", `${file.name}`);
     const times = file.size / 100;
 
     let number = 0;
@@ -265,7 +425,7 @@ const uploadFile = async (agN) => {
                 try {
                     document.getElementById(`${resProg.box}`).remove();
                 } catch (error) {
-                    ("");
+                    void 0;
                 }
             }, 200);
         }
@@ -276,23 +436,64 @@ const uploadFile = async (agN) => {
         }
     }, times / 100);
 
-    const [status, response] = await uploadFiles("upload-file", file);
+    const [status, response] = await uploadFiles("upload-file", file, idProduct);
 
-    let statusAggrid = status === "success" ? `<div class="flex gap-1 items-center cursor-pointer"><img src="./static/assets/done-green.png" alt="delete" class="w-4 h-4" /><span class="text-green-500">Terunggah</span></div>` : `<div class="flex gap-1 items-center cursor-pointer"><img src="./static/assets/error-yellow.png" alt="delete" class="w-4 h-4" /><span class="text-yellow-500">Gagal</span></div>`;
-
-    if (response) {
-        dataList.push({
-            name: file.name,
-            size: file.size,
-            action: `<div class="flex gap-1 items-center cursor-pointer"><img src="./static/assets/delete-red.png" alt="delete" class="w-4 h-4" /><span class="text-red-500">Hapus</span></div>`,
-            status: statusAggrid,
-        });
-
-        tools("list");
-
+    if (status === "success") {
+        statusAggrid = `<div class="flex gap-1 items-center cursor-pointer"><img src="./static/assets/done-green.png" alt="delete" class="w-4 h-4" /><span class="text-green-500">Terunggah</span></div>`;
         dataMentah[file.name] = response;
+    } else {
+        notification("show", "File gagal diunggah");
+        statusAggrid = `<div class="flex gap-1 items-center cursor-pointer"><img src="./static/assets/error-yellow.png" alt="delete" class="w-4 h-4" /><span class="text-yellow-500">Gagal</span></div>`;
+    }
 
-        if ((sInverval = "done")) {
+    dataList.push({
+        name: file.name,
+        size: file.size,
+        action: `<div class="flex gap-1 items-center cursor-pointer"><img src="./static/assets/delete-red.png" alt="delete" class="w-4 h-4" /><span class="text-red-500">Hapus</span></div>`,
+        status: statusAggrid,
+        id: idProduct,
+    });
+
+    tools("list");
+
+    if ((sInverval = "done")) {
+        document.getElementById(`${resProg.width}`).style.width = `100%`;
+        document.getElementById(`${resProg.bar}`).textContent = `100%`;
+        document.getElementById(`${resProg.box}`).classList.add("scale-0");
+        setTimeout(() => {
+            try {
+                document.getElementById(`${resProg.box}`).remove();
+            } catch (error) {
+                void 0;
+            }
+        }, 200);
+    } else {
+        sInverval = "done";
+    }
+
+    idProduct += 1;
+
+    if (numUpload < [...inpFile.files].length - 1) {
+        uploadFile(numUpload + 1);
+    }
+};
+
+const subset = async () => {
+    const resProg = progress("Filterisasi Data", `Normalisasi data Input Histori Good Issue (GI)`);
+
+    let times = Object.values(dataMentah).reduce((sum, data) => sum + data.length, 0);
+
+    let number = 0;
+    let sInverval = "start";
+
+    const interval = setInterval(() => {
+        document.getElementById(`${resProg.width}`).style.width = `${number}%`;
+        document.getElementById(`${resProg.bar}`).textContent = `${number}%`;
+
+        number += 1;
+
+        if (sInverval === "done") {
+            clearInterval(interval);
             document.getElementById(`${resProg.width}`).style.width = `100%`;
             document.getElementById(`${resProg.bar}`).textContent = `100%`;
             document.getElementById(`${resProg.box}`).classList.add("scale-0");
@@ -300,16 +501,104 @@ const uploadFile = async (agN) => {
                 try {
                     document.getElementById(`${resProg.box}`).remove();
                 } catch (error) {
-                    ("");
+                    void 0;
                 }
             }, 200);
-        } else {
-            sInverval = "done";
         }
 
-        if (numUpload < [...inpFile.files].length - 1) {
-            uploadFile(numUpload + 1);
+        if (number >= 95) {
+            clearInterval(interval);
+            sInverval = "done";
         }
+    }, times / 100);
+
+    const [status, result] = await processingFiles("subset");
+
+    if (status === "success") {
+        dataSubset = result;
+        tools("subset");
+        filtered();
+    } else {
+        notification("show", "Gagal mengolah data");
+    }
+
+    if ((sInverval = "done")) {
+        document.getElementById(`${resProg.width}`).style.width = `100%`;
+        document.getElementById(`${resProg.bar}`).textContent = `100%`;
+        document.getElementById(`${resProg.box}`).classList.add("scale-0");
+        setTimeout(() => {
+            try {
+                document.getElementById(`${resProg.box}`).remove();
+            } catch (error) {
+                void 0;
+            }
+        }, 200);
+    } else {
+        sInverval = "done";
+    }
+};
+
+const filtered = async () => {
+    const resProg = progress("Filterisasi Data", `Filtering data Histori Good Issue (GI)`);
+
+    let times = dataSubset.length;
+
+    let number = 0;
+    let sInverval = "start";
+
+    const interval = setInterval(() => {
+        document.getElementById(`${resProg.width}`).style.width = `${number}%`;
+        document.getElementById(`${resProg.bar}`).textContent = `${number}%`;
+
+        number += 1;
+
+        if (number === 50) {
+            document.getElementById(resProg.span).textContent = "Agregasi Data";
+        }
+
+        if (sInverval === "done") {
+            clearInterval(interval);
+            document.getElementById(`${resProg.width}`).style.width = `100%`;
+            document.getElementById(`${resProg.bar}`).textContent = `100%`;
+            document.getElementById(`${resProg.box}`).classList.add("scale-0");
+            setTimeout(() => {
+                try {
+                    document.getElementById(`${resProg.box}`).remove();
+                } catch (error) {
+                    void 0;
+                }
+            }, 200);
+        }
+
+        if (number >= 95) {
+            clearInterval(interval);
+            sInverval = "done";
+        }
+    }, times / 100);
+
+    const [status, result] = await processingFiles("classification");
+
+    if (status === "success") {
+        dataFiltered = result;
+
+        tools("filtered");
+    } else {
+        notification("show", "Gagal mengolah data");
+    }
+
+    if ((sInverval = "done")) {
+        document.getElementById(`${resProg.width}`).style.width = `100%`;
+        document.getElementById(`${resProg.bar}`).textContent = `100%`;
+        document.getElementById(`${resProg.box}`).classList.add("scale-0");
+        setTimeout(() => {
+            try {
+                document.getElementById(`${resProg.box}`).remove();
+            } catch (error) {
+                void 0;
+            }
+        }, 200);
+    } else {
+        sInverval = "done";
     }
 };
 
@@ -318,7 +607,6 @@ const setLoading = (value) => gridApi.setGridOption("loading", value);
 
 childTools.querySelectorAll(".tools").forEach((element) => element.addEventListener("click", () => tools(element.getAttribute("data-tools"))));
 inpFile.addEventListener("change", () => uploadFile(0));
-boxAccount.addEventListener("click", () => showOption());
 btnChevron.addEventListener("click", () => miniNav());
 window.addEventListener("resize", setHeight);
 

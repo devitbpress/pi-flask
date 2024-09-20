@@ -90,34 +90,12 @@ def save_dataframe():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
-@routes_bp.route("/subset", methods=['POST'])
-def subset():
-    try:
-        result = utils.processing_subset(request.form.get("session"))
-        result = result.fillna('')
-        data = result.to_dict(orient='records')
-
-        return jsonify(data), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@routes_bp.route("/classification", methods=['POST'])
-def classification():
-    try:
-        result = utils.processing_classification(request.form.get("session"))
-        result = result.fillna('')
-        data = result.to_dict(orient='records')
-
-        return jsonify(data), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-    
 @routes_bp.route("/kalkulasi-model")
 def analyst_view():
     return render_template('analyst-ui.html')
 
 @routes_bp.route("/upload-file", methods=['POST'])
-def check_file():
+def upload_file():
     if 'file' not in request.files:
         return jsonify({'error': 'Tidak ada file yang diunggah'}), 400
 
@@ -142,3 +120,35 @@ def check_file():
         return jsonify(data), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@routes_bp.route("/delete-file", methods=['POST'])
+def delete_file():
+    try:
+        result = utils.delete_datafile(request.form.get("numid"),request.form.get("session"))
+
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@routes_bp.route("/subset", methods=['POST'])
+def subset():
+    try:
+        result = utils.processing_subset(request.form.get("session"))
+        result = result.fillna('')
+        data = result.to_dict(orient='records')
+
+        return jsonify(data), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@routes_bp.route("/classification", methods=['POST'])
+def classification():
+    try:
+        result = utils.processing_classification(request.form.get("session"))
+        result = result.fillna('')
+        data = result.to_dict(orient='records')
+
+        return jsonify(data), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    

@@ -12,6 +12,7 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='vendors/aggrid.css') }}" />
         <link rel="stylesheet" href="{{ url_for('static', filename='vendors/aggrid-quartz.css') }}" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/analyst-ui.css') }}" />
+        <script src="{{ url_for('static', filename='js/session.js') }}"></script>
     </head>
     <body>
         <div id="container" class="w-full flex">
@@ -26,21 +27,21 @@
                         <img id="img-title" src="{{ url_for('static', filename='assets/pupuk-indonesia-white.png') }}" alt="pupuk" class="h-full w-4/5 ml-3" />
                     </div>
                     <div class="h-10"></div>
-                    <a href="./kalkulasi-model" class="flex items-center gap-4 w-full h-14 py-3 px-3 bg-sky-50 cursor-pointer duration-150">
+                    <a href="./kalkulasi-model" class="flex items-center gap-4 w-full h-14 py-3 px-4 bg-sky-50 cursor-pointer duration-150">
                         <img src="{{ url_for('static', filename='assets/statistic-blue.png') }}" alt="statistic" class="h-6 w-fit" />
                         <span class="text-blue-700">Kalkulasi</span>
                     </a>
-                    <a href="./kalkulasi-model" class="flex items-center gap-4 w-full h-14 py-3 px-3 hover:bg-sky-50 cursor-pointer duration-150 group">
+                    <a href="./kalkulasi-model" class="flex items-center gap-4 w-full h-14 py-3 px-4 hover:bg-sky-50 cursor-pointer duration-150 group">
                         <img src="{{ url_for('static', filename='assets/calc-blue.png') }}" alt="kalkulator" class="h-6 w-fit hidden group-hover:block" />
                         <img src="{{ url_for('static', filename='assets/calc-white.png') }}" alt="kalkulator" class="h-6 w-fit group-hover:hidden" />
                         <span class="text-white group-hover:text-blue-700">Kalkulator</span>
                     </a>
-                    <a href="./kalkulasi-model" class="flex items-center gap-4 w-full h-14 py-3 px-3 hover:bg-sky-50 cursor-pointer duration-150 group">
+                    <a href="./kalkulasi-model" class="flex items-center gap-4 w-full h-14 py-3 px-4 hover:bg-sky-50 cursor-pointer duration-150 group">
                         <img src="{{ url_for('static', filename='assets/product-blue.png') }}" alt="databases" class="h-6 w-fit hidden group-hover:block" />
                         <img src="{{ url_for('static', filename='assets/product-white.png') }}" alt="databases" class="h-6 w-fit group-hover:hidden" />
                         <span class="text-white group-hover:text-blue-700">Produk</span>
                     </a>
-                    <a href="./kalkulasi-model" class="flex items-center gap-4 w-full h-14 py-3 px-3 hover:bg-sky-50 cursor-pointer duration-150 group">
+                    <a href="./kalkulasi-model" class="flex items-center gap-4 w-full h-14 py-3 px-4 hover:bg-sky-50 cursor-pointer duration-150 group">
                         <img src="{{ url_for('static', filename='assets/saved-blue.png') }}" alt="databases" class="h-6 w-fit hidden group-hover:block" />
                         <img src="{{ url_for('static', filename='assets/saved-white.png') }}" alt="databases" class="h-6 w-fit group-hover:hidden" />
                         <span class="text-white group-hover:text-blue-700">Tersimpan</span>
@@ -105,7 +106,7 @@
                             <div data-tools="subset" class="tools subset px-1 py-2 hover:text-white cursor-pointer border-b hover:bg-sky-500 flex justify-between items-center">
                                 <span>Subset Data</span>
                             </div>
-                            <div data-tools="filter" class="tools filter px-1 py-2 hover:text-white cursor-pointer border-b hover:bg-sky-500 flex justify-between items-center">
+                            <div data-tools="filtered" class="tools filtered px-1 py-2 hover:text-white cursor-pointer border-b hover:bg-sky-500 flex justify-between items-center">
                                 <span>Filter Data</span>
                             </div>
                         </div>
@@ -150,8 +151,9 @@
             <!-- content -->
             <div id="box-content" class="relative bg-[#FAFDFF] w-[calc(100vw-11rem-14rem)] h-full flex flex-col duration-300">
                 <!-- header -->
-                <div class="w-full h-16 bg-white shadow-md shadow-blue-100 flex px-4 items-center">
+                <div class="relative w-full h-16 bg-white shadow-md shadow-blue-100 flex px-4 items-center justify-between">
                     <h1 id="header" class="font-medium text-lg text-gray-500">List File</h1>
+                    <div id="header-action" class="flex gap-2 justify-end"></div>
                 </div>
 
                 <!-- content -->

@@ -11,7 +11,8 @@ from app.calc import Model_KerusakanNonLinear_PolaNonMoving
 from app.calc import Model_KerusakanLinear_PolaNonMoving
 from app.calc import Model_BCR_new
 
-data_session = {}
+datafile_session = {}
+dataframe_session = {}
 
 def convert_string_to_number(s):
     if '.' in s:
@@ -595,38 +596,42 @@ def count_and_stats_by_material(df):
 
     return grouped
 
+def delete_datafile(numid, session_id):
+    if session_id in datafile_session:
+        for item in datafile_session[session_id]:
+            if numid in item:
+                del item[numid]
+
+    return "success"
+
 def processing_save_dataframe(df, num_id, session_id):
-    if session_id not in data_session:
-        data_session[session_id] = []
-    data_session[session_id].append({num_id: df})
+    if session_id not in datafile_session:
+        datafile_session[session_id] = []
+    datafile_session[session_id].append({num_id: df})
 
     return df
 
 def processing_subset(session_id):
-    dataframes = [value for item in data_session[session_id] for value in item.values()]
+    dataframes = [value for item in datafile_session[session_id] for value in item.values()]
     df_com_hist = normalize_and_combine_dataframes(*dataframes)
     filtered_df, unmatched_cancels_df, matched_df = process_data(df_com_hist)
     filtered_df = filtered_df.rename(columns={'Material': 'Material_Code', 'Unnamed: 7': 'Quantity(EA)'})
     data_input_sebelum_klasifikasi = filtered_df[['Posting Date', 'Material_Code', 'Material Description', 'Quantity(EA)', 'Movement Type']]
-    data_session[session_id] = []
-    data_session[session_id].append({"subset": filtered_df})
+    dataframe_session[session_id] = []
+    dataframe_session[session_id].append({"subset": filtered_df})
 
     return data_input_sebelum_klasifikasi
 
 def processing_classification(session_id):
-    filtered_df = data_session[session_id][0]['subset']
+    filtered_df = dataframe_session[session_id][0]['subset']
     filtered_df['Has_Z61'] = filtered_df['Movement Type'] == 'Z61'
-    print("hitung jumlah data dan statistik lainnya")
     Hasil_Klasifikasi = count_and_stats_by_material(filtered_df)
-    print("data uniq")
     filtered_df_unique = filtered_df[['Material_Code', 'Material Description']].drop_duplicates(subset='Material_Code')
-    print("left join")
     Hasil_Klasifikasi = Hasil_Klasifikasi.merge(filtered_df_unique, how='left', left_on='Material_Code', right_on='Material_Code')
-    print('pindahkan kolom description')
     cols = list(Hasil_Klasifikasi.columns)
     material_code_index = cols.index('Material_Code')
     cols.insert(material_code_index + 1, cols.pop(cols.index('Material Description')))
-    print("hasil akhir")
     Hasil_Klasifikasi = Hasil_Klasifikasi[cols]
+    dataframe_session[session_id].append({"class": Hasil_Klasifikasi})
 
     return Hasil_Klasifikasi
