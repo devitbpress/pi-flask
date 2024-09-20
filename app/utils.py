@@ -613,7 +613,9 @@ def processing_save_dataframe(df, num_id, session_id):
 
 def processing_subset(session_id):
     dataframes = [value for item in datafile_session[session_id] for value in item.values()]
+    print("mulai normalize")
     df_com_hist = normalize_and_combine_dataframes(*dataframes)
+    print("mulai filterisasi")
     filtered_df, unmatched_cancels_df, matched_df = process_data(df_com_hist)
     filtered_df = filtered_df.rename(columns={'Material': 'Material_Code', 'Unnamed: 7': 'Quantity(EA)'})
     data_input_sebelum_klasifikasi = filtered_df[['Posting Date', 'Material_Code', 'Material Description', 'Quantity(EA)', 'Movement Type']]
