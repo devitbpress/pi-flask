@@ -411,8 +411,12 @@ const uploadFile = async (agN) => {
     let sInverval = "start";
 
     const interval = setInterval(() => {
-        document.getElementById(`${resProg.width}`).style.width = `${number}%`;
-        document.getElementById(`${resProg.bar}`).textContent = `${number}%`;
+        try {
+            document.getElementById(`${resProg.width}`).style.width = `${number}%`;
+            document.getElementById(`${resProg.bar}`).textContent = `${number}%`;
+        } catch (error) {
+            clearInterval(interval);
+        }
 
         number += 1;
 
@@ -494,8 +498,12 @@ const subset = async () => {
         let sInverval = "start";
 
         const interval = setInterval(() => {
-            document.getElementById(`${resProg.width}`).style.width = `${number}%`;
-            document.getElementById(`${resProg.bar}`).textContent = `${number}%`;
+            try {
+                document.getElementById(`${resProg.width}`).style.width = `${number}%`;
+                document.getElementById(`${resProg.bar}`).textContent = `${number}%`;
+            } catch (error) {
+                clearInterval(interval);
+            }
 
             number += 1;
 
@@ -555,9 +563,12 @@ const filtered = async () => {
     let sInverval = "start";
 
     const interval = setInterval(() => {
-        console.log(sInverval);
-        document.getElementById(`${resProg.width}`).style.width = `${number}%`;
-        document.getElementById(`${resProg.bar}`).textContent = `${number}%`;
+        try {
+            document.getElementById(`${resProg.width}`).style.width = `${number}%`;
+            document.getElementById(`${resProg.bar}`).textContent = `${number}%`;
+        } catch (error) {
+            clearInterval(interval);
+        }
 
         number += 1;
 
