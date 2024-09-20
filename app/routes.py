@@ -7,7 +7,7 @@ routes_bp = Blueprint('routes', __name__)
 
 @routes_bp.route("/")
 def index():
-    return "<script>window.location.href = '/kalkulasi';</script>"
+    return "<script>window.location.href = '/kalkulasi-model';</script>"
 
 @routes_bp.route("/kalkulasi")
 def kalkulasi_view():
