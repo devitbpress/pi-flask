@@ -11,7 +11,7 @@ def index():
 
 @routes_bp.route("/kalkulasi")
 def kalkulasi_view():
-    return render_template('kalkulasi.html')
+    return "<script>window.location.href = '/kalkulasi-model';</script>"
 
 @routes_bp.route("/model-kalkulator")
 def model_view():
