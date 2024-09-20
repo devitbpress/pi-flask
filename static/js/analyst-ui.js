@@ -479,21 +479,57 @@ const uploadFile = async (agN) => {
 };
 
 const subset = async () => {
-    const resProg = progress("Filterisasi Data", `Normalisasi data Input Histori Good Issue (GI)`);
+    let lengData = 0;
 
-    let times = Object.values(dataMentah).reduce((sum, data) => sum + data.length, 0);
+    Object.values(dataMentah).map((item) => (lengData += item.length));
 
-    let number = 0;
-    let sInverval = "start";
+    if (lengData > 90000) {
+        notification("show", "Data melebihi batas makasimal 90.000 Data");
+    } else {
+        const resProg = progress("Filterisasi Data", `Normalisasi data Input Histori Good Issue (GI)`);
 
-    const interval = setInterval(() => {
-        document.getElementById(`${resProg.width}`).style.width = `${number}%`;
-        document.getElementById(`${resProg.bar}`).textContent = `${number}%`;
+        let times = Object.values(dataMentah).reduce((sum, data) => sum + data.length, 0);
 
-        number += 1;
+        let number = 0;
+        let sInverval = "start";
 
-        if (sInverval === "done") {
-            clearInterval(interval);
+        const interval = setInterval(() => {
+            document.getElementById(`${resProg.width}`).style.width = `${number}%`;
+            document.getElementById(`${resProg.bar}`).textContent = `${number}%`;
+
+            number += 1;
+
+            if (sInverval === "done") {
+                clearInterval(interval);
+                document.getElementById(`${resProg.width}`).style.width = `100%`;
+                document.getElementById(`${resProg.bar}`).textContent = `100%`;
+                document.getElementById(`${resProg.box}`).classList.add("scale-0");
+                setTimeout(() => {
+                    try {
+                        document.getElementById(`${resProg.box}`).remove();
+                    } catch (error) {
+                        void 0;
+                    }
+                }, 200);
+            }
+
+            if (number >= 95) {
+                clearInterval(interval);
+                sInverval = "done";
+            }
+        }, times / 100);
+
+        const [status, result] = await processingFiles("subset");
+
+        if (status === "success") {
+            dataSubset = result;
+            tools("subset");
+            filtered();
+        } else {
+            notification("show", "Gagal mengolah data");
+        }
+
+        if ((sInverval = "done")) {
             document.getElementById(`${resProg.width}`).style.width = `100%`;
             document.getElementById(`${resProg.bar}`).textContent = `100%`;
             document.getElementById(`${resProg.box}`).classList.add("scale-0");
@@ -504,37 +540,9 @@ const subset = async () => {
                     void 0;
                 }
             }, 200);
-        }
-
-        if (number >= 95) {
-            clearInterval(interval);
+        } else {
             sInverval = "done";
         }
-    }, times / 100);
-
-    const [status, result] = await processingFiles("subset");
-
-    if (status === "success") {
-        dataSubset = result;
-        tools("subset");
-        filtered();
-    } else {
-        notification("show", "Gagal mengolah data");
-    }
-
-    if ((sInverval = "done")) {
-        document.getElementById(`${resProg.width}`).style.width = `100%`;
-        document.getElementById(`${resProg.bar}`).textContent = `100%`;
-        document.getElementById(`${resProg.box}`).classList.add("scale-0");
-        setTimeout(() => {
-            try {
-                document.getElementById(`${resProg.box}`).remove();
-            } catch (error) {
-                void 0;
-            }
-        }, 200);
-    } else {
-        sInverval = "done";
     }
 };
 
@@ -547,6 +555,7 @@ const filtered = async () => {
     let sInverval = "start";
 
     const interval = setInterval(() => {
+        console.log(sInverval);
         document.getElementById(`${resProg.width}`).style.width = `${number}%`;
         document.getElementById(`${resProg.bar}`).textContent = `${number}%`;
 
