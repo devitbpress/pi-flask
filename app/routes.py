@@ -25,35 +25,6 @@ def database_view():
 def testing_view():
     return render_template('testing.html')
 
-@routes_bp.route("/calc", methods=['POST'])
-def calc():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file part'}), 400
-
-    file = request.files['file']
-    
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
-
-    if not file.filename.endswith(('.xls', '.xlsx')):
-        return jsonify({'error': 'Invalid file format. Only .xls and .xlsx files are allowed.'}), 400
-
-    if file.content_type not in ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']:
-        return jsonify({'error': 'Invalid file format. Only Excel files are allowed.'}), 400
-
-    model = request.form.get('model', 'none')
-    
-    try:
-        df = pd.read_excel(file, engine='openpyxl')
-        df = df.fillna('')
-        data = df.to_dict(orient='records')
-        
-        processed_data = utils.calc_model(data, model)
-        
-        return jsonify(processed_data)
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
 @routes_bp.route("/manual-calc", methods=['POST'])
 def manual_calc():
     try:
@@ -93,6 +64,10 @@ def save_dataframe():
 @routes_bp.route("/kalkulasi-model")
 def analyst_view():
     return render_template('analyst-ui.html')
+
+@routes_bp.route("/kalkulator-model")
+def calc_view():
+    return render_template('calc-ui.html')
 
 @routes_bp.route("/upload-file", methods=['POST'])
 def upload_file():
@@ -151,4 +126,32 @@ def classification():
         return jsonify(data), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@routes_bp.route("/calc", methods=['POST'])
+def calc():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+
+    file = request.files['file']
     
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    if not file.filename.endswith(('.xls', '.xlsx')):
+        return jsonify({'error': 'Invalid file format. Only .xls and .xlsx files are allowed.'}), 400
+
+    if file.content_type not in ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']:
+        return jsonify({'error': 'Invalid file format. Only Excel files are allowed.'}), 400
+
+    model = request.form.get('model', 'none')
+    
+    try:
+        df = pd.read_excel(file, engine='openpyxl')
+        df = df.fillna('')
+        data = df.to_dict(orient='records')
+        
+        processed_data = utils.calc_model(data, model)
+        
+        return jsonify(processed_data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
