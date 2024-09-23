@@ -2,8 +2,18 @@ from flask import Blueprint, url_for, render_template, request, jsonify
 from app import utils
 import pandas as pd
 import traceback
+import pymysql
 
 routes_bp = Blueprint('routes', __name__)
+
+def get_db_connection():
+    return pymysql.connect(
+            host='localhost',
+            user='alisatia',
+            password='@[db_aliSatia#9]',
+            database='itbpress_erp',
+            cursorclass=pymysql.cursors.DictCursor
+    )
 
 @routes_bp.route("/")
 def index():
@@ -68,6 +78,10 @@ def analyst_view():
 @routes_bp.route("/kalkulator-model")
 def calc_view():
     return render_template('calc-ui.html')
+
+@routes_bp.route("/produk")
+def product_view():
+    return render_template('product-ui.html')
 
 @routes_bp.route("/upload-file", methods=['POST'])
 def upload_file():
@@ -153,5 +167,24 @@ def calc():
         processed_data = utils.calc_model(data, model)
         
         return jsonify(processed_data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@routes_bp.route("/get-product", methods=['POST'])
+def get_product():
+    try:
+        page = int(request.json.get('page', 1))
+        per_page = 1000
+        offset = (page - 1) * per_page
+        
+        connection = get_db_connection()
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM pi_product LIMIT %s OFFSET %s"
+            cursor.execute(sql, (per_page, offset))
+            products = cursor.fetchall()
+        
+        connection.close()
+        return jsonify(products)
+    
     except Exception as e:
         return jsonify({'error': str(e)}), 500

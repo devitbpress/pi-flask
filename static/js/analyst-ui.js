@@ -641,4 +641,6 @@ document.addEventListener("DOMContentLoaded", () => {
         window.history.replaceState({}, "", url.toString());
         tools("list");
     }
+
+    setTimeout(() => miniNav(), 300);
 });

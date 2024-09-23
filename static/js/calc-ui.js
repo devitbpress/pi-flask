@@ -936,4 +936,6 @@ document.addEventListener("DOMContentLoaded", () => {
         window.history.replaceState({}, "", url.toString());
         tools("unggah");
     }
+
+    setTimeout(() => miniNav(), 300);
 });
