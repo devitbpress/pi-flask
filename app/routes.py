@@ -1,5 +1,6 @@
-from flask import Blueprint, url_for, render_template, request, jsonify
+from flask import Blueprint, url_for, render_template, request, jsonify, session, flash, redirect
 from app import utils
+from werkzeug.security import check_password_hash
 import pandas as pd
 import traceback
 import pymysql
@@ -19,32 +20,23 @@ def get_db_connection():
 def index():
     return "<script>window.location.href = '/kalkulasi-model';</script>"
 
-@routes_bp.route("/kalkulasi")
+@routes_bp.route("/delete-kalkulasi")
 def kalkulasi_view():
     return "<script>window.location.href = '/kalkulasi-model';</script>"
 
-@routes_bp.route("/model-kalkulator")
+@routes_bp.route("/delete-model-kalkulator")
 def model_view():
     return render_template('kalkulator.html')
 
-@routes_bp.route("/database")
+@routes_bp.route("/delete-database")
 def database_view():
     return render_template('database.html')
 
-@routes_bp.route("/testing")
+@routes_bp.route("/delete-testing")
 def testing_view():
     return render_template('testing.html')
 
-@routes_bp.route("/manual-calc", methods=['POST'])
-def manual_calc():
-    try:
-        processed_data = utils.calc_model_manual(request.form)
-
-        return jsonify(processed_data)
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-    
-@routes_bp.route("/save-dataframe", methods=['POST'])
+@routes_bp.route("/delete-save-dataframe", methods=['POST'])
 def save_dataframe():
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
@@ -82,6 +74,10 @@ def calc_view():
 @routes_bp.route("/produk")
 def product_view():
     return render_template('product-ui.html')
+
+@routes_bp.route("/masuk")
+def login_view():
+    return render_template('login-ui.html')
 
 @routes_bp.route("/upload-file", methods=['POST'])
 def upload_file():
@@ -170,6 +166,15 @@ def calc():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@routes_bp.route("/manual-calc", methods=['POST'])
+def manual_calc():
+    try:
+        processed_data = utils.calc_model_manual(request.form)
+
+        return jsonify(processed_data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
 @routes_bp.route("/get-product", methods=['POST'])
 def get_product():
     try:
@@ -179,12 +184,67 @@ def get_product():
         
         connection = get_db_connection()
         with connection.cursor() as cursor:
-            sql = "SELECT * FROM pi_product LIMIT %s OFFSET %s"
-            cursor.execute(sql, (per_page, offset))
+            sql_products = "SELECT * FROM pi_product LIMIT %s OFFSET %s"
+            cursor.execute(sql_products, (per_page, offset))
             products = cursor.fetchall()
+            
+            sql_total_pages = "SELECT CEIL(COUNT(*) / %s) AS total_pages FROM pi_product"
+            cursor.execute(sql_total_pages, (per_page,))
+            total_pages = cursor.fetchone()['total_pages']
         
+        connection.close()
+        
+        return jsonify({
+            'products': products,
+            'total_pages': total_pages,
+            'current_page': page
+        })
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+@routes_bp.route("/search-product", methods=['POST'])
+def search_product():
+    try:
+        search_term = request.json.get('search_term', "")
+        search_term = f"%{search_term}%"
+        
+        connection = get_db_connection()
+        with connection.cursor() as cursor: 
+            sql = """
+            SELECT * FROM `pi_product` WHERE `p_code` LIKE %s OR `p_description` LIKE %s OR `p_price` LIKE %s
+            """
+            cursor.execute(sql, (search_term, search_term, search_term))
+            
+            columns = [column[0] for column in cursor.description]
+            products = cursor.fetchall()
+
         connection.close()
         return jsonify(products)
     
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@routes_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        
+        connection = get_db_connection()
+        try:
+            with connection.cursor() as cursor:
+                sql = "SELECT * FROM users WHERE email = %s"
+                cursor.execute(sql, (email,))
+                user = cursor.fetchone()
+        finally:
+            connection.close()
+        
+        if user and check_password_hash(user['password'], password):
+            session['user_id'] = user['id']
+            flash('Login successful!', 'success')
+            return redirect(url_for('routes_bp.login'))
+        else:
+            flash('Invalid email or password', 'danger')
+            
+    return render_template('login-ui.html')

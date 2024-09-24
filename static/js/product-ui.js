@@ -8,6 +8,9 @@ let idNotif = 1;
 let idProgress = 1;
 let gridApi;
 let dataProduct = {};
+let dataSearch = [];
+let pageDb = 0;
+let totalPageDb = 0;
 let columnDefs = {};
 
 const fetchProducts = async (agU, agD) => {
@@ -162,7 +165,47 @@ const setupAggrid = async (agData, agCol, agView) => {
     cGrid.forEach((element) => (element.textContent.trim() === "Total" ? element.classList.add("justify-end", "pr-5") : ""));
 };
 
-const tools = (agT) => {
+const pageProduct = async (agP) => {
+    const data = { page: agP };
+
+    const [status, product] = await fetchProducts("/get-product", data);
+
+    if (status === "success") {
+        dataProduct[data.page] = product.products;
+        pageDb = parseInt(product.current_page);
+        totalPageDb = parseInt(product.total_pages);
+    } else {
+        notification("show", "Gagal ambil produk");
+        return;
+    }
+
+    url.searchParams.set("p", agP);
+    window.history.replaceState({}, "", url.toString());
+
+    const ParamTools = urlParams.get("t");
+    tools(ParamTools, "page");
+};
+
+const searchProduct = async (agId) => {
+    const inp = document.getElementById(`${agId}`).value;
+
+    const [status, product] = await fetchProducts("/search-product", { search_term: inp });
+
+    if (status === "success") {
+        dataSearch = product;
+    } else {
+        notification("show", "Gagal ambil produk");
+        return;
+    }
+
+    url.searchParams.set("p", inp);
+    window.history.replaceState({}, "", url.toString());
+
+    const ParamTools = urlParams.get("t");
+    tools(ParamTools, "search", inp);
+};
+
+const tools = (agT, agI, agS) => {
     const header = document.getElementById("header");
     const headerAction = document.getElementById("header-action");
     const childContent = document.getElementById("child-content");
@@ -185,9 +228,55 @@ const tools = (agT) => {
     if (agT === "list") {
         header.textContent = "List Produk";
         headerAction.innerHTML = ``;
+        pagesElement = ``;
+        let dataset = [];
+        let searchValue = agS ? agS : "";
+
+        if (agI === "page") {
+            let pages = ``;
+
+            if (pageDb === 1) {
+                pages = `<div onclick="pageProduct(${pageDb})" class="w-7 h-7 flex items-center justify-center border rounded border-gray-500 cursor-pointer">${pageDb}</div><div onclick="pageProduct(${pageDb + 1})" class="w-7 h-7 flex items-center justify-center hover:border rounded hover:border-gray-500 cursor-pointer">${pageDb + 1}</div><div>...</div><div onclick="pageProduct(${totalPageDb})" class="w-7 h-7 flex items-center justify-center hover:border rounded hover:border-gray-500 cursor-pointer">${totalPageDb}</div>`;
+            } else if (pageDb === totalPageDb) {
+                pages = `<div onclick="pageProduct(${pageDb - 1})" class="w-7 h-7 flex items-center justify-center hover:border rounded hover:border-gray-500 cursor-pointer">${pageDb - 1}</div><div onclick="pageProduct(${totalPageDb})" class="w-7 h-7 flex items-center justify-center border rounded border-gray-500 cursor-pointer">${totalPageDb}</div>`;
+            } else if (pageDb === totalPageDb - 1) {
+                pages = `<div onclick="pageProduct(${pageDb - 1})" class="w-7 h-7 flex items-center justify-center hover:border rounded hover:border-gray-500 cursor-pointer">${pageDb - 1}</div><div onclick="pageProduct(${pageDb})" class="w-7 h-7 flex items-center justify-center border rounded border-gray-500 cursor-pointer">${pageDb}</div><div onclick="pageProduct(${totalPageDb})" class="w-7 h-7 flex items-center justify-center hover:border rounded hover:border-gray-500 cursor-pointer">${totalPageDb}</div>`;
+            } else {
+                pages = `<div onclick="pageProduct(${pageDb - 1})" class="w-7 h-7 flex items-center justify-center hover:border rounded hover:border-gray-500 cursor-pointer">${pageDb - 1}</div><div onclick="pageProduct(${pageDb})" class="w-7 h-7 flex items-center justify-center border rounded border-gray-500 cursor-pointer">${pageDb}</div><div onclick="pageProduct(${pageDb + 1})" class="w-7 h-7 flex items-center justify-center hover:border rounded hover:border-gray-500 cursor-pointer">${pageDb + 1}</div><div>...</div><div onclick="pageProduct(${totalPageDb})" class="w-7 h-7 flex items-center justify-center hover:border rounded hover:border-gray-500 cursor-pointer">${totalPageDb}</div>`;
+            }
+
+            pagesElement = `<div class="flex gap-2 items-center">
+                    <img onclick="pageProduct(1)" src="./static/assets/first-gray.png" alt="first" class="w-fit h-4 cursor-pointer" />
+                    <img onclick="pageProduct(${pageDb - 1})" src="./static/assets/prev-gray.png" alt="prev" class="w-fit h-3 cursor-pointer" />
+                </div>
+
+                <div class="flex gap-2 items-center text-sm">${pages}</div>
+
+                <div class="flex gap-2 items-center">
+                    <img onclick="pageProduct(${pageDb + 1})" src="./static/assets/next-gray.png" alt="next" class="w-fit h-3 cursor-pointer" />
+                    <img onclick="pageProduct(${totalPageDb})" src="./static/assets/last-gray.png" alt="last" class="w-fit h-4 cursor-pointer" />
+                </div>`;
+            dataset = dataProduct[pageDb];
+        }
+
+        if (agI === "search") {
+            dataset = dataSearch;
+            pagesElement = `<div class="w-52"></div>`;
+        }
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <h1 class="font-medium text-lg text-blue-900">Produk PI</h1>
+            <div class="w-full flex justify-between items-end">
+                <h1 class="font-medium text-lg text-blue-900">Produk PI</h1>
+                <div class="flex gap-3 items-center">
+                    <div class="relative mr-6 flex gap-2 py-1 pl-4 pr-8 bg-white border border-gray-500 rounded w-64">
+                        <input onkeydown="if(event.key === 'Enter') searchProduct('inpSearch')" id="inpSearch" value="${searchValue}" placeholder="Cari produk" class="w-full h-full outline-none text-xs" />
+                        <div onclick="searchProduct('inpSearch')" class="p-2 bg-blue-900 absolute -right-2 bottom-1/2 translate-y-1/2 rounded-full cursor-pointer">
+                            <img src="./static/assets/search-white.png" alt="search" class="w-3 h-3" />
+                        </div>
+                    </div>
+                    ${pagesElement}
+                </div>
+            </div>
             <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
         </div>`;
 
@@ -199,20 +288,13 @@ const tools = (agT) => {
             { headerName: "Estimasi Lead Time (day)", field: "p_lead_d", minWidth: 150 },
         ];
 
-        let page = 1;
-        const paramsPage = urlParams.get("p");
-        if (paramsPage) {
-            page = parseInt(paramsPage);
-        } else {
-            url.searchParams.set("p", "1");
-            window.history.replaceState({}, "", url.toString());
-        }
+        dataset = dataset.map((prod) => {
+            prod.p_price = `Rp ${prod.p_price.toLocaleString("id-ID")}`;
+            return prod;
+        });
 
-        setupAggrid(dataProduct[page], columnDefs.list, false);
+        setupAggrid(dataset, columnDefs.list, false);
     }
-
-    url.searchParams.set("t", agT);
-    window.history.replaceState({}, "", url.toString());
 };
 
 const setHeight = () => document.getElementById("container").style.setProperty("--vh", `${window.innerHeight * 0.01}px`);
@@ -225,24 +307,59 @@ window.addEventListener("resize", setHeight);
 document.addEventListener("DOMContentLoaded", async () => {
     setHeight();
 
-    const data = { page: 1 };
+    let data = {};
+    let indicator = ``;
+    let toolsParams = "";
 
-    const [status, product] = await fetchProducts("/get-product", data);
+    const paramTools = urlParams.get("t");
+    const paramProduct = urlParams.get("p");
 
-    if (status === "success") {
-        dataProduct[data.page] = product;
+    if (!paramTools) {
+        url.searchParams.set("t", "list");
+        toolsParams = "list";
     } else {
-        notification("show", "Gagal ambil produk");
-        return;
+        toolsParams = paramTools;
     }
 
-    const ParamTools = urlParams.get("t");
-    if (ParamTools) {
-        tools(ParamTools);
+    if (!paramProduct) {
+        url.searchParams.set("p", "1");
+        data.page = 1;
+        indicator = "page";
     } else {
-        url.searchParams.set("t", "list");
-        window.history.replaceState({}, "", url.toString());
-        tools("list");
+        if (parseInt(paramProduct) < 50) {
+            data.page = parseInt(paramProduct);
+            indicator = "page";
+        } else {
+            data.search_term = paramProduct;
+            indicator = "search";
+        }
+    }
+
+    window.history.replaceState({}, "", url.toString());
+
+    const newParams = new URLSearchParams(window.location.search);
+
+    if (data.page) {
+        const [status, product] = await fetchProducts("/get-product", data);
+
+        if (status === "success") {
+            dataProduct[data.page] = product.products;
+            pageDb = parseInt(product.current_page);
+            totalPageDb = parseInt(product.total_pages);
+            tools(newParams.get("t"), indicator);
+        } else {
+            notification("show", "Gagal ambil produk");
+            return;
+        }
+    } else {
+        const [status, product] = await fetchProducts("/search-product", data);
+        if (status === "success") {
+            dataSearch = product;
+            tools(newParams.get("t"), indicator, data.search_term);
+        } else {
+            notification("show", "Gagal ambil produk");
+            return;
+        }
     }
 
     setTimeout(() => miniNav(), 300);
