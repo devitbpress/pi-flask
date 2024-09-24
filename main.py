@@ -3,6 +3,8 @@ from app.routes import routes_bp
 
 app = Flask(__name__)
 
+app.secret_key = 'my$up3rS3cr3tKey!@123'
+
 # Register blueprint
 app.register_blueprint(routes_bp)
 

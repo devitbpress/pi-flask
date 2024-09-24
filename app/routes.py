@@ -225,26 +225,33 @@ def search_product():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@routes_bp.route('/login', methods=['GET', 'POST'])
+@routes_bp.route('/login', methods=['POST'])
 def login():
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        
+        email = request.json.get('email', "")
+        password = request.json.get('password', "")
+
+        print(email)
+        print(password)
+
         connection = get_db_connection()
         try:
             with connection.cursor() as cursor:
-                sql = "SELECT * FROM users WHERE email = %s"
+                sql = "SELECT * FROM pi_user WHERE u_email = %s"
                 cursor.execute(sql, (email,))
                 user = cursor.fetchone()
         finally:
             connection.close()
-        
-        if user and check_password_hash(user['password'], password):
+
+        # Memeriksa apakah pengguna ditemukan dan password benar
+        if user and check_password_hash(user['u_password'], password):
             session['user_id'] = user['id']
             flash('Login successful!', 'success')
-            return redirect(url_for('routes_bp.login'))
+            return redirect('kalkulasi-model')  # Redirect ke dashboard atau halaman lain
         else:
             flash('Invalid email or password', 'danger')
-            
-    return render_template('login-ui.html')
+            return redirect('masuk')  # Kembali ke halaman login jika gagal
+
+    # Jika method GET, kembalikan halaman login
+    return redirect('masuk')
+

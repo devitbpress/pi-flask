@@ -14,51 +14,43 @@
     <body>
         <div id="container" class="relative w-full flex">
             <img src="{{ url_for('static', filename='assets/bg-login.jpg') }}" alt="bg" class="w-full h-full" />
-            <div class="absolute top-0 left-0 w-full h-full bg-[#353030] opacity-75"></div>
+            <img src="{{ url_for('static', filename='assets/background-2.jpg') }}" alt="bg" class="w-full h-full absolute top-0 left-0 bg-[#353030] opacity-75" />
+            <div class="absolute top-0 left-0 w-full h-full bg-[#353030] opacity-75 hidden"></div>
 
             <div class="absolute top-0 left-0 z-10 w-full h-full flex justify-center px-12">
-                <div class="">
-                    <form method="POST" action="{{ url_for('routes_bp.login') }}" class="w-[27rem] h-[35rem] bg-white rounded-2xl flex flex-col items-center gap-4">
-                        <img src="{{ url_for('static', filename='assets/login-blue.png') }}" alt="login" class="w-24 h-24" />
-                        <h1 class="text-2xl font-semibold">Masuk</h1>
+                <div class=""></div>
+                <div class="h-full w-fit flex justify-center items-center p-8">
+                    <form id="loginForm" class="relative w-[27rem] h-fit py-12 flex flex-col items-center gap-8 rounded-2xl shadow-xl">
+                        <div class="absolute top-0 left-0 bg-white -z-10 w-full h-full rounded-2xl"></div>
+                        <img src="{{ url_for('static', filename='assets/background-3.jpg') }}" alt="bg" class="w-full h-full absolute top-0 left-0 bg-[#353030] -z-10 rounded-2xl opacity-10" />
 
-                        <div class="relative border p-1 flex gap-2 mt-4 rounded">
-                            <label for="email" class="absolute -top-5 left-0 text-xs">Email</label>
-                            <img src="{{ url_for('static', filename='assets/email-gray.png') }}" alt="email" />
-                            <input type="email" id="email" name="email" placeholder="email.ganeca10.com" required />
+                        <div class="flex flex-col gap-1 items-center justify-center">
+                            <img src="{{ url_for('static', filename='assets/login-blue.png') }}" alt="login" class="w-24 h-24" />
+                            <h1 class="text-2xl font-semibold">MASUK</h1>
                         </div>
 
-                        <div class="relative border p-1 flex gap-2 mt-4 rounded">
-                            <label for="password" class="absolute -top-5 left-0 text-xs">Password</label>
-                            <img src="{{ url_for('static', filename='assets/password-gray.png') }}" alt="password" />
-                            <input type="password" id="password" name="password" placeholder="kata sandi" required />
+                        <div class="flex flex-col gap-4 items-center justify-center">
+                            <div class="relative border flex gap-2 mt-4 rounded items-center p-2 w-[15rem] border-blue-900">
+                                <label for="email" class="absolute -top-5 left-0 text-xs">Email</label>
+                                <img src="{{ url_for('static', filename='assets/email-gray.png') }}" alt="email" class="w-5 h-5" />
+                                <input type="email" id="email" name="email" placeholder="email.ganeca10.com" required class="text-sm outline-none bg-transparent" />
+                            </div>
+
+                            <div class="relative border flex gap-2 mt-4 rounded items-center p-2 w-[15rem] border-blue-900">
+                                <label for="password" class="absolute -top-5 left-0 text-xs">Password</label>
+                                <img src="{{ url_for('static', filename='assets/password-gray.png') }}" alt="password" class="w-5 h-5" />
+                                <input type="password" id="password" name="password" placeholder="kata sandi" required class="text-sm outline-none bg-transparent" />
+                            </div>
                         </div>
 
-                        <button type="submit" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-6 border border-blue-500 hover:border-transparent rounded text-sm">Login</button>
+                        <button type="submit" class="w-[15rem] bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-6 border border-blue-500 hover:border-transparent rounded text-sm">Login</button>
+
+                        <a href="#" class="mb-6 text-sm text-blue-500">Lupa kata sandi</a>
+                        <div class=""></div>
                     </form>
                 </div>
-                <div class="h-full w-fit flex justify-center items-center p-8">
-                    <div class="w-[27rem] h-[35rem] bg-white rounded-2xl flex flex-col items-center gap-4">
-                        <img src="{{ url_for('static', filename='assets/login-blue.png') }}" alt="login" class="w-24 h-24" />
-                        <h1 class="text-2xl font-semibold">Masuk</h1>
 
-                        <div class="relative border p-1 flex gap-2 mt-4 rounded">
-                            <span class="absolute -top-5 left-0 text-xs">Email</span>
-                            <img src="{{ url_for('static', filename='assets/email-gray.png') }}" alt="email" />
-                            <input type="email" placeholder="email.ganeca10.com" />
-                        </div>
-
-                        <div class="relative border p-1 flex gap-2 mt-4 rounded">
-                            <span class="absolute -top-5 left-0 text-xs">Password</span>
-                            <img src="{{ url_for('static', filename='assets/password-gray.png') }}" alt="password" />
-                            <input type="password" placeholder="kata sandi" />
-                        </div>
-
-                        <button id="btn-login" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-6 border border-blue-500 hover:border-transparent rounded text-sm">Masuk</button>
-                    </div>
-                </div>
-
-                <img src="{{ url_for('static', filename='assets/pupuk-indonesia.png') }}" alt="pi" class="absolute top-4 left-4 w-24 h-fit" />
+                <img src="{{ url_for('static', filename='assets/pupuk-indonesia-white.png') }}" alt="pi" class="absolute top-4 left-4 w-fit h-16" />
             </div>
         </div>
 
