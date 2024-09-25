@@ -4,11 +4,11 @@ const btnChevron = document.getElementById("btn-chevron");
 const childTools = document.getElementById("child-tools");
 const inpFile = document.getElementById("inp-file");
 
+let fileId = 0;
 let miniNavIndikacator = { status: false, nav: "13rem", tools: "13rem" };
 let accountOptionIndikator = false;
 let gridApi;
 let idNotif = 1;
-let idProgress = 1;
 let dataList = [];
 let dataMentah = {};
 let dataSubset = [];
@@ -30,16 +30,16 @@ let columnDefs = {
                     if (index !== -1) {
                         dataList.splice(index, 1);
                     }
-                    const [fStatus, fResponse] = await processingFiles("delete-file", params.data.id);
 
-                    if (fStatus === "success") {
+                    const responseDelete = await postFetch("delete-file", { file_id: params.data.id, session: sId });
+
+                    if (responseDelete === "success") {
                         notification("show", "File berhasil terhapus");
+                        delete dataMentah[params.data.name];
+                        gridApi.applyTransaction({ remove: [params.data] });
                     } else {
                         notification("show", "Gagal menghapus file");
                     }
-
-                    delete dataMentah[params.data.name];
-                    gridApi.applyTransaction({ remove: [params.data] });
                 });
                 return span;
             },
@@ -379,106 +379,41 @@ const notification = (agS, agE) => {
     }, 5000);
 };
 
-const progress = (agH, agS) => {
-    const elementProgress = document.getElementById("progress");
-    const idProgressNow = idProgress;
-
-    elementProgress.innerHTML += `<div id="box-${idProgressNow}" class="w-full flex flex-col bg-white shadow border px-2 py-1 rounded gap-1 origin-right duration-300">
-            <h1 class="py-1 text-sm font-medium">${agH}</h1>
-            <span id="span-subtitle-${idProgressNow}">${agS}</span>
-            <div class="w-[15rem] flex gap-2 items-center">
-                <div class="w-full h-3 relative">
-                    <div class="w-full h-full rounded bg-blue-700"></div>
-                    <div id="width-${idProgressNow}" class="w-1 h-full rounded bg-green-600 absolute top-0 left-0"></div>
-                </div>
-                <div id="bar-${idProgressNow}" class="whitespace-nowrap">0%</div>
-            </div>
-        </div>`;
-
-    idProgress += 1;
-
-    return { width: `width-${idProgressNow}`, bar: `bar-${idProgressNow}`, box: `box-${idProgressNow}`, span: `span-subtitle-${idProgressNow}` };
-};
-
 const uploadFile = async (agN) => {
-    numUpload = agN;
-    const file = inpFile.files[numUpload];
+    try {
+        const fileIdNow = agN;
+        const file = inpFile.files[fileIdNow];
 
-    const resProg = progress("Baca data histori Good Issue (GI)", `${file.name}`);
-    const times = file.size / 100;
+        const idProgress = progresBar("Baca data histori Good Issue (GI)", `${file.name}`, file.size / 250);
 
-    let number = 0;
-    let sInverval = "start";
+        const responseFile = await postFiles("upload-file", file, idProduct);
 
-    const interval = setInterval(() => {
-        try {
-            document.getElementById(`${resProg.width}`).style.width = `${number}%`;
-            document.getElementById(`${resProg.bar}`).textContent = `${number}%`;
-        } catch (error) {
-            clearInterval(interval);
+        let statusAggrid = ``;
+        if (responseFile[0] === "success") {
+            statusAggrid = `<div class="flex gap-1 items-center cursor-pointer"><img src="./static/assets/done-green.png" alt="delete" class="w-4 h-4" /><span class="text-green-500">Terunggah</span></div>`;
+            dataMentah[file.name] = responseFile[1];
+        } else {
+            notification("show", "File gagal diunggah");
+            statusAggrid = `<div class="flex gap-1 items-center cursor-pointer"><img src="./static/assets/error-yellow.png" alt="delete" class="w-4 h-4" /><span class="text-yellow-500">Gagal</span></div>`;
         }
 
-        number += 1;
+        dataList.push({
+            name: file.name,
+            size: file.size,
+            action: `<div class="flex gap-1 items-center cursor-pointer"><img src="./static/assets/delete-red.png" alt="delete" class="w-4 h-4" /><span class="text-red-500">Hapus</span></div>`,
+            status: statusAggrid,
+            id: idProduct,
+        });
 
-        if (sInverval === "done") {
-            clearInterval(interval);
-            document.getElementById(`${resProg.width}`).style.width = `100%`;
-            document.getElementById(`${resProg.bar}`).textContent = `100%`;
-            document.getElementById(`${resProg.box}`).classList.add("scale-0");
-            setTimeout(() => {
-                try {
-                    document.getElementById(`${resProg.box}`).remove();
-                } catch (error) {
-                    void 0;
-                }
-            }, 200);
-        }
+        sInterval[idProgress] === "done" ? progresBarStatus(idProgress) : (sInterval[idProgress] = "done");
 
-        if (number >= 95) {
-            clearInterval(interval);
-            sInverval = "done";
-        }
-    }, times / 100);
+        tools("list");
 
-    const [status, response] = await uploadFiles("upload-file", file, idProduct);
+        idProduct += 1;
 
-    if (status === "success") {
-        statusAggrid = `<div class="flex gap-1 items-center cursor-pointer"><img src="./static/assets/done-green.png" alt="delete" class="w-4 h-4" /><span class="text-green-500">Terunggah</span></div>`;
-        dataMentah[file.name] = response;
-    } else {
-        notification("show", "File gagal diunggah");
-        statusAggrid = `<div class="flex gap-1 items-center cursor-pointer"><img src="./static/assets/error-yellow.png" alt="delete" class="w-4 h-4" /><span class="text-yellow-500">Gagal</span></div>`;
-    }
-
-    dataList.push({
-        name: file.name,
-        size: file.size,
-        action: `<div class="flex gap-1 items-center cursor-pointer"><img src="./static/assets/delete-red.png" alt="delete" class="w-4 h-4" /><span class="text-red-500">Hapus</span></div>`,
-        status: statusAggrid,
-        id: idProduct,
-    });
-
-    tools("list");
-
-    if ((sInverval = "done")) {
-        document.getElementById(`${resProg.width}`).style.width = `100%`;
-        document.getElementById(`${resProg.bar}`).textContent = `100%`;
-        document.getElementById(`${resProg.box}`).classList.add("scale-0");
-        setTimeout(() => {
-            try {
-                document.getElementById(`${resProg.box}`).remove();
-            } catch (error) {
-                void 0;
-            }
-        }, 200);
-    } else {
-        sInverval = "done";
-    }
-
-    idProduct += 1;
-
-    if (numUpload < [...inpFile.files].length - 1) {
-        uploadFile(numUpload + 1);
+        fileIdNow < [...inpFile.files].length - 1 ? uploadFile(fileIdNow + 1) : void 0;
+    } catch (error) {
+        void 0;
     }
 };
 
@@ -487,6 +422,11 @@ const subset = async () => {
 
     Object.values(dataMentah).map((item) => (lengData += item.length));
 
+    const responseSubset = await postFetch("subset", { session: sId });
+    console.log(responseSubset);
+};
+
+const semetarta = async () => {
     if (lengData > 90000) {
         notification("show", "Data melebihi batas makasimal 90.000 Data");
     } else {
@@ -626,7 +566,7 @@ const setHeight = () => document.getElementById("container").style.setProperty("
 const setLoading = (value) => gridApi.setGridOption("loading", value);
 
 childTools.querySelectorAll(".tools").forEach((element) => element.addEventListener("click", () => tools(element.getAttribute("data-tools"))));
-inpFile.addEventListener("change", () => uploadFile(0));
+inpFile.addEventListener("change", () => uploadFile(fileId));
 btnChevron.addEventListener("click", () => miniNav());
 window.addEventListener("resize", setHeight);
 

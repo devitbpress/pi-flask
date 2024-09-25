@@ -2,6 +2,7 @@ import pymysql
 # import bcrypt
 
 # root: @[mdb_Root#9]
+# phpmyadmi root: @[pma_Root#9]
 
 # informasi database
 db_host = 'localhost'

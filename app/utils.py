@@ -5,6 +5,7 @@ from scipy.stats import f, shapiro, kstest, poisson, chisquare
 from app.calc import Model_Wilson_PolaDeterministik, Model_Tchebycheff_PolaTakTentu, Model_Q_PolaDistribusiNormal, Model_Poisson_PolaPoisson, Model_MinMaxRegret_PolaNonMoving, Model_KerusakanNonLinear_PolaNonMoving, Model_KerusakanLinear_PolaNonMoving, Model_BCR_new
 
 # simpan data / session
+session = {}
 datafile_session = {}
 dataframe_session = {}
 
@@ -598,34 +599,58 @@ def count_and_stats_by_material(df):
 
 # simpan dataframe / session
 def processing_save_dataframe(df, num_id, session_id):
-    if session_id not in datafile_session:
-        datafile_session[session_id] = []
-    datafile_session[session_id].append({num_id: df})
+    try:
+        if session_id not in session:
+            session[session_id] = {"file": {}}
 
-    return df
+        session[session_id]["file"][num_id] = df
+
+        print(f"unggah file {num_id} berhasil")
+        return df
+    
+    except KeyError as e:
+        print(f"unggah file keyerror terjadi: {e}")
+        return "not found"
+
+    except Exception as e:
+        print(f"unggah file error: {e}")
+        return "error"
 
 # delete datafile
-def delete_datafile(numid, session_id):
-    if session_id in datafile_session:
-        for item in datafile_session[session_id]:
-            if numid in item:
-                del item[numid]
-
-    return "success"
+def delete_datafile(num_id, session_id):
+    try:
+        del session[session_id]["file"][str(num_id)]
+        print(f"hapus file ${num_id} terhapus")
+        return "success"
+    except KeyError as e:
+        print(f"hapus file not found {e}")
+        return "not found"
+    except Exception as e:
+        print(f"hapus file error {e}")
+        return "error"
 
 # proses subset dataframe
 def processing_subset(session_id):
-    dataframes = [value for item in datafile_session[session_id] for value in item.values()]
-    print("mulai normalize")
-    df_com_hist = normalize_and_combine_dataframes(*dataframes)
-    print("mulai filterisasi")
-    filtered_df, unmatched_cancels_df, matched_df = process_data(df_com_hist)
-    filtered_df = filtered_df.rename(columns={'Material': 'Material_Code', 'Unnamed: 7': 'Quantity(EA)'})
-    data_input_sebelum_klasifikasi = filtered_df[['Posting Date', 'Material_Code', 'Material Description', 'Quantity(EA)', 'Movement Type']]
-    dataframe_session[session_id] = []
-    dataframe_session[session_id].append({"subset": filtered_df})
+    try:
+        print("proses penggabungan dataframe")
+        dataframes = list(session[session_id]['file'].values())
+        print("proses normalisasi dataframe")
+        df_com_hist = normalize_and_combine_dataframes(*dataframes)
+        print("proses filterisasi dataframe")
+        filtered_df, unmatched_cancels_df, matched_df = process_data(df_com_hist)
+        filtered_df = filtered_df.rename(columns={'Material': 'Material_Code', 'Unnamed: 7': 'Quantity(EA)'})
+        session[session_id]["subset"] = filtered_df
+        # cek 
+        data_input_sebelum_klasifikasi = filtered_df[['Posting Date', 'Material_Code', 'Material Description', 'Quantity(EA)', 'Movement Type']]
+        return {"success": data_input_sebelum_klasifikasi}
 
-    return data_input_sebelum_klasifikasi
+    except KeyError as e:
+        print(f"proses subset keyerror: {e}")
+        return {"failed": e}
+
+    except Exception as e:
+        print(f"proses subset error: {e}")
+        return {"error": e}
 
 # proses classification dataframe
 def processing_classification(session_id):
@@ -641,3 +666,16 @@ def processing_classification(session_id):
     dataframe_session[session_id].append({"class": Hasil_Klasifikasi})
 
     return Hasil_Klasifikasi
+
+# proses delete session
+def delete_session_now(ag_ss):
+    try:
+        del session[ag_ss]
+        print("hapus session berhasil")
+        return "success"
+    except KeyError as e:
+        print(f"hapus session not found {e}")
+        return "Key not found"
+    except Exception as e:
+        print(f"hapus session error {e}")
+        return "error"

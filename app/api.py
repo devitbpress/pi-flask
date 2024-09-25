@@ -40,7 +40,7 @@ def upload_file():
     try:
         df = pd.read_excel(file, engine='openpyxl')
 
-        result = utils.processing_save_dataframe(df, request.form.get("numid"), request.form.get("session"))
+        result = utils.processing_save_dataframe(df, request.form.get("file_id"), request.form.get("session"))
         result = result.fillna('')
         data = result.to_dict(orient='records')
 
@@ -52,7 +52,7 @@ def upload_file():
 @routes_api.route("/delete-file", methods=['POST'])
 def delete_file():
     try:
-        result = utils.delete_datafile(request.form.get("numid"),request.form.get("session"))
+        result = utils.delete_datafile(request.json.get("file_id"),request.json.get("session"))
 
         return jsonify(result), 200
     except Exception as e:
@@ -62,7 +62,7 @@ def delete_file():
 @routes_api.route("/subset", methods=['POST'])
 def subset():
     try:
-        result = utils.processing_subset(request.form.get("session"))
+        result = utils.processing_subset(request.json.get("session"))
         result = result.fillna('')
         data = result.to_dict(orient='records')
 
@@ -150,3 +150,14 @@ def search_product():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+#  delete session
+@routes_api.route("/delete-session", methods=['POST'])
+def delete_session():
+    try:
+        ss_id = request.json.get('session', "")
+        
+        response = utils.delete_session_now(ss_id)
+        return jsonify(response)
+    except Exception as e:
+            return jsonify({'error': str(e)}), 500
