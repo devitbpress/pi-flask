@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <script src="{{ url_for('static', filename='js/session.js') }}"></script>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>PI | Kalkulator Model</title>
@@ -12,7 +13,6 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='vendors/aggrid.css') }}" />
         <link rel="stylesheet" href="{{ url_for('static', filename='vendors/aggrid-quartz.css') }}" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/calc-ui.css') }}" />
-        <script src="{{ url_for('static', filename='js/session.js') }}"></script>
     </head>
     <body>
         <div id="container" class="w-full flex">

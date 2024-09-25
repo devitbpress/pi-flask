@@ -1,25 +1,21 @@
 import pandas as pd
 import numpy as np
+
 from scipy.stats import f, shapiro, kstest, poisson, chisquare
+from app.calc import Model_Wilson_PolaDeterministik, Model_Tchebycheff_PolaTakTentu, Model_Q_PolaDistribusiNormal, Model_Poisson_PolaPoisson, Model_MinMaxRegret_PolaNonMoving, Model_KerusakanNonLinear_PolaNonMoving, Model_KerusakanLinear_PolaNonMoving, Model_BCR_new
 
-from app.calc import Model_Wilson_PolaDeterministik
-from app.calc import Model_Tchebycheff_PolaTakTentu
-from app.calc import Model_Q_PolaDistribusiNormal
-from app.calc import Model_Poisson_PolaPoisson
-from app.calc import Model_MinMaxRegret_PolaNonMoving
-from app.calc import Model_KerusakanNonLinear_PolaNonMoving
-from app.calc import Model_KerusakanLinear_PolaNonMoving
-from app.calc import Model_BCR_new
-
+# simpan data / session
 datafile_session = {}
 dataframe_session = {}
 
+# convert string ke number
 def convert_string_to_number(s):
     if '.' in s:
         return convert_string_to_number(s)
     else:
         return int(s)
 
+# kalkulator model file
 def calc_model(data, model):
     data_calc = []
     
@@ -207,6 +203,7 @@ def calc_model(data, model):
 
     return data_calc
 
+# kalkulator model manual
 def calc_model_manual(data):
     model = data.get("model")
     data_calc = {}
@@ -372,6 +369,7 @@ def calc_model_manual(data):
     
     return data_calc
 
+# normalisasi dataframe (subset)
 def normalize_and_combine_dataframes(*df_tuples):
     dfs = []
     for df in df_tuples:
@@ -412,6 +410,7 @@ def normalize_and_combine_dataframes(*df_tuples):
 
     return df_com_hist
 
+# filterisasi dataframe (subset)
 def process_data(df):
     # Mengelompokkan data berdasarkan kolom "Material"
     grouped = df.groupby('Material')
@@ -469,6 +468,7 @@ def process_data(df):
     
     return result, unmatched_cancels, matched_df
 
+# klasifikasi dataframe (classification)
 def count_and_stats_by_material(df):
     # Mengelompokkan data berdasarkan kolom 'Material' dan menghitung ukuran grup, rata-rata, variansi, dan standar deviasi
     grouped = df.groupby('Material_Code').agg(
@@ -596,6 +596,15 @@ def count_and_stats_by_material(df):
 
     return grouped
 
+# simpan dataframe / session
+def processing_save_dataframe(df, num_id, session_id):
+    if session_id not in datafile_session:
+        datafile_session[session_id] = []
+    datafile_session[session_id].append({num_id: df})
+
+    return df
+
+# delete datafile
 def delete_datafile(numid, session_id):
     if session_id in datafile_session:
         for item in datafile_session[session_id]:
@@ -604,13 +613,7 @@ def delete_datafile(numid, session_id):
 
     return "success"
 
-def processing_save_dataframe(df, num_id, session_id):
-    if session_id not in datafile_session:
-        datafile_session[session_id] = []
-    datafile_session[session_id].append({num_id: df})
-
-    return df
-
+# proses subset dataframe
 def processing_subset(session_id):
     dataframes = [value for item in datafile_session[session_id] for value in item.values()]
     print("mulai normalize")
@@ -624,6 +627,7 @@ def processing_subset(session_id):
 
     return data_input_sebelum_klasifikasi
 
+# proses classification dataframe
 def processing_classification(session_id):
     filtered_df = dataframe_session[session_id][0]['subset']
     filtered_df['Has_Z61'] = filtered_df['Movement Type'] == 'Z61'

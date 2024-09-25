@@ -1,0 +1,43 @@
+@routes_bp.route("/delete-kalkulasi")
+def kalkulasi_view():
+    return "<script>window.location.href = '/kalkulasi-model';</script>"
+
+@routes_bp.route("/delete-model-kalkulator")
+def model_view():
+    return render_template('kalkulator.html')
+
+@routes_bp.route("/delete-database")
+def database_view():
+    return render_template('database.html')
+
+@routes_bp.route("/delete-testing")
+def testing_view():
+    return render_template('testing.html')
+
+@routes_bp.route("/delete-save-dataframe", methods=['POST'])
+def save_dataframe():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+
+    file = request.files['file']
+    
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    if not file.filename.endswith(('.xls', '.xlsx')):
+        return jsonify({'error': 'Invalid file format. Only .xls and .xlsx files are allowed.'}), 400
+
+    if file.content_type not in ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']:
+        return jsonify({'error': 'Invalid file format. Only Excel files are allowed.'}), 400
+    
+    try:
+        df = pd.read_excel(file, engine='openpyxl')
+
+        result = utils.processing_save_dataframe(df, request.form.get("numid"), request.form.get("session"))
+        result = result.fillna('')
+        data = result.to_dict(orient='records')
+        
+        return jsonify(data), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+s

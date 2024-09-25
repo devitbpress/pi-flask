@@ -356,6 +356,7 @@ const calcManual = async (argModel) => {
     if (status === "success") {
         const response = await postManual("/manual-calc", argModel, dataForm);
 
+        console.log(response);
         const indikatorResult = {
             Poisson: ["Economic Order Quantity (EOQ) Lot Optimum (qo1)", "Nilai Alpha", "Ongkos Inventori (OT) /Tahun", "Reorder Point (ROP) Unit", "Safety Stock (SS) Unit", "Service Level (%)", "Standar Deviasi Waktu Ancang - Ancang (SL) Unit/Tahun"],
             Wilson: ["Frequensi Pemesanan (f)", "Lot Pengadaan (EOQ) Unit/Pesanan", "Ongkos Inventori (OT) /Tahun", "Ongkos Pembelian (Ob) /Tahun", "Ongkos Pemesanan (Op) /Tahun", "Ongkos Penyimpanan (Os) /Tahun", "Reorder Point (ROP) Unit", "Selang Waktu Pesan Kembali (Bulan)", "Selang Waktu Pesan Kembali (Hari)", "Selang Waktu Pesan Kembali (Tahun)"],
@@ -919,6 +920,7 @@ const tools = (agT, agD) => {
 
 const setHeight = () => document.getElementById("container").style.setProperty("--vh", `${window.innerHeight * 0.01}px`);
 const setLoading = (value) => gridApi.setGridOption("loading", value);
+const numericInput = (event) => (event.target.value = event.target.value.replace(/[^0-9.]/g, ""));
 
 childTools.querySelectorAll(".tools").forEach((element) => element.addEventListener("click", () => tools(element.getAttribute("data-tools"))));
 inpFile.addEventListener("change", () => uploadFile(0));

@@ -29,7 +29,7 @@ const fetchProducts = async (agU, agD) => {
 
         const products = await response.json();
 
-        return ["success", products];
+        return ["success", products.data];
     } catch (error) {
         return ["error", error];
     }
