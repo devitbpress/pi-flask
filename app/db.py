@@ -1,6 +1,8 @@
 import pymysql
 # import bcrypt
 
+# root: @[mdb_Root#9]
+
 # informasi database
 db_host = 'localhost'
 db_user = 'alisatia'
