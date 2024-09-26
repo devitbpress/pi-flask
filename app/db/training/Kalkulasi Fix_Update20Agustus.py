@@ -550,67 +550,67 @@ Data_Input_Final = Data_Input_Final.sort_values(by='Unit Price', ascending=True)
 Data_Input_Final.rename(columns={'Unit Price': 'Harga Barang (p) /Unit'}, inplace=True)
 
 # #### Perhitungan Model
-import sys
-import os
+# import sys
+# import os
 
-# Tambahkan direktori Model_Kalkulator_Fixed ke path pencarian modul
-sys.path.append(os.path.join(os.getcwd(), 'Model_Kalkulator_Fixed'))
+# # Tambahkan direktori Model_Kalkulator_Fixed ke path pencarian modul
+# sys.path.append(os.path.join(os.getcwd(), 'Model_Kalkulator_Fixed'))
 
-# Import fungsi Model_Wilson dari file Model_Wilson_PolaDeterministik.py
-try:
-    from Model_Wilson_PolaDeterministik import Model_Wilson
-    print("Import fungsi Model_Wilson berhasil.")
-except ImportError as e:
-    print(f"Error: {e}")
+# # Import fungsi Model_Wilson dari file Model_Wilson_PolaDeterministik.py
+# try:
+#     from Model_Wilson_PolaDeterministik import Model_Wilson
+#     print("Import fungsi Model_Wilson berhasil.")
+# except ImportError as e:
+#     print(f"Error: {e}")
 
-# Import fungsi Model_Q dari file Model_Q_PolaDistribusiNormal.py
-try:
-    from Model_Q_PolaDistribusiNormal import Model_Q
-    print("Import fungsi Model_Q berhasil.")
-except ImportError as e:
-    print(f"Error: {e}")
+# # Import fungsi Model_Q dari file Model_Q_PolaDistribusiNormal.py
+# try:
+#     from Model_Q_PolaDistribusiNormal import Model_Q
+#     print("Import fungsi Model_Q berhasil.")
+# except ImportError as e:
+#     print(f"Error: {e}")
 
-# Import fungsi Model_Poisson dari file Model_Poisson_PolaPoisson.py
-try:
-    from Model_Poisson_PolaPoisson import Model_Poisson
-    print("Import fungsi Model_Poisson berhasil.")
-except ImportError as e:
-    print(f"Error: {e}")
+# # Import fungsi Model_Poisson dari file Model_Poisson_PolaPoisson.py
+# try:
+#     from Model_Poisson_PolaPoisson import Model_Poisson
+#     print("Import fungsi Model_Poisson berhasil.")
+# except ImportError as e:
+#     print(f"Error: {e}")
 
-# Import fungsi Model_Tchebycheff dari file Model_Tchebycheff_PolaTakTentu.py
-try:
-    from Model_Tchebycheff_PolaTakTentu import Model_Tchebycheff_TakTentu
-    print("Import fungsi Model_Tchebycheff berhasil.")
-except ImportError as e:
-    print(f"Error: {e}")
+# # Import fungsi Model_Tchebycheff dari file Model_Tchebycheff_PolaTakTentu.py
+# try:
+#     from Model_Tchebycheff_PolaTakTentu import Model_Tchebycheff_TakTentu
+#     print("Import fungsi Model_Tchebycheff berhasil.")
+# except ImportError as e:
+#     print(f"Error: {e}")
 
-# Import fungsi Model_MinMaxRegret dari file Model_MinMaxRegret_PolaNonMoving.py
-try:
-    from Model_MinMaxRegret_PolaNonMoving import Model_MinMaxRegret
-    print("Import fungsi Model_MinMaxRegret berhasil.")
-except ImportError as e:
-    print(f"Error: {e}")
+# # Import fungsi Model_MinMaxRegret dari file Model_MinMaxRegret_PolaNonMoving.py
+# try:
+#     from Model_MinMaxRegret_PolaNonMoving import Model_MinMaxRegret
+#     print("Import fungsi Model_MinMaxRegret berhasil.")
+# except ImportError as e:
+#     print(f"Error: {e}")
 
-# Import fungsi Model_KerusakanNonLinear dari file Model_KerusakanNonLinear_PolaNonMoving.py
-try:
-    from Model_KerusakanNonLinear_PolaNonMoving import model_kerusakan_non_linear
-    print("Import fungsi Model_KerusakanNonLinear berhasil.")
-except ImportError as e:
-    print(f"Error: {e}")
+# # Import fungsi Model_KerusakanNonLinear dari file Model_KerusakanNonLinear_PolaNonMoving.py
+# try:
+#     from Model_KerusakanNonLinear_PolaNonMoving import model_kerusakan_non_linear
+#     print("Import fungsi Model_KerusakanNonLinear berhasil.")
+# except ImportError as e:
+#     print(f"Error: {e}")
 
-# Import fungsi Model_KerusakanLinear dari file Model_KerusakanLinear_PolaNonMoving.py
-try:
-    from Model_KerusakanLinear_PolaNonMoving import model_kerusakan_linear
-    print("Import fungsi Model_KerusakanLinear berhasil.")
-except ImportError as e:
-    print(f"Error: {e}")
+# # Import fungsi Model_KerusakanLinear dari file Model_KerusakanLinear_PolaNonMoving.py
+# try:
+#     from Model_KerusakanLinear_PolaNonMoving import model_kerusakan_linear
+#     print("Import fungsi Model_KerusakanLinear berhasil.")
+# except ImportError as e:
+#     print(f"Error: {e}")
 
-# import fungsi Model_BCR dari file Model_BCR.py
-try:
-    from Model_BCR_new import Model_Inventori_BCR
-    print("Import fungsi Model Inventori BCR berhasil")
-except ImportError as e:
-    print(f"Error: {e}")
+# # import fungsi Model_BCR dari file Model_BCR.py
+# try:
+#     from Model_BCR_new import Model_Inventori_BCR
+#     print("Import fungsi Model Inventori BCR berhasil")
+# except ImportError as e:
+#     print(f"Error: {e}")
 
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------

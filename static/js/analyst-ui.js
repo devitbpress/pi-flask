@@ -12,7 +12,7 @@ let idNotif = 1;
 let dataList = [];
 let dataMentah = {};
 let dataSubset = [];
-let dataFiltered = [];
+let dataClass = [];
 let idProduct = 1;
 let columnDefs = {
     list: [
@@ -306,7 +306,7 @@ const tools = (agT) => {
         }
     }
 
-    if (agT === "filtered") {
+    if (agT === "class") {
         header.textContent = "Data Klasifikasi";
         headerAction.innerHTML = "";
 
@@ -318,7 +318,7 @@ const tools = (agT) => {
         </div>`;
 
         try {
-            columnDefs.filtered = Object.keys(dataFiltered[0]).map((key) => {
+            columnDefs.filtered = Object.keys(dataClass[0]).map((key) => {
                 const lenght = key.length >= 20 ? key.length * 8 : key.length >= 15 ? key.length * 9 : key.length >= 10 ? key.length * 10 : key.length * 12;
                 return {
                     headerName: key,
@@ -330,7 +330,7 @@ const tools = (agT) => {
                 };
             });
 
-            setupAggrid(dataFiltered, columnDefs.filtered, false);
+            setupAggrid(dataClass, columnDefs.filtered, false);
         } catch (error) {
             columnDefs.filtered = [
                 { headerName: "Material_Code", field: "Material_Code" },
@@ -422,144 +422,45 @@ const subset = async () => {
 
     Object.values(dataMentah).map((item) => (lengData += item.length));
 
-    const responseSubset = await postFetch("subset", { session: sId });
-    console.log(responseSubset);
-};
-
-const semetarta = async () => {
     if (lengData > 90000) {
         notification("show", "Data melebihi batas makasimal 90.000 Data");
-    } else {
-        const resProg = progress("Filterisasi Data", `Normalisasi data Input Histori Good Issue (GI)`);
-
-        let times = Object.values(dataMentah).reduce((sum, data) => sum + data.length, 0);
-
-        let number = 0;
-        let sInverval = "start";
-
-        const interval = setInterval(() => {
-            try {
-                document.getElementById(`${resProg.width}`).style.width = `${number}%`;
-                document.getElementById(`${resProg.bar}`).textContent = `${number}%`;
-            } catch (error) {
-                clearInterval(interval);
-            }
-
-            number += 1;
-
-            if (sInverval === "done") {
-                clearInterval(interval);
-                document.getElementById(`${resProg.width}`).style.width = `100%`;
-                document.getElementById(`${resProg.bar}`).textContent = `100%`;
-                document.getElementById(`${resProg.box}`).classList.add("scale-0");
-                setTimeout(() => {
-                    try {
-                        document.getElementById(`${resProg.box}`).remove();
-                    } catch (error) {
-                        void 0;
-                    }
-                }, 200);
-            }
-
-            if (number >= 95) {
-                clearInterval(interval);
-                sInverval = "done";
-            }
-        }, times / 100);
-
-        const [status, result] = await processingFiles("subset");
-
-        if (status === "success") {
-            dataSubset = result;
-            tools("subset");
-            filtered();
-        } else {
-            notification("show", "Gagal mengolah data");
-        }
-
-        if ((sInverval = "done")) {
-            document.getElementById(`${resProg.width}`).style.width = `100%`;
-            document.getElementById(`${resProg.bar}`).textContent = `100%`;
-            document.getElementById(`${resProg.box}`).classList.add("scale-0");
-            setTimeout(() => {
-                try {
-                    document.getElementById(`${resProg.box}`).remove();
-                } catch (error) {
-                    void 0;
-                }
-            }, 200);
-        } else {
-            sInverval = "done";
-        }
+        return;
     }
+
+    let times = Object.values(dataMentah).reduce((sum, data) => sum + data.length, 0);
+    const idProgress = progresBar("Filterisasi Data", "Normalisasi data Input Histori Good Issue (GI)", times);
+
+    const responseSubset = await postFetch("subset", { session: sId });
+
+    if (responseSubset[0] !== "success") {
+        notification("show", "Gagal mengolah data");
+        sInterval[idProgress] = "done";
+        return;
+    }
+
+    sInterval[idProgress] === "done" ? progresBarStatus(idProgress) : (sInterval[idProgress] = "done");
+
+    dataSubset = responseSubset[1];
+    tools("subset");
+    filtered();
 };
 
 const filtered = async () => {
-    const resProg = progress("Filterisasi Data", `Filtering data Histori Good Issue (GI)`);
-
     let times = dataSubset.length;
 
-    let number = 0;
-    let sInverval = "start";
+    const idProgress = progresBar("Filterisasi Data", "Filtering data Histori Good Issue (GI)", times);
 
-    const interval = setInterval(() => {
-        try {
-            document.getElementById(`${resProg.width}`).style.width = `${number}%`;
-            document.getElementById(`${resProg.bar}`).textContent = `${number}%`;
-        } catch (error) {
-            clearInterval(interval);
-        }
+    const responseClass = await postFetch("classification", { session: sId });
 
-        number += 1;
-
-        if (number === 50) {
-            document.getElementById(resProg.span).textContent = "Agregasi Data";
-        }
-
-        if (sInverval === "done") {
-            clearInterval(interval);
-            document.getElementById(`${resProg.width}`).style.width = `100%`;
-            document.getElementById(`${resProg.bar}`).textContent = `100%`;
-            document.getElementById(`${resProg.box}`).classList.add("scale-0");
-            setTimeout(() => {
-                try {
-                    document.getElementById(`${resProg.box}`).remove();
-                } catch (error) {
-                    void 0;
-                }
-            }, 200);
-        }
-
-        if (number >= 95) {
-            clearInterval(interval);
-            sInverval = "done";
-        }
-    }, times / 100);
-
-    const [status, result] = await processingFiles("classification");
-
-    if (status === "success") {
-        dataFiltered = result;
-
-        tools("filtered");
-    } else {
+    if (responseClass[0] !== "success") {
         notification("show", "Gagal mengolah data");
+        sInterval[idProgress] = "done";
+        return;
     }
 
-    if ((sInverval = "done")) {
-        document.getElementById(`${resProg.width}`).style.width = `100%`;
-        document.getElementById(`${resProg.bar}`).textContent = `100%`;
-        document.getElementById(`${resProg.box}`).classList.add("scale-0");
-        setTimeout(() => {
-            try {
-                document.getElementById(`${resProg.box}`).remove();
-            } catch (error) {
-                void 0;
-            }
-        }, 200);
-    } else {
-        sInverval = "done";
-    }
+    sInterval[idProgress] === "done" ? progresBarStatus(idProgress) : (sInterval[idProgress] = "done");
+
+    dataClass = responseClass[1];
 };
 
 const setHeight = () => document.getElementById("container").style.setProperty("--vh", `${window.innerHeight * 0.01}px`);
@@ -570,7 +471,7 @@ inpFile.addEventListener("change", () => uploadFile(fileId));
 btnChevron.addEventListener("click", () => miniNav());
 window.addEventListener("resize", setHeight);
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     setHeight();
 
     const ParamTools = urlParams.get("t");
@@ -583,4 +484,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     setTimeout(() => miniNav(), 300);
+    const test = await postFetch("model-to-calc", { session: sId });
+    console.log(test);
 });

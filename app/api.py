@@ -66,21 +66,33 @@ def subset():
         result = result.fillna('')
         data = result.to_dict(orient='records')
 
-        return jsonify(data), 200
+        return jsonify(['success', data]), 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify(['error', str(e)]), 500
 
 #  classification data
 @routes_api.route("/classification", methods=['POST'])
 def classification():
     try:
-        result = utils.processing_classification(request.form.get("session"))
+        result = utils.processing_classification(request.json.get("session"))
         result = result.fillna('')
         data = result.to_dict(orient='records')
 
-        return jsonify(data), 200
+        return jsonify(['success', data]), 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify(['error', str(e)]), 500
+
+#  model calc
+@routes_api.route("/model-to-calc", methods=['POST'])
+def model_to_calculation():
+    try:
+        df = pd.read_excel("./app/db/class.xlsx")
+        result = utils.processing_model_calc(request.json.get("session"), df)
+
+        return jsonify(['success', result]), 200
+    
+    except Exception as e:
+        return jsonify(['error', str(e)]), 500
 
 #  kalkulator file
 @routes_api.route("/calc", methods=['POST'])

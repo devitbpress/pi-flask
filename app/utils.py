@@ -3,6 +3,7 @@ import numpy as np
 
 from scipy.stats import f, shapiro, kstest, poisson, chisquare
 from app.calc import Model_Wilson_PolaDeterministik, Model_Tchebycheff_PolaTakTentu, Model_Q_PolaDistribusiNormal, Model_Poisson_PolaPoisson, Model_MinMaxRegret_PolaNonMoving, Model_KerusakanNonLinear_PolaNonMoving, Model_KerusakanLinear_PolaNonMoving, Model_BCR_new
+from app.db import get_product_model
 
 # simpan data / session
 session = {}
@@ -220,7 +221,7 @@ def calc_model_manual(data):
         material_code = data.get("material_code")
         material_description = data.get("material_description")
         abc_indikator = data.get("abc_indikator")
- 
+
         data_calc = Model_Q_PolaDistribusiNormal.Model_Q(
                 rata_rata_permintaan_barang , 
                 lead_time, 
@@ -597,11 +598,24 @@ def count_and_stats_by_material(df):
 
     return grouped
 
+# proses delete session
+def delete_session_now(ag_ss):
+    try:
+        del session[ag_ss]
+        print("hapus session berhasil")
+        return "success"
+    except KeyError as e:
+        print(f"hapus session not found {e}")
+        return "Key not found"
+    except Exception as e:
+        print(f"hapus session error {e}")
+        return "error"
+
 # simpan dataframe / session
 def processing_save_dataframe(df, num_id, session_id):
     try:
         if session_id not in session:
-            session[session_id] = {"file": {}}
+            session[session_id] = {"file": {}, "subset": None, "class": None, "model": {}}
 
         session[session_id]["file"][num_id] = df
 
@@ -640,42 +654,111 @@ def processing_subset(session_id):
         filtered_df, unmatched_cancels_df, matched_df = process_data(df_com_hist)
         filtered_df = filtered_df.rename(columns={'Material': 'Material_Code', 'Unnamed: 7': 'Quantity(EA)'})
         session[session_id]["subset"] = filtered_df
-        # cek 
         data_input_sebelum_klasifikasi = filtered_df[['Posting Date', 'Material_Code', 'Material Description', 'Quantity(EA)', 'Movement Type']]
-        return {"success": data_input_sebelum_klasifikasi}
+        return data_input_sebelum_klasifikasi
 
     except KeyError as e:
         print(f"proses subset keyerror: {e}")
-        return {"failed": e}
+        return e
 
     except Exception as e:
         print(f"proses subset error: {e}")
-        return {"error": e}
+        return e
 
 # proses classification dataframe
 def processing_classification(session_id):
-    filtered_df = dataframe_session[session_id][0]['subset']
-    filtered_df['Has_Z61'] = filtered_df['Movement Type'] == 'Z61'
-    Hasil_Klasifikasi = count_and_stats_by_material(filtered_df)
-    filtered_df_unique = filtered_df[['Material_Code', 'Material Description']].drop_duplicates(subset='Material_Code')
-    Hasil_Klasifikasi = Hasil_Klasifikasi.merge(filtered_df_unique, how='left', left_on='Material_Code', right_on='Material_Code')
-    cols = list(Hasil_Klasifikasi.columns)
-    material_code_index = cols.index('Material_Code')
-    cols.insert(material_code_index + 1, cols.pop(cols.index('Material Description')))
-    Hasil_Klasifikasi = Hasil_Klasifikasi[cols]
-    dataframe_session[session_id].append({"class": Hasil_Klasifikasi})
-
-    return Hasil_Klasifikasi
-
-# proses delete session
-def delete_session_now(ag_ss):
     try:
-        del session[ag_ss]
-        print("hapus session berhasil")
-        return "success"
+        filtered_df = session[session_id]["subset"]
+        filtered_df['Has_Z61'] = filtered_df['Movement Type'] == 'Z61'
+        print("proses klasifikasi")
+        Hasil_Klasifikasi = count_and_stats_by_material(filtered_df)
+        filtered_df_unique = filtered_df[['Material_Code', 'Material Description']].drop_duplicates(subset='Material_Code')
+        Hasil_Klasifikasi = Hasil_Klasifikasi.merge(filtered_df_unique, how='left', left_on='Material_Code', right_on='Material_Code')
+        cols = list(Hasil_Klasifikasi.columns)
+        material_code_index = cols.index('Material_Code')
+        cols.insert(material_code_index + 1, cols.pop(cols.index('Material Description')))
+        Hasil_Klasifikasi = Hasil_Klasifikasi[cols]
+        session[session_id]["class"] = Hasil_Klasifikasi
+        # session[session_id]["class"].to_excel("test.xlsx", index=False)
+
+        return Hasil_Klasifikasi
     except KeyError as e:
-        print(f"hapus session not found {e}")
-        return "Key not found"
+        print(f"proses klasifikasi keyerror: {e}")
+        return e
+
     except Exception as e:
-        print(f"hapus session error {e}")
-        return "error"
+        print(f"proses klasifikasi error: {e}")
+        return e
+
+# proses classification model
+def processing_model_calc(session_id, df):
+    if session_id not in session:
+        session[session_id] = {"file": {}, "subset": None, "class": None, "model": {}}
+
+    session[session_id]["model"] = {
+        "deterministik": df[df['Kategori'] == 'Pola Deterministik'].to_dict(orient='records'),
+        "normal": df[df['Kategori'] == 'Pola Normal'].to_dict(orient='records'),
+        "poisson": df[df['Kategori'] == 'Pola Poisson'].to_dict(orient='records'),
+        "taktentu": df[df['Kategori'] == 'Pola Tak - Tentu'].to_dict(orient='records')
+    }
+
+    material_code_list = []
+    deterministik_array = session[session_id]["model"]["deterministik"]
+    for index, item in enumerate(deterministik_array):
+        material_code_list.append(item["Material_Code"])
+
+    product = get_product_model(material_code_list)
+    
+    df1 = pd.DataFrame(deterministik_array)
+    df2 = pd.DataFrame(product)
+
+    df1['Material_Code'] = df1['Material_Code'].astype(str)
+    df2['p_code'] = df2['p_code'].astype(str)
+    
+    merged_df = pd.merge(df1, df2, left_on="Material_Code", right_on="p_code")
+    
+    merged_df = merged_df.rename(columns={"Rata_Rata": "Permintaan Barang (D) Unit/Tahun"})
+    merged_df = merged_df.rename(columns={"p_price": "Harga Barang (p) /Unit"})
+    merged_df = merged_df.rename(columns={"p_abc": "ABC Indicator"})
+    merged_df = merged_df.rename(columns={"p_lead_m": "Lead Time (L) Tahun"})
+    merged_df['Harga Barang (p) /Unit'] = pd.to_numeric(merged_df['Harga Barang (p) /Unit'], errors='coerce')
+    merged_df.loc[:, 'Ongkos Pesan (A) /Pesan'] = merged_df['Harga Barang (p) /Unit'].apply(lambda x: 5000000 if x > 100000000 else 1000000)
+    merged_df.loc[:, 'Ongkos Simpan (h) /Unit/Tahun'] = merged_df['Harga Barang (p) /Unit'] * 0.15
+
+    result_deterministik = []
+
+    for index, row in merged_df.iterrows():
+        print(row["Permintaan Barang (D) Unit/Tahun"])
+        try:
+            permintaan_barang = float(row["Permintaan Barang (D) Unit/Tahun"]) if not pd.isna(row["Permintaan Barang (D) Unit/Tahun"]) else 1
+            # harga_barang = int(row["Harga Barang (p) /Unit"]) if not pd.isna(row["Harga Barang (p) /Unit"]) else 1
+            harga_barang = 1
+            # ongkos_pesan = int(row["Ongkos Pesan (A) /Pesan"]) if not pd.isna(row["Ongkos Pesan (A) /Pesan"]) else 1
+            ongkos_pesan =1
+            # lead_time = float(row["Lead Time (L) Tahun"]) if not pd.isna(row["Lead Time (L) Tahun"]) else 0.1
+            lead_time = 1
+            # ongkos_simpan = int(row["Ongkos Simpan (h) /Unit/Tahun"]) if not pd.isna(row["Ongkos Simpan (h) /Unit/Tahun"]) else 1
+            ongkos_simpan = 1
+            material_code = row["Material_Code"]
+            material_description = row["Material Description"]
+            abc_indikator = row["ABC Indicator"]
+            result_deterministik.append(Model_Wilson_PolaDeterministik.Model_Wilson(
+                permintaan_barang,
+                harga_barang, 
+                ongkos_pesan, 
+                lead_time, 
+                ongkos_simpan, 
+                material_code,
+                material_description,
+                abc_indikator
+            ))
+            print("success", index)
+        except Exception as e:
+            print(f"Error processing row {index}: {e}")
+
+    print("Total result:", len(result_deterministik))
+
+    model_data = {key: value.to_dict(orient='records') for key, value in session[session_id]["model"].items()}
+
+    return model_data
+

@@ -91,3 +91,25 @@ def get_search_product(ag_search_term):
     finally:
         conn.close()
 
+# ambil data produk
+def get_product_model(ag_code):
+    material_codes_str = ','.join(map(str, ag_code))
+    conn = pymysql.connect(host=db_host, user=db_user, password=db_password, database=db_database, cursorclass=db_cursorclass)
+
+    try:
+        with conn.cursor() as cursor:
+            sql = f"SELECT * FROM `pi_product` WHERE `p_code` IN ({material_codes_str})"
+            cursor.execute(sql)
+            products = cursor.fetchall()
+
+        if products:
+            return products
+        else:
+            return {'status': 'empty'}
+
+    except Exception as e:
+        print("Error:", str(e))
+        return {'status': 'error', 'message': str(e)}
+
+    finally:
+        conn.close()
