@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <script src="{{ url_for('static', filename='js/session.js') }}"></script>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PI | Produk</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+        <link rel="shortcut icon" href="{{ url_for('static', filename='assets/favicon.png') }}" type="image/x-icon" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='vendors/tailwind.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='vendors/aggrid.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='vendors/aggrid-quartz.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/product-ui.css') }}" />
+    </head>
+    <body>
+        <label for="num">Detik</label>
+        <input id="num" type="number" />
+        <button id="btn">Test</button>
+
+        <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+        <script>
+            const num = document.getElementById("num");
+            const btn = document.getElementById("btn");
+
+            btn.addEventListener("click", async () => {
+                console.log(num.value);
+                let interval;
+                try {
+                    let awal = 1;
+                    interval = setInterval(() => {
+                        console.log(awal);
+                        awal += 1;
+                    }, 1000);
+
+                    const response = await postFetch("/time-out", { sec: parseInt(num.value) }); // Pastikan num.value dikonversi ke integer
+
+                    if (response) {
+                        clearInterval(interval);
+                        console.log(response);
+                    }
+                } catch (error) {
+                    clearInterval(interval);
+                    console.error(error);
+                }
+            });
+        </script>
+    </body>
+</html>
