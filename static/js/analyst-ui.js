@@ -13,6 +13,7 @@ let dataList = [];
 let dataMentah = {};
 let dataSubset = [];
 let dataClass = [];
+let dataModel = {};
 let idProduct = 1;
 let columnDefs = {
     list: [
@@ -274,36 +275,20 @@ const tools = (agT) => {
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
             <div class="w-full flex justify-between text-sm">
-                <div>Testing</div>
+                <div>Subset Data</div>
             </div>
             <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
         </div>`;
 
-        try {
-            columnDefs.subset = Object.keys(dataSubset[0]).map((key) => {
-                const lenght = key.length >= 20 ? key.length * 8 : key.length >= 15 ? key.length * 9 : key.length >= 10 ? key.length * 10 : key.length * 12;
-                return {
-                    headerName: key,
-                    field: key,
-                    minWidth: lenght,
-                    cellRenderer: (params) => {
-                        return params.value;
-                    },
-                };
-            });
+        columnDefs.subset = [
+            { headerName: "Posting Date", field: "Posting Date", minWidth: 150 },
+            { headerName: "Material Code", field: "Material_Code", minWidth: 150 },
+            { headerName: "Material Description", field: "Material Description", minWidth: 150 },
+            { headerName: "Quantity(EA)", field: "Quantity(EA)", minWidth: 150 },
+            { headerName: "Movement Type", field: "Movement Type", minWidth: 150 },
+        ];
 
-            setupAggrid(dataSubset, columnDefs.subset, false);
-        } catch (error) {
-            columnDefs.subset = [
-                { headerName: "Material_Code", field: "Material_Code" },
-                { headerName: "Material Description", field: "Material Description" },
-                { headerName: "Movement Type", field: "Movement Type" },
-                { headerName: "Posting Date", field: "Posting Date" },
-                { headerName: "Quantity(EA)", field: "Quantity(EA)" },
-            ];
-
-            setupAggrid("", columnDefs.subset, false);
-        }
+        setupAggrid(dataSubset, columnDefs.subset, false);
     }
 
     if (agT === "class") {
@@ -312,36 +297,273 @@ const tools = (agT) => {
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
             <div class="w-full flex justify-between text-sm">
-                <div>Testing</div>
+                <div>Data Klasifikasi</div>
             </div>
             <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
         </div>`;
 
+        columnDefs.filtered = [
+            { headerName: "Material Code", field: "Material_Code", minWidth: 150 },
+            { headerName: "Material Description", field: "Material Description", minWidth: 150 },
+            { headerName: "Kategori", field: "Kategori", minWidth: 150 },
+            { headerName: "Proses 1", field: "Proses1", minWidth: 150 },
+            { headerName: "Proses 2", field: "Proses2", minWidth: 150 },
+            { headerName: "Jumlah Data", field: "Jumlah_Data", minWidth: 150 },
+            { headerName: "Rata-Rata", field: "Rata_Rata", minWidth: 150 },
+            { headerName: "Variansi", field: "Variansi", minWidth: 150 },
+            { headerName: "Standar Deviasi", field: "Standar_Deviasi", minWidth: 150 },
+            { headerName: "P Value", field: "P_Value", minWidth: 150 },
+            { headerName: "Deskripsi Pengujian Statistik", field: "Deskripsi_Pengujian_Statistik", minWidth: 150 },
+            { headerName: "Hasil Uji", field: "Hasil_uji", minWidth: 150 },
+        ];
+
         try {
-            columnDefs.filtered = Object.keys(dataClass[0]).map((key) => {
-                const lenght = key.length >= 20 ? key.length * 8 : key.length >= 15 ? key.length * 9 : key.length >= 10 ? key.length * 10 : key.length * 12;
-                return {
-                    headerName: key,
-                    field: key,
-                    minWidth: lenght,
-                    cellRenderer: (params) => {
-                        return params.value;
-                    },
-                };
-            });
-
-            setupAggrid(dataClass, columnDefs.filtered, false);
+            headerAction.innerHTML = `<button id="btn-process-model" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded text-xs">Proses Tiap Kategori</button>`;
+            document.getElementById("btn-process-model").addEventListener("click", () => model());
         } catch (error) {
-            columnDefs.filtered = [
-                { headerName: "Material_Code", field: "Material_Code" },
-                { headerName: "Material Description", field: "Material Description" },
-                { headerName: "Movement Type", field: "Movement Type" },
-                { headerName: "Posting Date", field: "Posting Date" },
-                { headerName: "Quantity(EA)", field: "Quantity(EA)" },
-            ];
-
-            setupAggrid("", columnDefs.filtered, false);
+            void 0;
         }
+
+        setupAggrid(dataClass, columnDefs.filtered, false);
+    }
+
+    if (agT === "q") {
+        header.textContent = "Model Q (Pola Normal)";
+        headerAction.innerHTML = "";
+
+        childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
+            <div class="w-full flex justify-between text-sm">
+                <div>Data Hasil Model Q</div>
+            </div>
+            <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
+        </div>`;
+
+        columnDefs.q = [
+            { headerName: "Material Code", field: "Material Code", minWidth: 150 },
+            { headerName: "Material Description", field: "Material Description", minWidth: 150 },
+            { headerName: "ABC Indicator", field: "ABC Indicator", minWidth: 150 },
+            { headerName: "Rata - Rata Permintaan Barang (D) Unit/Tahun", field: "Rata - Rata Permintaan Barang (D) Unit/Tahun", minWidth: 150 },
+            { headerName: "Standar Deviasi Permintaan Barang (s) Unit/Tahun", field: "Standar Deviasi Permintaan Barang (s) Unit/Tahun", minWidth: 150 },
+            { headerName: "Lead Time (L) Tahun", field: "Lead Time (L) Tahun", minWidth: 150 },
+            { headerName: "Ongkos Pesan (A) /Pesan", field: "Ongkos Pesan (A) /Pesan", minWidth: 150 },
+            { headerName: "Harga Barang (p) /Unit", field: "Harga Barang (p) /Unit", minWidth: 150 },
+            { headerName: "Ongkos Simpan (h) /Unit/Tahun", field: "Ongkos Simpan (h) /Unit/Tahun", minWidth: 150 },
+            { headerName: "Ongkos Kekurangan Inventori (Cu) /Unit/Tahun", field: "Ongkos Kekurangan Inventori (Cu) /Unit/Tahun", minWidth: 150 },
+            { headerName: "Standar Deviasi Permintaan Barang Waktu Lead Time (SL) Unit/Tahun", field: "Standar Deviasi Permintaan Barang Waktu Lead Time (SL) Unit/Tahun", minWidth: 150 },
+            { headerName: "Rata - Rata Permintaan Barang Waktu Lead Time (DL) Unit/Tahun", field: "Rata - Rata Permintaan Barang Waktu Lead Time (DL) Unit/Tahun", minWidth: 150 },
+            { headerName: "Lot Pengadaan Optimum Barang (EOQ) Unit/Pesanan", field: "Lot Pengadaan Optimum Barang (EOQ) Unit/Pesanan", minWidth: 150 },
+            { headerName: "Reorder Point (ROP) Unit", field: "Reorder Point (ROP) Unit", minWidth: 150 },
+            { headerName: "Safety Stock (SS) Unit", field: "Safety Stock (SS) Unit", minWidth: 150 },
+            { headerName: "Frequensi Pemesanan (f)", field: "Frequensi Pemesanan (f)", minWidth: 150 },
+            { headerName: "Ongkos Pembelian (Ob) /Tahun", field: "Ongkos Pembelian (Ob) /Tahun", minWidth: 150 },
+            { headerName: "Ongkos Pemesanan (Op) /Tahun", field: "Ongkos Pemesanan (Op) /Tahun", minWidth: 150 },
+            { headerName: "Ongkos Penyimpanan (Os) /Tahun", field: "Ongkos Penyimpanan (Os) /Tahun", minWidth: 150 },
+            { headerName: "Ongkos Kekurangan Inventori (Ok) /Tahun", field: "Ongkos Kekurangan Inventori (Ok) /Tahun", minWidth: 150 },
+            { headerName: "Ongkos Inventori (OT) /Tahun", field: "Ongkos Inventori (OT) /Tahun", minWidth: 150 },
+        ];
+
+        setupAggrid(dataModel.q, columnDefs.q, false);
+    }
+
+    if (agT === "wilson") {
+        header.textContent = "Model Wilson (Pola Deterministik)";
+        headerAction.innerHTML = "";
+
+        childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
+            <div class="w-full flex justify-between text-sm">
+                <div>Data Hasil Model Wilson</div>
+            </div>
+            <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
+        </div>`;
+
+        columnDefs.wilson = [
+            { headerName: "Material Code", field: "Material Code", minWidth: 150 },
+            { headerName: "Material Description", field: "Material Description", minWidth: 150 },
+            { headerName: "ABC Indicator", field: "ABC Indicator", minWidth: 150 },
+            { headerName: "Permintaan Barang (D) Unit/Tahun", field: "Permintaan Barang (D) Unit/Tahun", minWidth: 150 },
+            { headerName: "Harga Barang (p) /Unit", field: "Harga Barang (p) /Unit", minWidth: 150 },
+            { headerName: "Ongkos Pesan (A) /Pesan", field: "Ongkos Pesan (A) /Pesan", minWidth: 150 },
+            { headerName: "Lead Time (L) Tahun", field: "Lead Time (L) Tahun", minWidth: 150 },
+            { headerName: "Ongkos Simpan (h) /Unit/Tahun", field: "Ongkos Simpan (h) /Unit/Tahun", minWidth: 150 },
+            { headerName: "Lot Pengadaan (EOQ) Unit/Pesanan", field: "Lot Pengadaan (EOQ) Unit/Pesanan", minWidth: 150 },
+            { headerName: "Reorder Point (ROP) Unit", field: "Reorder Point (ROP) Unit", minWidth: 150 },
+            { headerName: "Selang Waktu Pesan Kembali (Tahun)", field: "Selang Waktu Pesan Kembali (Tahun)", minWidth: 150 },
+            { headerName: "Selang Waktu Pesan Kembali (Bulan)", field: "Selang Waktu Pesan Kembali (Bulan)", minWidth: 150 },
+            { headerName: "Selang Waktu Pesan Kembali (Hari)", field: "Selang Waktu Pesan Kembali (Hari)", minWidth: 150 },
+            { headerName: "Frequensi Pemesanan (f)", field: "Frequensi Pemesanan (f)", minWidth: 150 },
+            { headerName: "Ongkos Pembelian (Ob) /Tahun", field: "Ongkos Pembelian (Ob) /Tahun", minWidth: 150 },
+            { headerName: "Ongkos Pemesanan (Op) /Tahun", field: "Ongkos Pemesanan (Op) /Tahun", minWidth: 150 },
+            { headerName: "Ongkos Penyimpanan (Os) /Tahun", field: "Ongkos Penyimpanan (Os) /Tahun", minWidth: 150 },
+            { headerName: "Ongkos Inventori (OT) /Tahun", field: "Ongkos Inventori (OT) /Tahun", minWidth: 150 },
+        ];
+
+        setupAggrid(dataModel.wilson, columnDefs.wilson, false);
+    }
+
+    if (agT === "poisson") {
+        header.textContent = "Model Poisson (Pola Poisson)";
+        headerAction.innerHTML = "";
+
+        childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
+            <div class="w-full flex justify-between text-sm">
+                <div>Data Hasil Model Poisson</div>
+            </div>
+            <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
+        </div>`;
+
+        columnDefs.poisson = [
+            { headerName: "Material Code", field: "Material Code", minWidth: 150 },
+            { headerName: "Material Description", field: "Material Description", minWidth: 150 },
+            { headerName: "ABC Indicator", field: "ABC Indicator", minWidth: 150 },
+            { headerName: "Rata - Rata Permintaan Barang (D) Unit/Tahun", field: "Rata - Rata Permintaan Barang (D) Unit/Tahun", minWidth: 150 },
+            { headerName: "Standar Deviasi Permintaan Barang (s) Unit/Tahun", field: "Standar Deviasi Permintaan Barang (s) Unit/Tahun", minWidth: 150 },
+            { headerName: "Lead Time (L) Tahun", field: "Lead Time (L) Tahun", minWidth: 150 },
+            { headerName: "Ongkos Pesan (A) /Pesan", field: "Ongkos Pesan (A) /Pesan", minWidth: 150 },
+            { headerName: "Harga Barang (p) /Unit", field: "Harga Barang (p) /Unit", minWidth: 150 },
+            { headerName: "Ongkos Simpan (h) /Unit/Tahun", field: "Ongkos Simpan (h) /Unit/Tahun", minWidth: 150 },
+            { headerName: "Ongkos Kekurangan Inventori (Cu) /Unit/Tahun", field: "Ongkos Kekurangan Inventori (Cu) /Unit/Tahun", minWidth: 150 },
+            { headerName: "Nilai Alpha", field: "Nilai Alpha", minWidth: 150 },
+            { headerName: "Standar Deviasi Waktu Ancang - Ancang (SL) Unit/Tahun", field: "Standar Deviasi Waktu Ancang - Ancang (SL) Unit/Tahun", minWidth: 150 },
+            { headerName: "Economic Order Quantity (EOQ) Lot Optimum (qo1)", field: "Economic Order Quantity (EOQ) Lot Optimum (qo1)", minWidth: 150 },
+            { headerName: "Reorder Point (ROP) Unit", field: "Reorder Point (ROP) Unit", minWidth: 150 },
+            { headerName: "Safety Stock (SS) Unit", field: "Safety Stock (SS) Unit", minWidth: 150 },
+            { headerName: "Service Level (%)", field: "Service Level (%)", minWidth: 150 },
+            { headerName: "Ongkos Inventori (OT) /Tahun", field: "Ongkos Inventori (OT) /Tahun", minWidth: 150 },
+        ];
+
+        setupAggrid(dataModel.poisson, columnDefs.poisson, false);
+    }
+
+    if (agT === "tchebycheff") {
+        header.textContent = "Model Tchebycheff (Pola Tak - Tentu)";
+        headerAction.innerHTML = "";
+
+        childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
+            <div class="w-full flex justify-between text-sm">
+                <div>Data Hasil Model Tchebycheff</div>
+            </div>
+            <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
+        </div>`;
+
+        columnDefs.tchebycheff = [
+            { headerName: "Material Code", field: "Material Code", minWidth: 150 },
+            { headerName: "Material Description", field: "Material Description", minWidth: 150 },
+            { headerName: "ABC Indicator", field: "ABC Indicator", minWidth: 150 },
+            { headerName: "Harga Barang (p) /Unit", field: "Harga Barang (p) /Unit", minWidth: 150 },
+            { headerName: "Kerugian Ketidakadaan Barang (Cu) /Unit", field: "Kerugian Ketidakadaan Barang (Cu) /Unit", minWidth: 150 },
+            { headerName: "Standar Deviasi Permintaan Barang (s)", field: "Standar Deviasi Permintaan Barang (s)", minWidth: 150 },
+            { headerName: "Rata - Rata Permintaan Barang (alpha)", field: "Rata - Rata Permintaan Barang (alpha)", minWidth: 150 },
+            { headerName: "Nilai K Model Tchebycheff", field: "Nilai K Model Tchebycheff", minWidth: 150 },
+            { headerName: "Lot Pemesanan Optimal (q0)", field: "Lot Pemesanan Optimal (q0)", minWidth: 150 },
+        ];
+
+        setupAggrid(dataModel.tchebycheff, columnDefs.tchebycheff, false);
+    }
+
+    if (agT === "regret") {
+        header.textContent = "Model Regret (Pola Non Moving)";
+        headerAction.innerHTML = "";
+
+        childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
+            <div class="w-full flex justify-between text-sm">
+                <div>Data Hasil Model Regret</div>
+            </div>
+            <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
+        </div>`;
+
+        columnDefs.regret = [
+            { headerName: "Material Code", field: "Material Code", minWidth: 150 },
+            { headerName: "Material Description", field: "Material Description", minWidth: 150 },
+            { headerName: "ABC Indicator", field: "ABC Indicator", minWidth: 150 },
+            { headerName: "Ongkos Pemakaian Komponen (H)", field: "Ongkos Pemakaian Komponen (H)", minWidth: 150 },
+            { headerName: "Ongkos Kerugian Akibat Kerusakan (L)", field: "Ongkos Kerugian Akibat Kerusakan (L)", minWidth: 150 },
+            { headerName: "Jumlah Komponen Terpasang (m)", field: "Jumlah Komponen Terpasang (m)", minWidth: 150 },
+            { headerName: "Harga Resale Komponen (O)", field: "Harga Resale Komponen (O)", minWidth: 150 },
+            { headerName: "Minimum Regret (Rp )", field: "Minimum Regret (Rp )", minWidth: 150 },
+            { headerName: "Strategi Penyediaan Optimal (Unit)", field: "Strategi Penyediaan Optimal (Unit)", minWidth: 150 },
+        ];
+
+        setupAggrid(dataModel.regret, columnDefs.regret, false);
+    }
+
+    if (agT === "linear") {
+        header.textContent = "Model Linear (Pola Non Moving)";
+        headerAction.innerHTML = "";
+
+        childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
+            <div class="w-full flex justify-between text-sm">
+                <div>Data Hasil Model Linear</div>
+            </div>
+            <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
+        </div>`;
+
+        columnDefs.linear = [
+            { headerName: "Material Code", field: "Material Code", minWidth: 150 },
+            { headerName: "Material Description", field: "Material Description", minWidth: 150 },
+            { headerName: "ABC Indicator", field: "ABC Indicator", minWidth: 150 },
+            { headerName: "Ongkos Pemakaian Komponen (H)", field: "Ongkos Pemakaian Komponen (H)", minWidth: 150 },
+            { headerName: "Ongkos Kerugian Akibat Kerusakan (L)", field: "Ongkos Kerugian Akibat Kerusakan (L)", minWidth: 150 },
+            { headerName: "Jumlah Komponen Terpasang (m)", field: "Jumlah Komponen Terpasang (m)", minWidth: 150 },
+            { headerName: "Harga Resale Komponen (O)", field: "Harga Resale Komponen (O)", minWidth: 150 },
+            { headerName: "Ongkos Model Probabilistik Kerusakan", field: "Ongkos Model Probabilistik Kerusakan", minWidth: 150 },
+            { headerName: "Strategi Penyediaan Optimal (Unit)", field: "Strategi Penyediaan Optimal (Unit)", minWidth: 150 },
+        ];
+
+        setupAggrid(dataModel.linear, columnDefs.linear, false);
+    }
+
+    if (agT === "non-linear") {
+        header.textContent = "Model Non Linear (Pola Non Moving)";
+        headerAction.innerHTML = "";
+
+        childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
+            <div class="w-full flex justify-between text-sm">
+                <div>Data Hasil Model Non Linear</div>
+            </div>
+            <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
+        </div>`;
+
+        columnDefs.nonlinear = [
+            { headerName: "Material Code", field: "Material Code", minWidth: 150 },
+            { headerName: "Material Description", field: "Material Description", minWidth: 150 },
+            { headerName: "ABC Indicator", field: "ABC Indicator", minWidth: 150 },
+            { headerName: "Ongkos Pemakaian Komponen (H)", field: "Ongkos Pemakaian Komponen (H)", minWidth: 150 },
+            { headerName: "Ongkos Kerugian Akibat Kerusakan (L)", field: "Ongkos Kerugian Akibat Kerusakan (L)", minWidth: 150 },
+            { headerName: "Jumlah Komponen Terpasang (m)", field: "Jumlah Komponen Terpasang (m)", minWidth: 150 },
+            { headerName: "Harga Resale Komponen (O)", field: "Harga Resale Komponen (O)", minWidth: 150 },
+            { headerName: "Ongkos Model Probabilistik Kerusakan", field: "Ongkos Model Probabilistik Kerusakan", minWidth: 150 },
+            { headerName: "Strategi Penyediaan Optimal (Unit)", field: "Strategi Penyediaan Optimal (Unit)", minWidth: 150 },
+        ];
+
+        setupAggrid(dataModel.nonlinear, columnDefs.nonlinear, false);
+    }
+
+    if (agT === "bcr") {
+        header.textContent = "Model BCR (Pola BCR)";
+        headerAction.innerHTML = "";
+
+        childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
+            <div class="w-full flex justify-between text-sm">
+                <div>Data Hasil Model BCR</div>
+            </div>
+            <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
+        </div>`;
+
+        columnDefs.bcr = [
+            { headerName: "Material Code", field: "Material Code", minWidth: 150 },
+            { headerName: "Material Description", field: "Material Description", minWidth: 150 },
+            { headerName: "ABC Indicator", field: "ABC Indicator", minWidth: 150 },
+            { headerName: "Harga Komponen (Ho)", field: "Harga Komponen (Ho)", minWidth: 150 },
+            { headerName: "Kerugian Komponen (Co)", field: "Kerugian Komponen (Co)", minWidth: 150 },
+            { headerName: "Suku Bunga (i)", field: "Suku Bunga (i)", minWidth: 150 },
+            { headerName: "Waktu Sisa Operasi (tahun)", field: "Waktu Sisa Operasi (tahun)", minWidth: 150 },
+            { headerName: "Benefit-Cost Ratio (BCR)", field: "Benefit-Cost Ratio (BCR)", minWidth: 150 },
+            { headerName: "Strategi Penyediaan Optimal (Tahun)", field: "Strategi Penyediaan Optimal (Tahun)", minWidth: 150 },
+            { headerName: "Jenis Probabilitas", field: "Jenis Probabilitas", minWidth: 150 },
+            { headerName: "Pesan", field: "Pesan", minWidth: 150 },
+        ];
+
+        setupAggrid(dataModel.bcr, columnDefs.bcr, false);
     }
 
     url.searchParams.set("t", agT);
@@ -411,7 +633,7 @@ const uploadFile = async (agN) => {
 
         idProduct += 1;
 
-        fileIdNow < [...inpFile.files].length - 1 ? uploadFile(fileIdNow + 1) : void 0;
+        fileIdNow < [...inpFile.files].length - 1 ? uploadFile(fileIdNow + 1) : tools("mentah");
     } catch (error) {
         void 0;
     }
@@ -461,6 +683,26 @@ const filtered = async () => {
     sInterval[idProgress] === "done" ? progresBarStatus(idProgress) : (sInterval[idProgress] = "done");
 
     dataClass = responseClass[1];
+    tools("class");
+};
+
+const model = async () => {
+    let times = dataClass.length;
+
+    const idProgress = progresBar("Filterisasi Data", "Filtering data Histori Good Issue (GI)", times);
+
+    const responseModel = await postFetch("model-to-calc", { session: sId });
+
+    if (responseModel[0] !== "success") {
+        notification("show", "Gagal mengolah data");
+        sInterval[idProgress] = "done";
+        return;
+    }
+
+    sInterval[idProgress] === "done" ? progresBarStatus(idProgress) : (sInterval[idProgress] = "done");
+
+    dataModel = responseModel[1];
+    tools("q");
 };
 
 const setHeight = () => document.getElementById("container").style.setProperty("--vh", `${window.innerHeight * 0.01}px`);
@@ -484,6 +726,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     setTimeout(() => miniNav(), 300);
-    const test = await postFetch("model-to-calc", { session: sId });
-    console.log(test);
 });

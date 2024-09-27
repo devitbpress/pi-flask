@@ -86,11 +86,11 @@ def classification():
 @routes_api.route("/model-to-calc", methods=['POST'])
 def model_to_calculation():
     try:
-        df = pd.read_excel("./app/db/class.xlsx")
-        result = utils.processing_model_calc(request.json.get("session"), df)
+        # df = pd.read_excel("./app/db/test.xlsx")
+        result = utils.processing_model_calc(request.json.get("session"))
 
         return jsonify(['success', result]), 200
-    
+
     except Exception as e:
         return jsonify(['error', str(e)]), 500
 

@@ -8,7 +8,8 @@ import pymysql
 db_host = 'localhost'
 db_user = 'alisatia'
 db_password = '@[db_aliSatia#9]'
-db_database = 'itbpress_erp'
+# db_database = 'itbpress_erp'
+db_database = 'flask_pi'
 db_cursorclass = pymysql.cursors.DictCursor
 
 # autentikasi (belum tambah bcrypt)
@@ -92,7 +93,7 @@ def get_search_product(ag_search_term):
         conn.close()
 
 # ambil data produk
-def get_product_model(ag_code):
+def get_product_model(ag_code, ag_model):
     material_codes_str = ','.join(map(str, ag_code))
     conn = pymysql.connect(host=db_host, user=db_user, password=db_password, database=db_database, cursorclass=db_cursorclass)
 
@@ -103,13 +104,13 @@ def get_product_model(ag_code):
             products = cursor.fetchall()
 
         if products:
-            return products
+            return ["success", products]
         else:
-            return {'status': 'empty'}
+            return ["failed", "empty"]
 
     except Exception as e:
         print("Error:", str(e))
-        return {'status': 'error', 'message': str(e)}
+        return ['failed', str(e)]
 
     finally:
         conn.close()
