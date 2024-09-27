@@ -644,11 +644,6 @@ const subset = async () => {
 
     Object.values(dataMentah).map((item) => (lengData += item.length));
 
-    if (lengData > 90000) {
-        notification("show", "Data melebihi batas makasimal 90.000 Data");
-        return;
-    }
-
     let times = Object.values(dataMentah).reduce((sum, data) => sum + data.length, 0);
     const idProgress = progresBar("Filterisasi Data", "Normalisasi data Input Histori Good Issue (GI)", times);
 
