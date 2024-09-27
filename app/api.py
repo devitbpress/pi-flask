@@ -173,16 +173,3 @@ def delete_session():
         return jsonify(response)
     except Exception as e:
             return jsonify({'error': str(e)}), 500
-
-import time
-
-# time out
-@routes_api.route("/time-out", methods=['POST'])
-def time_out():
-    try:
-        sec = int(request.json.get("sec"))
-        time.sleep(sec)
-
-        return jsonify(f"time oute {sec} detik aman")
-    except Exception as e:
-        return jsonify({'error': "time out"})

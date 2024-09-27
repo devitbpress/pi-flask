@@ -26,8 +26,3 @@ def product_view():
 @routes_bp.route("/masuk")
 def login_view():
     return render_template('login-ui.html')
-
-# halaman time out
-@routes_bp.route("/timeout")
-def time_out_view():
-    return render_template("time-out.html")
