@@ -34,6 +34,28 @@ def get_user(ag_email, ag_password):
     finally:
         conn.close()
 
+# ambil semua data
+def get_all_data():
+    conn = pymysql.connect(host=db_host, user=db_user, password=db_password, database=db_database, cursorclass=db_cursorclass)
+
+    try:
+        with conn.cursor() as cursor:
+            sql_products = "SELECT * FROM pi_product"
+            cursor.execute(sql_products)
+            products = cursor.fetchall()
+
+        if products:
+            return ['success', products]
+        else:
+            return ['failed', 'empty']
+
+    except Exception as e:
+        print("Error:", str(e))
+        return ['error', str(e)]
+    
+    finally:
+        conn.close()
+
 # cari produk / page
 def get_page_product(ag_page, ag_per_page, ag_offset):
     conn = pymysql.connect(host=db_host, user=db_user, password=db_password, database=db_database, cursorclass=db_cursorclass)

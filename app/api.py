@@ -1,7 +1,7 @@
 import pandas as pd
 
 from flask import Blueprint, request, jsonify
-from app.db import get_user, get_page_product, get_search_product
+from app.db import get_user, get_page_product, get_search_product, get_all_data
 from app import utils
 
 routes_api = Blueprint('api', __name__)
@@ -128,7 +128,7 @@ def calc():
 @routes_api.route("/manual-calc", methods=['POST'])
 def manual_calc():
     try:
-        processed_data = utils.calc_model_manual(request.form)
+        processed_data = utils.calc_model_manual(request.json)
 
         return jsonify(processed_data)
     except Exception as e:
@@ -138,11 +138,12 @@ def manual_calc():
 @routes_api.route("/get-product", methods=['POST'])
 def get_product():
     try:
-        page = int(request.json.get('page', 1))
-        per_page = 1000
-        offset = (page - 1) * per_page
+        # page = int(request.json.get('page', 1))
+        # per_page = 1000
+        # offset = (page - 1) * per_page
 
-        response = get_page_product(page, per_page, offset)
+        response = get_all_data()
+        # response = get_page_product(page, per_page, offset)
 
         return jsonify(response)
 

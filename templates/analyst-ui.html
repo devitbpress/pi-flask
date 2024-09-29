@@ -12,10 +12,11 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='vendors/tailwind.css') }}" />
         <link rel="stylesheet" href="{{ url_for('static', filename='vendors/aggrid.css') }}" />
         <link rel="stylesheet" href="{{ url_for('static', filename='vendors/aggrid-quartz.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/analyst-ui.css') }}" />
     </head>
     <body>
-        <div id="container" class="w-full flex">
+        <div id="container" class="w-ful flex">
             <!-- navigator -->
             <div id="box-nav" class="relative w-44 h-full bg-gradient-to-t from-cyan-500 to-blue-700 py-3 flex flex-col justify-between duration-300">
                 <div id="btn-chevron" class="absolute -right-3 w-7 h-8 bg-cyan-500 hover:bg-cyan-600 bottom-1/4 translate-y-1/2 p-1 rounded-md cursor-pointer duration-300">
@@ -76,7 +77,7 @@
 
                 <div class="h-[calc(100%-3rem)] w-full overflow-y-scroll">
                     <div id="child-tools" class="flex flex-col text-xs text-gray-800">
-                        <label for="inp-file" class="w-[calc(100%-1rem)] py-2 mb-4 mx-2 rounded-lg bg-gradient-to-r from-emerald-300 hover:from-emerald-400 via-emerald-400 hover:via-emerald-500 to-emerald-300 hover:to-emerald-400 cursor-pointer text-center text-sm text-white duration-300">+ Tambah File</label>
+                        <label id="lbl-file" for="inp-file" class="w-[calc(100%-1rem)] py-2 mb-4 mx-2 rounded-lg bg-gradient-to-r from-emerald-300 hover:from-emerald-400 via-emerald-400 hover:via-emerald-500 to-emerald-300 hover:to-emerald-400 cursor-pointer text-center text-sm text-white duration-300">+ Tambah File</label>
                         <input type="file" id="inp-file" hidden multiple accept=".xls, .xlsx" />
 
                         <div class="w-full flex flex-col">
@@ -89,9 +90,11 @@
 
                             <div data-tools="list" class="tools list px-1 py-2 hover:text-white cursor-pointer border-b hover:bg-sky-500 flex justify-between items-center">
                                 <span>List file</span>
+                                <span class="text-red-500 font-semibold int-list">E</span>
                             </div>
                             <div data-tools="mentah" class="tools mentah px-1 py-2 hover:text-white cursor-pointer border-b hover:bg-sky-500 flex justify-between items-center">
                                 <span>Data Mentah</span>
+                                <span class="text-red-500 font-semibold int-mentah">E</span>
                             </div>
                         </div>
 
@@ -105,9 +108,11 @@
 
                             <div data-tools="subset" class="tools subset px-1 py-2 hover:text-white cursor-pointer border-b hover:bg-sky-500 flex justify-between items-center">
                                 <span>Subset Data</span>
+                                <span class="text-red-500 font-semibold int-element int-subset">E</span>
                             </div>
                             <div data-tools="class" class="tools class px-1 py-2 hover:text-white cursor-pointer border-b hover:bg-sky-500 flex justify-between items-center">
                                 <span>Klasifikasi Data</span>
+                                <span class="text-red-500 font-semibold int-element int-class">E</span>
                             </div>
                         </div>
 
@@ -121,27 +126,35 @@
 
                             <div data-tools="q" class="tools q px-1 py-2 hover:text-white cursor-pointer border-b hover:bg-sky-500 flex justify-between items-center">
                                 <span>Model Q</span>
+                                <span class="text-red-500 font-semibold int-element int-q">E</span>
                             </div>
                             <div data-tools="wilson" class="tools wilson px-1 py-2 hover:text-white cursor-pointer border-b hover:bg-sky-500 flex justify-between items-center">
                                 <span>Model Wilson</span>
+                                <span class="text-red-500 font-semibold int-element int-wilson">E</span>
                             </div>
                             <div data-tools="poisson" class="tools poisson px-1 py-2 hover:text-white cursor-pointer border-b hover:bg-sky-500 flex justify-between items-center">
                                 <span>Model Poisson</span>
+                                <span class="text-red-500 font-semibold int-element int-poisson">E</span>
                             </div>
                             <div data-tools="tchebycheff" class="tools tchebycheff px-1 py-2 hover:text-white cursor-pointer border-b hover:bg-sky-500 flex justify-between items-center">
                                 <span>Model Tchybeef</span>
+                                <span class="text-red-500 font-semibold int-element int-tchebycheff">E</span>
                             </div>
                             <div data-tools="regret" class="tools regret px-1 py-2 hover:text-white cursor-pointer border-b hover:bg-sky-500 flex justify-between items-center">
                                 <span>Model Regret (Non-Moving)</span>
+                                <span class="text-red-500 font-semibold int-element int-regret">E</span>
                             </div>
                             <div data-tools="linear" class="tools linear px-1 py-2 hover:text-white cursor-pointer border-b hover:bg-sky-500 flex justify-between items-center">
                                 <span>Model Linear (Non-Moving)</span>
+                                <span class="text-red-500 font-semibold int-element int-linear">E</span>
                             </div>
                             <div data-tools="non-linear" class="tools non-linear px-1 py-2 hover:text-white cursor-pointer border-b hover:bg-sky-500 flex justify-between items-center">
                                 <span>Model Non-Linear (Non-Moving)</span>
+                                <span class="text-red-500 font-semibold int-element int-non-linear">E</span>
                             </div>
                             <div data-tools="bcr" class="tools bcr px-1 py-2 hover:text-white cursor-pointer border-b hover:bg-sky-500 flex justify-between items-center">
                                 <span>Model BCR</span>
+                                <span class="text-red-500 font-semibold int-element int-bcr">E</span>
                             </div>
                         </div>
                     </div>

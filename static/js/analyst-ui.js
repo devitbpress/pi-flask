@@ -1,177 +1,16 @@
-const url = new URL(window.location.href);
-const urlParams = new URLSearchParams(window.location.search);
-const btnChevron = document.getElementById("btn-chevron");
-const childTools = document.getElementById("child-tools");
 const inpFile = document.getElementById("inp-file");
+const lblFile = document.getElementById("lbl-file");
 
 let fileId = 0;
-let miniNavIndikacator = { status: false, nav: "13rem", tools: "13rem" };
-let accountOptionIndikator = false;
-let gridApi;
-let idNotif = 1;
+let idProduct = 1;
 let dataList = [];
 let dataMentah = {};
 let dataSubset = [];
 let dataClass = [];
 let dataModel = {};
-let idProduct = 1;
-let columnDefs = {
-    list: [
-        { headerName: "NAMA", field: "name" },
-        { headerName: "UKURAN", field: "size", minWidth: 150, maxWidth: 200 },
-        {
-            headerName: "AKSI",
-            field: "action",
-            cellRenderer: (params) => {
-                const span = document.createElement("span");
-                span.innerHTML = params.value;
-                span.addEventListener("click", async () => {
-                    const rowIndex = params.node.rowIndex;
-                    const index = dataList.findIndex((item) => item.name === params.data.name);
-                    if (index !== -1) {
-                        dataList.splice(index, 1);
-                    }
-
-                    const responseDelete = await postFetch("delete-file", { file_id: params.data.id, session: sId });
-
-                    if (responseDelete === "success") {
-                        notification("show", "File berhasil terhapus");
-                        delete dataMentah[params.data.name];
-                        gridApi.applyTransaction({ remove: [params.data] });
-                    } else {
-                        notification("show", "Gagal menghapus file");
-                    }
-                });
-                return span;
-            },
-            minWidth: 150,
-            maxWidth: 200,
-        },
-        {
-            headerName: "STATUS",
-            field: "status",
-            futoHeight: true,
-            cellRenderer: (params) => {
-                return params.value;
-            },
-            minWidth: 150,
-            maxWidth: 200,
-        },
-    ],
-    mentah: [],
-};
-
-const uploadFiles = async (agUrl, agData, agId) => {
-    const formData = new FormData();
-    formData.append("file", agData);
-    formData.append("numid", agId);
-    formData.append("session", sessionStorage.getItem("id"));
-
-    try {
-        const response = await fetch(agUrl, { method: "POST", body: formData });
-
-        const data = await response.json();
-        const { ok, statusText } = response;
-
-        if (ok) {
-            return ["success", data];
-        } else {
-            return ["error", statusText || data];
-        }
-    } catch (error) {
-        return ["error", error.message || error];
-    }
-};
-
-const processingFiles = async (agUrl, agId) => {
-    const formData = new FormData();
-    formData.append("numid", agId);
-    formData.append("session", sessionStorage.getItem("id"));
-
-    try {
-        const response = await fetch(agUrl, { method: "POST", body: formData });
-
-        const { ok, statusText } = response;
-
-        if (!ok) {
-            const errorData = await response.json();
-            return ["failed", errorData.error || statusText];
-        }
-
-        const result = await response.json();
-        return ["success", result];
-    } catch (error) {
-        return ["failed", error.message || error];
-    }
-};
-
-const miniNav = () => {
-    const boxNav = document.getElementById("box-nav");
-    const boxContent = document.getElementById("box-content");
-    const imgTitle = document.getElementById("img-title");
-    const childNav = document.getElementById("child-nav");
-    const boxAccount = document.getElementById("box-account");
-
-    if (miniNavIndikacator.status) {
-        boxNav.style.width = "11rem";
-        miniNavIndikacator.nav = "11rem";
-        miniNavIndikacator.status = false;
-        btnChevron.querySelector("img").classList.remove("rotate-180");
-        imgTitle.style.width = "80%";
-        imgTitle.classList.add("ml-3");
-        childNav.querySelectorAll("span").forEach((element) => (element.style.display = "block"));
-        boxAccount.querySelectorAll("span").forEach((element) => (element.style.display = "block"));
-        imgTitle.src = "./static/assets/pupuk-indonesia-white.png";
-    } else {
-        boxNav.style.width = "4rem";
-        miniNavIndikacator.nav = "4rem";
-        miniNavIndikacator.status = true;
-        btnChevron.querySelector("img").classList.add("rotate-180");
-        childNav.querySelectorAll("span").forEach((element) => (element.style.display = "none"));
-        boxAccount.querySelectorAll("span").forEach((element) => (element.style.display = "none"));
-        imgTitle.src = "./static/assets/pupuk-indonesia-logo.png";
-        imgTitle.style.width = "100%";
-        imgTitle.classList.remove("ml-3");
-    }
-
-    boxContent.style.width = `calc(100vw - ${miniNavIndikacator.nav} - ${miniNavIndikacator.tools})`;
-};
-
-const setupAggrid = async (agData, agCol, agView) => {
-    const eGrid = document.getElementById("aggrid-website");
-    const cGrid = document.querySelectorAll(".ag-header-cell-label");
-
-    let rowData = [];
-
-    try {
-        rowData = agData.map((item) => {
-            return Object.entries(item).reduce((acc, entry) => {
-                if (entry[0].toLowerCase().includes("date")) {
-                    const dateObj = new Date(entry[1]);
-                    const year = dateObj.getFullYear();
-                    const month = String(dateObj.getMonth() + 1).padStart(2, "0");
-                    const day = String(dateObj.getDate()).padStart(2, "0");
-                    acc[entry[0]] = `${year}-${month}-${day}`;
-                } else {
-                    acc[entry[0]] = entry[1];
-                }
-                return acc;
-            }, {});
-        });
-    } catch (error) {
-        rowData = agData;
-    }
-
-    defaultColDef = { flex: 1 };
-
-    const gridOptions = { columnDefs: agCol, rowData: rowData, defaultColDef: defaultColDef };
-
-    eGrid.innerHTML = "";
-    gridApi = agGrid.createGrid(eGrid, gridOptions);
-
-    setLoading(agView);
-    cGrid.forEach((element) => (element.textContent.trim() === "Total" ? element.classList.add("justify-end", "pr-5") : ""));
-};
+let processingButton = {};
+let upProxFile = true;
+let intElement = "new";
 
 const tools = (agT) => {
     const header = document.getElementById("header");
@@ -202,6 +41,49 @@ const tools = (agT) => {
             <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
         </div>`;
 
+        columnDefs["list"] = [
+            { headerName: "NAMA", field: "name" },
+            { headerName: "UKURAN", field: "size", minWidth: 150, maxWidth: 200 },
+            {
+                headerName: "AKSI",
+                field: "action",
+                cellRenderer: (params) => {
+                    const span = document.createElement("span");
+                    span.innerHTML = params.value;
+                    span.addEventListener("click", async () => {
+                        const rowIndex = params.node.rowIndex;
+                        const index = dataList.findIndex((item) => item.name === params.data.name);
+                        if (index !== -1) {
+                            dataList.splice(index, 1);
+                        }
+
+                        const responseDelete = await postFetch("delete-file", { file_id: params.data.id, session: sId });
+
+                        if (responseDelete === "success") {
+                            notification("show", "File berhasil terhapus", "success");
+                            delete dataMentah[params.data.name];
+                            gridApi.applyTransaction({ remove: [params.data] });
+                        } else {
+                            notification("show", "Gagal menghapus file", "failed");
+                        }
+                    });
+                    return span;
+                },
+                minWidth: 150,
+                maxWidth: 200,
+            },
+            {
+                headerName: "STATUS",
+                field: "status",
+                futoHeight: true,
+                cellRenderer: (params) => {
+                    return params.value;
+                },
+                minWidth: 150,
+                maxWidth: 200,
+            },
+        ];
+
         setupAggrid(dataList, columnDefs.list, false);
     }
 
@@ -214,18 +96,20 @@ const tools = (agT) => {
         });
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-sm">
-                <div class="flex gap-2">
+            <div class="w-full flex justify-between text-xs">
+                <div class="flex gap-2 items-center">
                     <span>Nama File: </span>
                     <select id="slc-mentah" class="cursor-pointer bg-transparent">${option}</select>
+                </div>
+                <div class="flex gap-2 justify-between items-center">
+                    <span>Cari Data</span>
+                    <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
                 </div>
             </div>
             <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
         </div>`;
 
         try {
-            headerAction.innerHTML = `<button id="btn-process-mentah" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded text-xs">Proses Dataframe</button>`;
-
             columnDefs.mentah = Object.keys(dataMentah[document.getElementById("slc-mentah").value][0]).map((key) => {
                 const lenght = key.length >= 20 ? key.length * 8 : key.length >= 15 ? key.length * 9 : key.length >= 10 ? key.length * 10 : key.length * 12;
                 return {
@@ -254,7 +138,19 @@ const tools = (agT) => {
                 setupAggrid(dataMentah[document.getElementById("slc-mentah").value], columnDefs.mentah, false);
             });
 
-            document.getElementById("btn-process-mentah").addEventListener("click", () => subset());
+            !processingButton.mentah ? (processingButton.mentah = "allow") : void 0;
+            if (processingButton.mentah === "allow") {
+                headerAction.innerHTML = `<button id="btn-process-mentah" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded text-xs">Proses Dataframe</button>`;
+                document.getElementById("btn-process-mentah").addEventListener("click", () => {
+                    headerAction.innerHTML = `<button class="cursor-not-allowed bg-blue-500 font-semibold text-white py-2 px-4 border border-blue-500 border-transparent rounded text-xs">Sedang Memproses Dataframe</button>`;
+                    processingButton.mentah = "processing";
+                    subset();
+                });
+            } else if (processingButton.mentah === "processing") {
+                headerAction.innerHTML = `<button class="cursor-not-allowed bg-blue-500 font-semibold text-white py-2 px-4 border border-blue-500 border-transparent rounded text-xs">Sedang Memproses Dataframe</button>`;
+            } else {
+                headerAction.innerHTML = `<button class="cursor-not-allowed bg-blue-500 font-semibold text-white py-2 px-4 border border-blue-500 border-transparent rounded text-xs">Proses Selesai</button>`;
+            }
         } catch (error) {
             columnDefs.mentah = [
                 { headerName: "Base Unit of Measure", field: "code" },
@@ -274,8 +170,13 @@ const tools = (agT) => {
         headerAction.innerHTML = "";
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-sm">
+            <div class="w-full flex justify-between text-xs">
                 <div>Subset Data</div>
+                <div class="flex gap-2 justify-between items-center">
+                    <span>Cari Data</span>
+                    <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
+                    <button onclick="downloadCsv()" class="ml-4 bg-transparent hover:bg-green-500 text-green-700 hover:text-white py-1 px-2 border border-green-500 hover:border-transparent rounded">Export CSV</button>
+                </div>
             </div>
             <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
         </div>`;
@@ -296,8 +197,22 @@ const tools = (agT) => {
         headerAction.innerHTML = "";
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-sm">
-                <div>Data Klasifikasi</div>
+            <div class="w-full flex justify-between text-xs">
+                <div class="flex gap-2 items-center">
+                    <span>Data Klasifikasi: </span>
+                    <select onchange="inpSearch(event)" class="cursor-pointer bg-transparent">
+                        <option value="">Semua</option>
+                        <option value="Pola Deterministik">Pola Deterministik</option>
+                        <option value="Pola Normal">Pola Normal</option>
+                        <option value="Pola Poisson">Pola Poisson</option>
+                        <option value="">Pola Tak - Tentu</option>
+                    </select>
+                </div>
+                <div class="flex gap-2 justify-between items-center">
+                    <span>Cari Data</span>
+                    <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
+                    <button onclick="downloadCsv()" class="ml-4 bg-transparent hover:bg-green-500 text-green-700 hover:text-white py-1 px-2 border border-green-500 hover:border-transparent rounded">Export CSV</button>
+                </div>
             </div>
             <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
         </div>`;
@@ -317,11 +232,20 @@ const tools = (agT) => {
             { headerName: "Hasil Uji", field: "Hasil_uji", minWidth: 150 },
         ];
 
-        try {
-            headerAction.innerHTML = `<button id="btn-process-model" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded text-xs">Proses Tiap Kategori</button>`;
-            document.getElementById("btn-process-model").addEventListener("click", () => model());
-        } catch (error) {
-            void 0;
+        if (dataClass.length !== 0) {
+            !processingButton.class ? (processingButton.class = "allow") : void 0;
+            if (processingButton.class === "allow") {
+                headerAction.innerHTML = `<button id="btn-process-model" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded text-xs">Proses Tiap Kategori</button>`;
+                document.getElementById("btn-process-model").addEventListener("click", () => {
+                    headerAction.innerHTML = `<button class="cursor-not-allowed bg-blue-500 font-semibold text-white py-2 px-4 border border-blue-500 border-transparent rounded text-xs">Sedang Memproses</button>`;
+                    processingButton.class = "processing";
+                    model();
+                });
+            } else if (processingButton.class === "processing") {
+                headerAction.innerHTML = `<button class="cursor-not-allowed bg-blue-500 font-semibold text-white py-2 px-4 border border-blue-500 border-transparent rounded text-xs">Sedang Memproses</button>`;
+            } else {
+                headerAction.innerHTML = `<button class="cursor-not-allowed bg-blue-500 font-semibold text-white py-2 px-4 border border-blue-500 border-transparent rounded text-xs">Proses Selesai</button>`;
+            }
         }
 
         setupAggrid(dataClass, columnDefs.filtered, false);
@@ -332,8 +256,13 @@ const tools = (agT) => {
         headerAction.innerHTML = "";
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-sm">
+            <div class="w-full flex justify-between text-xs">
                 <div>Data Hasil Model Q</div>
+                <div class="flex gap-2 justify-between items-center">
+                    <span>Cari Data</span>
+                    <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
+                    <button onclick="downloadCsv()" class="ml-4 bg-transparent hover:bg-green-500 text-green-700 hover:text-white py-1 px-2 border border-green-500 hover:border-transparent rounded">Export CSV</button>
+                </div>
             </div>
             <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
         </div>`;
@@ -370,8 +299,13 @@ const tools = (agT) => {
         headerAction.innerHTML = "";
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-sm">
+            <div class="w-full flex justify-between text-xs">
                 <div>Data Hasil Model Wilson</div>
+                <div class="flex gap-2 justify-between items-center">
+                    <span>Cari Data</span>
+                    <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
+                    <button onclick="downloadCsv()" class="ml-4 bg-transparent hover:bg-green-500 text-green-700 hover:text-white py-1 px-2 border border-green-500 hover:border-transparent rounded">Export CSV</button>
+                </div>
             </div>
             <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
         </div>`;
@@ -405,8 +339,13 @@ const tools = (agT) => {
         headerAction.innerHTML = "";
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-sm">
+            <div class="w-full flex justify-between text-xs">
                 <div>Data Hasil Model Poisson</div>
+                <div class="flex gap-2 justify-between items-center">
+                    <span>Cari Data</span>
+                    <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
+                    <button onclick="downloadCsv()" class="ml-4 bg-transparent hover:bg-green-500 text-green-700 hover:text-white py-1 px-2 border border-green-500 hover:border-transparent rounded">Export CSV</button>
+                </div>
             </div>
             <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
         </div>`;
@@ -439,8 +378,13 @@ const tools = (agT) => {
         headerAction.innerHTML = "";
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-sm">
+            <div class="w-full flex justify-between text-xs">
                 <div>Data Hasil Model Tchebycheff</div>
+                <div class="flex gap-2 justify-between items-center">
+                    <span>Cari Data</span>
+                    <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
+                    <button onclick="downloadCsv()" class="ml-4 bg-transparent hover:bg-green-500 text-green-700 hover:text-white py-1 px-2 border border-green-500 hover:border-transparent rounded">Export CSV</button>
+                </div>
             </div>
             <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
         </div>`;
@@ -465,8 +409,13 @@ const tools = (agT) => {
         headerAction.innerHTML = "";
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-sm">
+            <div class="w-full flex justify-between text-xs">
                 <div>Data Hasil Model Regret</div>
+                <div class="flex gap-2 justify-between items-center">
+                    <span>Cari Data</span>
+                    <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
+                    <button onclick="downloadCsv()" class="ml-4 bg-transparent hover:bg-green-500 text-green-700 hover:text-white py-1 px-2 border border-green-500 hover:border-transparent rounded">Export CSV</button>
+                </div>
             </div>
             <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
         </div>`;
@@ -491,8 +440,13 @@ const tools = (agT) => {
         headerAction.innerHTML = "";
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-sm">
+            <div class="w-full flex justify-between text-xs">
                 <div>Data Hasil Model Linear</div>
+                <div class="flex gap-2 justify-between items-center">
+                    <span>Cari Data</span>
+                    <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
+                    <button onclick="downloadCsv()" class="ml-4 bg-transparent hover:bg-green-500 text-green-700 hover:text-white py-1 px-2 border border-green-500 hover:border-transparent rounded">Export CSV</button>
+                </div>
             </div>
             <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
         </div>`;
@@ -517,8 +471,13 @@ const tools = (agT) => {
         headerAction.innerHTML = "";
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-sm">
+            <div class="w-full flex justify-between text-xs">
                 <div>Data Hasil Model Non Linear</div>
+                <div class="flex gap-2 justify-between items-center">
+                    <span>Cari Data</span>
+                    <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
+                    <button onclick="downloadCsv()" class="ml-4 bg-transparent hover:bg-green-500 text-green-700 hover:text-white py-1 px-2 border border-green-500 hover:border-transparent rounded">Export CSV</button>
+                </div>
             </div>
             <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
         </div>`;
@@ -543,8 +502,13 @@ const tools = (agT) => {
         headerAction.innerHTML = "";
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-sm">
+            <div class="w-full flex justify-between text-xs">
                 <div>Data Hasil Model BCR</div>
+                <div class="flex gap-2 justify-between items-center">
+                    <span>Cari Data</span>
+                    <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
+                    <button onclick="downloadCsv()" class="ml-4 bg-transparent hover:bg-green-500 text-green-700 hover:text-white py-1 px-2 border border-green-500 hover:border-transparent rounded">Export CSV</button>
+                </div>
             </div>
             <div id="aggrid-website" class="ag-theme-quartz w-full h-full"></div>
         </div>`;
@@ -570,43 +534,36 @@ const tools = (agT) => {
     window.history.replaceState({}, "", url.toString());
 };
 
-const notification = (agS, agE) => {
-    const notif = document.getElementById("notification");
-    const notifNow = idNotif;
-
-    if (agS === "show") {
-        notif.innerHTML += `
-            <div id="notif-${notifNow}" class="px-2 py-1 flex items-center gap-2 bg-white border rounded scale-0 origin-right duration-300">
-                <img onclick="notification('hide', 'notif-${notifNow}')" src="./static/assets/delete.png" alt="delete" class="h-5 w-fit cursor-pointer" />
-                ${agE}
-            </div>
-        `;
-
-        idNotif += 1;
-        setTimeout(() => {
-            document.getElementById(`notif-${notifNow}`).classList.remove("scale-0");
-        }, 150);
+const uploadFile = async (agN) => {
+    if (!upProxFile) {
+        return;
     } else {
-        const elementDelete = document.getElementById(`${agE}`);
-        elementDelete.classList.add("scale-0");
-        setTimeout(() => elementDelete.remove(), 150);
+        upProxFile = false;
+        lblFile.style.cursor = "not-allowed";
+        inpFile.disabled = true;
     }
 
-    setTimeout(() => {
-        try {
-            notification("hide", `notif-${notifNow}`);
-        } catch (error) {
-            void 0;
-        }
-    }, 5000);
-};
-
-const uploadFile = async (agN) => {
     try {
         const fileIdNow = agN;
         const file = inpFile.files[fileIdNow];
+        const times = file.size / 100;
+        const eksistensi = file.name.split(".").pop().toLowerCase();
 
-        const idProgress = progresBar("Baca data histori Good Issue (GI)", `${file.name}`, file.size / 250);
+        indikatorNavigation("list", "P");
+
+        if (eksistensi !== "xls" && eksistensi !== "XLS" && eksistensi !== "xlsx" && eksistensi !== "XLSX") {
+            notification("show", `${file.name} tidak diizinkan`, "failed");
+            uploadFile(fileIdNow + 1);
+            return;
+        }
+
+        if (dataMentah[file.name]) {
+            notification("show", `${file.name} gagal diunggah`, "failed");
+            uploadFile(fileIdNow + 1);
+            return;
+        }
+
+        const idProgress = progresBar("Baca data histori Good Issue (GI)", `${file.name}`, times);
 
         const responseFile = await postFiles("upload-file", file, idProduct);
 
@@ -614,8 +571,9 @@ const uploadFile = async (agN) => {
         if (responseFile[0] === "success") {
             statusAggrid = `<div class="flex gap-1 items-center cursor-pointer"><img src="./static/assets/done-green.png" alt="delete" class="w-4 h-4" /><span class="text-green-500">Terunggah</span></div>`;
             dataMentah[file.name] = responseFile[1];
+            notification("show", `${file.name} berhasil diunggah`, "success");
         } else {
-            notification("show", "File gagal diunggah");
+            notification("show", `${file.name} gagal diunggah`, "failed");
             statusAggrid = `<div class="flex gap-1 items-center cursor-pointer"><img src="./static/assets/error-yellow.png" alt="delete" class="w-4 h-4" /><span class="text-yellow-500">Gagal</span></div>`;
         }
 
@@ -632,25 +590,65 @@ const uploadFile = async (agN) => {
         tools("list");
 
         idProduct += 1;
+        upProxFile = true;
 
-        fileIdNow < [...inpFile.files].length - 1 ? uploadFile(fileIdNow + 1) : tools("mentah");
+        if (fileIdNow < [...inpFile.files].length - 1) {
+            uploadFile(fileIdNow + 1);
+        } else {
+            indikatorNavigation("list", "D");
+            indikatorNavigation("mentah", "D");
+
+            if (intElement !== "new") {
+                document.querySelectorAll(".tools").forEach((element) => {
+                    const elmInt = element.querySelector(".int-element");
+
+                    if (elmInt && elmInt.textContent !== null && elmInt.textContent !== undefined && elmInt.textContent !== "E") {
+                        elmInt.textContent = "U";
+                        elmInt.style.color = "#eab308";
+                        elmInt.style.textShadow = `
+                            -1px -1px 0 white,
+                            1px -1px 0 white,
+                            -1px 1px 0 white,
+                            1px 1px 0 white
+                        `;
+                    }
+                });
+
+                processingButton.mentah = "allow";
+            }
+
+            tools("mentah");
+            lblFile.style.cursor = "pointer";
+            inpFile.disabled = false;
+        }
     } catch (error) {
-        void 0;
+        notification("show", "Gagal upload file", "failed");
+        console.log(error);
     }
 };
 
 const subset = async () => {
+    indikatorNavigation("mentah", "P");
+    intElement = "old";
     let lengData = 0;
+
+    if (!upProxFile) {
+        return;
+    } else {
+        upProxFile = false;
+        lblFile.style.cursor = "not-allowed";
+        inpFile.disabled = true;
+    }
 
     Object.values(dataMentah).map((item) => (lengData += item.length));
 
-    let times = Object.values(dataMentah).reduce((sum, data) => sum + data.length, 0);
+    let times = Object.values(dataMentah).reduce((sum, data) => sum + data.length, 0) * 2;
     const idProgress = progresBar("Filterisasi Data", "Normalisasi data Input Histori Good Issue (GI)", times);
 
     const responseSubset = await postFetch("subset", { session: sId });
 
     if (responseSubset[0] !== "success") {
-        notification("show", "Gagal mengolah data");
+        notification("show", "Gagal mengolah data", "failed");
         sInterval[idProgress] = "done";
         return;
     }
@@ -658,38 +656,57 @@ const subset = async () => {
     sInterval[idProgress] === "done" ? progresBarStatus(idProgress) : (sInterval[idProgress] = "done");
 
     dataSubset = responseSubset[1];
+    indikatorNavigation("mentah", "D");
     tools("subset");
+    processingButton.mentah = "done";
     filtered();
 };
 
 const filtered = async () => {
     let times = dataSubset.length;
+    indikatorNavigation("subset", "P");
 
     const idProgress = progresBar("Filterisasi Data", "Filtering data Histori Good Issue (GI)", times);
 
     const responseClass = await postFetch("classification", { session: sId });
 
     if (responseClass[0] !== "success") {
-        notification("show", "Gagal mengolah data");
+        notification("show", "Gagal mengolah data", "failed");
         sInterval[idProgress] = "done";
         return;
     }
 
     sInterval[idProgress] === "done" ? progresBarStatus(idProgress) : (sInterval[idProgress] = "done");
 
+    upProxFile = true;
+    lblFile.style.cursor = "pointer";
+    inpFile.disabled = false;
+
     dataClass = responseClass[1];
+    processingButton.class = "allow";
+    indikatorNavigation("subset", "D");
+    indikatorNavigation("class", "D");
     tools("class");
 };
 
 const model = async () => {
     let times = dataClass.length;
+    indikatorNavigation("class", "P");
+
+    if (!upProxFile) {
+        return;
+    } else {
+        upProxFile = false;
+        lblFile.style.cursor = "not-allowed";
+        inpFile.disabled = true;
+    }
 
     const idProgress = progresBar("Filterisasi Data", "Filtering data Histori Good Issue (GI)", times);
 
     const responseModel = await postFetch("model-to-calc", { session: sId });
 
     if (responseModel[0] !== "success") {
-        notification("show", "Gagal mengolah data");
+        notification("show", "Gagal mengolah data", "failed");
         sInterval[idProgress] = "done";
         return;
     }
@@ -697,16 +714,18 @@ const model = async () => {
     sInterval[idProgress] === "done" ? progresBarStatus(idProgress) : (sInterval[idProgress] = "done");
 
     dataModel = responseModel[1];
-    tools("q");
+    indikatorNavigation("class", "D");
+    Object.entries(dataModel).map((item) => (item[1].length !== 0 ? (indikatorNavigation(item[0], "D"), tools(item[0])) : void 0));
+    processingButton.class = "done";
+
+    upProxFile = true;
+    lblFile.style.cursor = "pointer";
+    inpFile.disabled = false;
 };
 
-const setHeight = () => document.getElementById("container").style.setProperty("--vh", `${window.innerHeight * 0.01}px`);
-const setLoading = (value) => gridApi.setGridOption("loading", value);
+const inpSearch = (event) => searchData(event.target.value);
 
-childTools.querySelectorAll(".tools").forEach((element) => element.addEventListener("click", () => tools(element.getAttribute("data-tools"))));
 inpFile.addEventListener("change", () => uploadFile(fileId));
-btnChevron.addEventListener("click", () => miniNav());
-window.addEventListener("resize", setHeight);
 
 document.addEventListener("DOMContentLoaded", async () => {
     setHeight();

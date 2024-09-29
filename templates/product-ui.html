@@ -12,6 +12,7 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='vendors/tailwind.css') }}" />
         <link rel="stylesheet" href="{{ url_for('static', filename='vendors/aggrid.css') }}" />
         <link rel="stylesheet" href="{{ url_for('static', filename='vendors/aggrid-quartz.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
         <link rel="stylesheet" href="{{ url_for('static', filename='css/product-ui.css') }}" />
     </head>
     <body>
@@ -84,7 +85,7 @@
                                 </div>
                             </div>
 
-                            <div data-tools="list" class="tools list px-1 py-2 hover:text-white cursor-pointer border-b hover:bg-sky-500 flex justify-between items-center">
+                            <div data-tools="products" class="tools products px-1 py-2 hover:text-white cursor-pointer border-b hover:bg-sky-500 flex justify-between items-center">
                                 <span>List Produk</span>
                             </div>
                         </div>
@@ -113,6 +114,7 @@
 
         <script src="{{ url_for('static', filename='vendors/sheet.js') }}"></script>
         <script src="{{ url_for('static', filename='vendors/aggrid.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/script.js') }}"></script>
         <script src="{{ url_for('static', filename='js/product-ui.js') }}"></script>
     </body>
 </html>

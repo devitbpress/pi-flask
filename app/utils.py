@@ -11,11 +11,11 @@ datafile_session = {}
 dataframe_session = {}
 
 # convert string ke number
-def convert_string_to_number(s):
-    if '.' in s:
-        return convert_string_to_number(s)
+def convert_string_to_number(value):
+    if '.' in value:
+        return float(value)
     else:
-        return int(s)
+        return int(value) 
 
 # kalkulator model file
 def calc_model(data, model):
@@ -209,7 +209,7 @@ def calc_model(data, model):
 def calc_model_manual(data):
     model = data.get("model")
     data_calc = {}
-    
+
     if model == "Q":
         rata_rata_permintaan_barang = convert_string_to_number(data.get('rata_rata_permintaan_barang'))
         lead_time = convert_string_to_number(data.get('lead_time'))
@@ -234,7 +234,7 @@ def calc_model_manual(data):
                 material_description,
                 abc_indikator
             )
-    
+
     if model == "Poisson":
         rata_rata_pemesanan_barang = convert_string_to_number(data.get("rata_rata_permintaan_barang"))
         standar_deviasi_barang = convert_string_to_number(data.get("standar_deviasi"))
@@ -259,7 +259,7 @@ def calc_model_manual(data):
                 material_description,
                 abc_indikator
             )
-    
+
     if model == "Wilson":
         permintaan_barang = convert_string_to_number(data.get("permintaan_barang"))
         harga_barang = convert_string_to_number(data.get("harga_barang"))
@@ -280,7 +280,7 @@ def calc_model_manual(data):
                 material_description,
                 abc_indikator
             )
-    
+
     if model == "Tchebycheff":
         harga_barang = convert_string_to_number(data.get("harga_barang"))
         kerugian_ketidakadaan_barang = convert_string_to_number(data.get("kerugian_ketidakadaan_barang"))
@@ -298,7 +298,7 @@ def calc_model_manual(data):
             material_code,
             material_description,
             abc_indikator)
-    
+
     if model == "Regret":
         material_code = data.get("material_code")
         material_description = data.get("material_description")
@@ -315,7 +315,7 @@ def calc_model_manual(data):
                         material_description,
                         abc_indikator
                     )
-    
+
     if model == "Linear":
         material_code = data.get("material_code")
         material_description = data.get("material_description")
@@ -332,7 +332,7 @@ def calc_model_manual(data):
                         material_description,
                         abc_indikator
                     )
-    
+
     if model == "NonLinear":
         material_code = data.get("material_code")
         material_description = data.get("material_description")
@@ -349,7 +349,7 @@ def calc_model_manual(data):
                         material_description,
                         abc_indikator
                     )
-    
+
     if model == "BCR":
         material_code = data.get("material_code")
         material_description = data.get("material_description")
@@ -368,7 +368,7 @@ def calc_model_manual(data):
                 material_description,
                 abc_indikator,
             )
-    
+
     return data_calc
 
 # normalisasi dataframe (subset)
