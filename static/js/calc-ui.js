@@ -128,7 +128,7 @@ const tools = (agT, agD) => {
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
             <div class="w-full flex justify-between text-xs">
-                <div class="flex gap-2">
+                <div class="flex gap-2 items-center">
                     <span>Nama File: </span>
                     <select id="slc-hasil" class="cursor-pointer bg-transparent">${option}</select>
                 </div>

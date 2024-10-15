@@ -26,3 +26,8 @@ def product_view():
 @routes_bp.route("/masuk")
 def login_view():
     return render_template('login-ui.html')
+
+# halaman logout
+@routes_bp.route("/logout")
+def logout_view():
+    return render_template('logout.html')

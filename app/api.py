@@ -1,10 +1,27 @@
 import pandas as pd
+import threading
 
 from flask import Blueprint, request, jsonify
 from app.db import get_user, get_page_product, get_search_product, get_all_data
 from app import utils
 
 routes_api = Blueprint('api', __name__)
+
+result_all = {}
+
+# cek hasil
+@routes_api.route("/get-result-subset", methods=['POST'])
+def get_result_subset():
+    try:
+        session_id = request.json.get("session")
+
+        if session_id in result_all:
+            return jsonify(['success', result_all[session_id]['subset']]), 200
+        else:
+            return jsonify(['processing', 'Result not available yet for this session.']), 200
+
+    except Exception as e:
+        return jsonify(['error', str(e)]), 500
 
 #  autentikasi
 @routes_api.route("/get-sign", methods=['POST'])
@@ -62,11 +79,20 @@ def delete_file():
 @routes_api.route("/subset", methods=['POST'])
 def subset():
     try:
-        result = utils.processing_subset(request.json.get("session"))
-        result = result.fillna('')
-        data = result.to_dict(orient='records')
+        session_id = request.json.get("session")
 
-        return jsonify(['success', data]), 200
+        def background_process(session):
+            result = utils.processing_subset(session)
+            result = result.fillna('')
+            data = result.to_dict(orient='records')
+
+            result_all[session] = {'subset': data}
+
+        thread = threading.Thread(target=background_process, args=(session_id,))
+        thread.start()
+
+        return jsonify(['processing']), 200
+
     except Exception as e:
         return jsonify(['error', str(e)]), 500
 
@@ -164,12 +190,27 @@ def search_product():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# proses delete session
+def api_delete_session_now(ag_ss):
+    try:
+        del result_all[ag_ss]
+        print("hapus session berhasil")
+        return "success"
+    except KeyError as e:
+        print(f"hapus session not found {e}")
+        return "Key not found"
+    except Exception as e:
+        print(f"hapus session error {e}")
+        return "error"
+
 #  delete session
 @routes_api.route("/delete-session", methods=['POST'])
 def delete_session():
     try:
         ss_id = request.json.get('session', "")
-        
+
+        api_delete_session_now(ss_id)
+
         response = utils.delete_session_now(ss_id)
         return jsonify(response)
     except Exception as e:

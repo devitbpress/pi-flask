@@ -96,12 +96,12 @@ const tools = (agT) => {
         });
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-xs">
+            <div class="w-full flex justify-between text-sm">
                 <div class="flex gap-2 items-center">
                     <span>Nama File: </span>
                     <select id="slc-mentah" class="cursor-pointer bg-transparent">${option}</select>
                 </div>
-                <div class="flex gap-2 justify-between items-center">
+                <div class="flex gap-2 justify-between items-center text-xs">
                     <span>Cari Data</span>
                     <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
                 </div>
@@ -170,9 +170,9 @@ const tools = (agT) => {
         headerAction.innerHTML = "";
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-xs">
+            <div class="w-full flex justify-between text-sm">
                 <div>Subset Data</div>
-                <div class="flex gap-2 justify-between items-center">
+                <div class="flex gap-2 justify-between items-center text-xs">
                     <span>Cari Data</span>
                     <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
                     <button onclick="downloadCsv()" class="ml-4 bg-transparent hover:bg-green-500 text-green-700 hover:text-white py-1 px-2 border border-green-500 hover:border-transparent rounded">Export CSV</button>
@@ -197,18 +197,18 @@ const tools = (agT) => {
         headerAction.innerHTML = "";
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-xs">
-                <div class="flex gap-2 items-center">
+            <div class="w-full flex justify-between">
+                <div class="flex gap-2 items-center text-sm">
                     <span>Data Klasifikasi: </span>
-                    <select onchange="inpSearch(event)" class="cursor-pointer bg-transparent">
+                    <select onchange="dataFilter(event)" class="cursor-pointer bg-transparent">
                         <option value="">Semua</option>
-                        <option value="Pola Deterministik">Pola Deterministik</option>
-                        <option value="Pola Normal">Pola Normal</option>
-                        <option value="Pola Poisson">Pola Poisson</option>
-                        <option value="">Pola Tak - Tentu</option>
+                        <option value="Deterministik">Pola Deterministik</option>
+                        <option value="Normal">Pola Normal</option>
+                        <option value="Poisson">Pola Poisson</option>
+                        <option value="Tak - Tentu">Pola Tak - Tentu</option>
                     </select>
                 </div>
-                <div class="flex gap-2 justify-between items-center">
+                <div class="flex gap-2 justify-between items-center  text-xs">
                     <span>Cari Data</span>
                     <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
                     <button onclick="downloadCsv()" class="ml-4 bg-transparent hover:bg-green-500 text-green-700 hover:text-white py-1 px-2 border border-green-500 hover:border-transparent rounded">Export CSV</button>
@@ -220,7 +220,7 @@ const tools = (agT) => {
         columnDefs.filtered = [
             { headerName: "Material Code", field: "Material_Code", minWidth: 150 },
             { headerName: "Material Description", field: "Material Description", minWidth: 150 },
-            { headerName: "Kategori", field: "Kategori", minWidth: 150 },
+            { headerName: "Kategori", field: "Kategori", minWidth: 150, filter: true },
             { headerName: "Proses 1", field: "Proses1", minWidth: 150 },
             { headerName: "Proses 2", field: "Proses2", minWidth: 150 },
             { headerName: "Jumlah Data", field: "Jumlah_Data", minWidth: 150 },
@@ -256,9 +256,9 @@ const tools = (agT) => {
         headerAction.innerHTML = "";
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-xs">
+            <div class="w-full flex justify-between text-sm">
                 <div>Data Hasil Model Q</div>
-                <div class="flex gap-2 justify-between items-center">
+                <div class="flex gap-2 justify-between items-center text-xs">
                     <span>Cari Data</span>
                     <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
                     <button onclick="downloadCsv()" class="ml-4 bg-transparent hover:bg-green-500 text-green-700 hover:text-white py-1 px-2 border border-green-500 hover:border-transparent rounded">Export CSV</button>
@@ -299,9 +299,9 @@ const tools = (agT) => {
         headerAction.innerHTML = "";
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-xs">
+            <div class="w-full flex justify-between text-sm">
                 <div>Data Hasil Model Wilson</div>
-                <div class="flex gap-2 justify-between items-center">
+                <div class="flex gap-2 justify-between items-center text-xs">
                     <span>Cari Data</span>
                     <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
                     <button onclick="downloadCsv()" class="ml-4 bg-transparent hover:bg-green-500 text-green-700 hover:text-white py-1 px-2 border border-green-500 hover:border-transparent rounded">Export CSV</button>
@@ -339,9 +339,9 @@ const tools = (agT) => {
         headerAction.innerHTML = "";
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-xs">
+            <div class="w-full flex justify-between text-sm">
                 <div>Data Hasil Model Poisson</div>
-                <div class="flex gap-2 justify-between items-center">
+                <div class="flex gap-2 justify-between items-center text-xs">
                     <span>Cari Data</span>
                     <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
                     <button onclick="downloadCsv()" class="ml-4 bg-transparent hover:bg-green-500 text-green-700 hover:text-white py-1 px-2 border border-green-500 hover:border-transparent rounded">Export CSV</button>
@@ -378,9 +378,9 @@ const tools = (agT) => {
         headerAction.innerHTML = "";
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-xs">
+            <div class="w-full flex justify-between text-sm">
                 <div>Data Hasil Model Tchebycheff</div>
-                <div class="flex gap-2 justify-between items-center">
+                <div class="flex gap-2 justify-between items-center text-xs">
                     <span>Cari Data</span>
                     <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
                     <button onclick="downloadCsv()" class="ml-4 bg-transparent hover:bg-green-500 text-green-700 hover:text-white py-1 px-2 border border-green-500 hover:border-transparent rounded">Export CSV</button>
@@ -409,9 +409,9 @@ const tools = (agT) => {
         headerAction.innerHTML = "";
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-xs">
+            <div class="w-full flex justify-between text-sm">
                 <div>Data Hasil Model Regret</div>
-                <div class="flex gap-2 justify-between items-center">
+                <div class="flex gap-2 justify-between items-center text-xs">
                     <span>Cari Data</span>
                     <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
                     <button onclick="downloadCsv()" class="ml-4 bg-transparent hover:bg-green-500 text-green-700 hover:text-white py-1 px-2 border border-green-500 hover:border-transparent rounded">Export CSV</button>
@@ -440,9 +440,9 @@ const tools = (agT) => {
         headerAction.innerHTML = "";
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-xs">
+            <div class="w-full flex justify-between text-sm">
                 <div>Data Hasil Model Linear</div>
-                <div class="flex gap-2 justify-between items-center">
+                <div class="flex gap-2 justify-between items-center text-xs">
                     <span>Cari Data</span>
                     <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
                     <button onclick="downloadCsv()" class="ml-4 bg-transparent hover:bg-green-500 text-green-700 hover:text-white py-1 px-2 border border-green-500 hover:border-transparent rounded">Export CSV</button>
@@ -471,9 +471,9 @@ const tools = (agT) => {
         headerAction.innerHTML = "";
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-xs">
+            <div class="w-full flex justify-between text-sm">
                 <div>Data Hasil Model Non Linear</div>
-                <div class="flex gap-2 justify-between items-center">
+                <div class="flex gap-2 justify-between items-center text-xs">
                     <span>Cari Data</span>
                     <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
                     <button onclick="downloadCsv()" class="ml-4 bg-transparent hover:bg-green-500 text-green-700 hover:text-white py-1 px-2 border border-green-500 hover:border-transparent rounded">Export CSV</button>
@@ -502,9 +502,9 @@ const tools = (agT) => {
         headerAction.innerHTML = "";
 
         childContent.innerHTML = `<div class="w-full h-full bg-white rounded-xl shadow p-3 flex flex-col gap-3">
-            <div class="w-full flex justify-between text-xs">
+            <div class="w-full flex justify-between  text-sm">
                 <div>Data Hasil Model BCR</div>
-                <div class="flex gap-2 justify-between items-center">
+                <div class="flex gap-2 justify-between items-center text-xs">
                     <span>Cari Data</span>
                     <input oninput="inpSearch(event)" type="text" placeholder="cari..." class="outline-none border py-1 px-2 rounded border-green-500" />
                     <button onclick="downloadCsv()" class="ml-4 bg-transparent hover:bg-green-500 text-green-700 hover:text-white py-1 px-2 border border-green-500 hover:border-transparent rounded">Export CSV</button>
@@ -647,19 +647,38 @@ const subset = async () => {
 
     const responseSubset = await postFetch("subset", { session: sId });
 
-    if (responseSubset[0] !== "success") {
+    if (responseSubset[0] !== "processing") {
         notification("show", "Gagal mengolah data", "failed");
         sInterval[idProgress] = "done";
         return;
     }
 
-    sInterval[idProgress] === "done" ? progresBarStatus(idProgress) : (sInterval[idProgress] = "done");
+    let intervalId;
+    const pollSubset = () => {
+        intervalId = setInterval(async () => {
+            try {
+                const getSubset = await postFetch("/get-result-subset", { session: sId });
 
-    dataSubset = responseSubset[1];
-    indikatorNavigation("mentah", "D");
-    tools("subset");
-    processingButton.mentah = "done";
-    filtered();
+                if (getSubset[0] === "success") {
+                    clearInterval(intervalId);
+                    sInterval[idProgress] === "done" ? progresBarStatus(idProgress) : (sInterval[idProgress] = "done");
+
+                    dataSubset = getSubset[1];
+                    indikatorNavigation("mentah", "D");
+                    tools("subset");
+                    processingButton.mentah = "done";
+                    filtered();
+                } else {
+                    console.log("Masih memproses...");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                clearInterval(intervalId);
+            }
+        }, 3000);
+    };
+
+    pollSubset();
 };
 
 const filtered = async () => {
@@ -708,6 +727,11 @@ const model = async () => {
     if (responseModel[0] !== "success") {
         notification("show", "Gagal mengolah data", "failed");
         sInterval[idProgress] = "done";
+        processingButton.class = "done";
+
+        upProxFile = true;
+        lblFile.style.cursor = "pointer";
+        inpFile.disabled = false;
         return;
     }
 
@@ -721,6 +745,17 @@ const model = async () => {
     upProxFile = true;
     lblFile.style.cursor = "pointer";
     inpFile.disabled = false;
+};
+
+const dataFilter = (event) => {
+    gridApi.setFilterModel({
+        Kategori: {
+            type: "contains",
+            filter: event.target.value,
+        },
+    });
+
+    gridApi.onFilterChanged();
 };
 
 const inpSearch = (event) => searchData(event.target.value);

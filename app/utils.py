@@ -697,7 +697,6 @@ def deterministrik_model(deterministik_array):
         material_code_list.append(item["Material_Code"])
 
     result_deterministik = []
-
     product = get_product_model(material_code_list, "deterministrik")
 
     if product[0] == "failed":
@@ -711,7 +710,6 @@ def deterministrik_model(deterministik_array):
     df2['p_code'] = df2['p_code'].astype(str)
 
     df2_clean = df2.drop_duplicates(subset='p_code')
-
     merged_df = pd.merge(df1, df2_clean, left_on="Material_Code", right_on="p_code", how="left")
 
     merged_df = merged_df.rename(columns={"Rata_Rata": "Permintaan Barang (D) Unit/Tahun"})
@@ -726,7 +724,6 @@ def deterministrik_model(deterministik_array):
     merged_df.loc[:, 'Ongkos Pesan (A) /Pesan'] = merged_df['Harga Barang (p) /Unit'].apply(lambda x: 5000000 if x > 100000000 else 1000000)
 
     merged_df.loc[:, 'Ongkos Simpan (h) /Unit/Tahun'] = merged_df['Harga Barang (p) /Unit'] * 0.15
-
     for index, row in merged_df.iterrows():
         permintaan_barang = float(row["Permintaan Barang (D) Unit/Tahun"]) if not pd.isna(row["Permintaan Barang (D) Unit/Tahun"]) else 0
         harga_barang = int(row["Harga Barang (p) /Unit"]) if not pd.isna(row["Harga Barang (p) /Unit"]) else 0
