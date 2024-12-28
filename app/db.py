@@ -6,9 +6,11 @@ import pymysql
 
 # informasi database
 db_host = 'localhost'
-db_user = 'alisatia'
-db_password = '@[db_aliSatia#9]'
-db_database = 'itbpress_erp'
+# db_user = 'alisatia'
+# db_password = '@[db_aliSatia#9]'
+# db_database = 'itbpress_erp'
+db_user = 'root'
+db_password = ''
 db_database = 'flask_pi'
 db_cursorclass = pymysql.cursors.DictCursor
 

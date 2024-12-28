@@ -53,7 +53,7 @@ def upload_file():
 
     if file.content_type not in ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']:
         return jsonify({'error': 'Format file tidak valid'}), 400
-    
+
     try:
         df = pd.read_excel(file, engine='openpyxl')
 

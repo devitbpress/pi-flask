@@ -21,7 +21,6 @@ const postFiles = async (agUrl, agFile, agId, agModel) => {
 
     try {
         const response = await fetch(agUrl, { method: "POST", body: formData });
-
         const data = await response.json();
         const { ok, statusText } = response;
 
